@@ -4,14 +4,14 @@ import { RootState } from "../app/store";
 export interface User {
   uid: string;
   username: string;
-  usertype: "employer" | "applicant" | null;
+  user_type: "employer" | "applicant" | null;
   icon_url: string;
 }
 
 const initialState: User = {
   uid: "",
   username: "",
-  usertype: null,
+  user_type: null,
   icon_url: "",
 };
 
