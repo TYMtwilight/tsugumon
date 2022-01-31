@@ -10,6 +10,7 @@ import {
   DocumentSnapshot,
 } from "firebase/firestore";
 import { onAuthStateChanged, Unsubscribe } from "firebase/auth";
+import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
 
 const App: React.FC = () => {
   const user = useAppSelector(selectUser);
@@ -48,7 +49,6 @@ const App: React.FC = () => {
       unsubscribe();
     };
   }, [dispatch]);
-  return <>{user.uid ? <h1>CheckUserType</h1> : <h1>UserAuthentication</h1>}</>;
+  return <>{user.uid ? <h1>CheckUserType</h1> : <UserAuthentication />}</>;
 };
-
 export default App;
