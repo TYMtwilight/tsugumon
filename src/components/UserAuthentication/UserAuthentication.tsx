@@ -36,6 +36,10 @@ const UserAuthentication = () => {
             autoFocus
             required
           />
+          <div>
+            <p>エラーメッセージ</p>
+            <p>エラーメッセージ</p>
+          </div>
         </div>
         <div>
           <label htmlFor="password">パスワード</label>
@@ -48,27 +52,33 @@ const UserAuthentication = () => {
             }}
             required
           />
-          <p>8~20文字で入力してください。</p>
-          <p>使用できる文字は英語の大文字と小文字、それから数字です。</p>
+          <div>
+            <p>エラーメッセージ</p>
+            <p>エラーメッセージ</p>
+          </div>
         </div>
-        <input
-          type="submit"
-          data-testid="login_button"
-          value="ログイン"
-          onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-            login(e);
-          }}
-        />
-        <p>アカウントをお持ちではないですか？</p>
-        <button
-          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            e.preventDefault();
-            signUp.current = !signUp.current;
-            console.log(signUp.current);
-          }}
-        >
-          新規登録
-        </button>
+        <div>
+          <input
+            type="submit"
+            data-testid="login_button"
+            value="ログイン"
+            onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+              login(e);
+            }}
+          />
+        </div>
+        <div>
+          <p>アカウントをお持ちではないですか？</p>
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+              e.preventDefault();
+              signUp.current = !signUp.current;
+              console.log(signUp.current);
+            }}
+          >
+            新規登録
+          </button>
+        </div>
       </form>
     </div>
   );
