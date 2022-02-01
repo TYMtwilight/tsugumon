@@ -1,15 +1,19 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import LockIcon from "@material-ui/icons/Lock";
+
 const UserAuthentication = () => {
-  const email: React.MutableRefObject<string> = useRef("");
-  const password: React.MutableRefObject<string> = useRef("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const signUp: React.MutableRefObject<boolean> = useRef(false);
 
-  const Login: () => Promise<void> = async () => {
+  const login: (
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => Promise<void> = async (e) => {
+    e.preventDefault();
     if (email && password) {
-      signInWithEmailAndPassword(auth, email.current, password.current);
+      signInWithEmailAndPassword(auth, email, password);
     }
   };
   return (
@@ -26,7 +30,7 @@ const UserAuthentication = () => {
             id="email"
             data-testid="email"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              email.current = e.target.value;
+              setEmail(e.target.value);
             }}
             placeholder="例) tsugumon@example.com"
             autoFocus
@@ -40,7 +44,7 @@ const UserAuthentication = () => {
             id="password"
             data-testid="password"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              password.current = e.target.value;
+              setPassword(e.target.value);
             }}
             required
           />
@@ -51,17 +55,20 @@ const UserAuthentication = () => {
           type="submit"
           data-testid="login_button"
           value="ログイン"
-          onClick={Login}
+          onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+            login(e);
+          }}
         />
         <p>アカウントをお持ちではないですか？</p>
-        <p
-          onClick={() => {
+        <button
+          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            e.preventDefault();
             signUp.current = !signUp.current;
             console.log(signUp.current);
           }}
         >
           新規登録
-        </p>
+        </button>
       </form>
     </div>
   );
