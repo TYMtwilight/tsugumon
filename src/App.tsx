@@ -1,15 +1,9 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectUser, login, logout } from "./features/userSlice";
-import { auth, db } from "./firebase";
-import {
-  doc,
-  getDoc,
-  DocumentData,
-  DocumentReference,
-  DocumentSnapshot,
-} from "firebase/firestore";
-import { onAuthStateChanged, Unsubscribe } from "firebase/auth";
+import { auth } from "./firebase";
+import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
+import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
 
 const App: React.FC = () => {
   const user = useAppSelector(selectUser);
@@ -18,27 +12,9 @@ const App: React.FC = () => {
   useEffect(() => {
     const unsubscribe: Unsubscribe = onAuthStateChanged(
       auth,
-      async (authUser) => {
+      async (authUser: User | null) => {
         if (authUser) {
-          const userRef: DocumentReference<DocumentData> = doc(
-            db,
-            `users.${authUser.uid}`
-          );
-          const userSnapshot: DocumentSnapshot<DocumentData> | void =
-            await getDoc(userRef).catch((e: any) => {
-              console.log(`エラーが発生しました\n${e.message}`);
-            });
-          if (userSnapshot) {
-            const userData: DocumentData = userSnapshot.data()!;
-            dispatch(
-              login({
-                uid: userData.id,
-                username: userData.username,
-                icon_url: userData.icon_url,
-                user_type: userData.type,
-              })
-            );
-          }
+          dispatch(login(authUser.uid));
         } else {
           dispatch(logout());
         }
@@ -48,7 +24,6 @@ const App: React.FC = () => {
       unsubscribe();
     };
   }, [dispatch]);
-  return <>{user.uid ? <h1>CheckUserType</h1> : <h1>UserAuthentication</h1>}</>;
+  return <>{user.uid ? <h1>CheckUserType</h1> : <UserAuthentication />}</>;
 };
-
 export default App;
