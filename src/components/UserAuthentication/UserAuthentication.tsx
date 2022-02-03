@@ -1,12 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import LockIcon from "@material-ui/icons/Lock";
+import { Lock, Visibility, VisibilityOff } from "@material-ui/icons";
 
 const UserAuthentication = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const signUp: React.MutableRefObject<boolean> = useRef(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [signUp, setSignUp] = useState<boolean>(false);
 
   const login: (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>
@@ -19,7 +20,7 @@ const UserAuthentication = () => {
   return (
     <div>
       <div>
-        <LockIcon />
+        <Lock />
         <p>ログイン</p>
       </div>
       <form>
@@ -44,7 +45,7 @@ const UserAuthentication = () => {
         <div>
           <label htmlFor="password">パスワード</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             data-testid="password"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +53,14 @@ const UserAuthentication = () => {
             }}
             required
           />
+          <div
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              e.preventDefault();
+              setShowPassword(!showPassword);
+            }}
+          >
+            {showPassword ? <Visibility /> : <VisibilityOff />}
+          </div>
           <div>
             <p>エラーメッセージ</p>
             <p>エラーメッセージ</p>
@@ -72,8 +81,8 @@ const UserAuthentication = () => {
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
               e.preventDefault();
-              signUp.current = !signUp.current;
-              console.log(signUp.current);
+              setSignUp(!signUp);
+              console.log(signUp);
             }}
           >
             新規登録
