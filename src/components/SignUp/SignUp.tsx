@@ -1,33 +1,29 @@
 import React, { useState } from "react";
-import SignUp from "../SignUp/SignUp";
 import { auth } from "../../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Lock, Visibility, VisibilityOff } from "@material-ui/icons";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Person, Visibility, VisibilityOff } from "@material-ui/icons";
 
-const UserAuthentication = () => {
+const SignUp = (props: {
+  backToLogin: React.MouseEventHandler<HTMLButtonElement> | undefined;
+}) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [signUp, setSignUp] = useState<boolean>(false);
 
-  const login: (
+  const signUp: (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => Promise<void> = async (e) => {
     e.preventDefault();
     if (email && password) {
-      signInWithEmailAndPassword(auth, email, password);
+      createUserWithEmailAndPassword(auth, email, password);
     }
-  };
-
-  const closeSignUp = () => {
-    setSignUp(false);
   };
 
   return (
     <div>
       <div>
-        <Lock />
-        <p>ログイン</p>
+        <Person />
+        <p>ユーザー登録</p>
       </div>
       <form>
         <div>
@@ -39,14 +35,14 @@ const UserAuthentication = () => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
-            placeholder="例) tsugumon@example.com"
+            placeholder="例) tsugumon@examle.com"
             autoFocus
             required
           />
-          <div>
-            <p>エラーメッセージ</p>
-            <p>エラーメッセージ</p>
-          </div>
+        </div>
+        <div>
+          <p>エラーメッセージ</p>
+          <p>エラーメッセージ</p>
         </div>
         <div>
           <label htmlFor="password">パスワード</label>
@@ -58,6 +54,7 @@ const UserAuthentication = () => {
               setPassword(e.target.value);
             }}
             required
+            pattern="[A-Z,a-z,0-9]{8,20}"
           />
           <div
             onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -68,6 +65,10 @@ const UserAuthentication = () => {
             {showPassword ? <Visibility /> : <VisibilityOff />}
           </div>
           <div>
+            <p>パスワードは8文字以上20文字以下の文字数で設定してください。</p>
+            <p>
+              パスワードに入力できる文字は英語大文字、英語小文字、数字の３種類です。
+            </p>
             <p>エラーメッセージ</p>
             <p>エラーメッセージ</p>
           </div>
@@ -75,28 +76,19 @@ const UserAuthentication = () => {
         <div>
           <input
             type="submit"
-            data-testid="login_button"
-            value="ログイン"
+            data-testid="signup_button"
+            value="登録する"
             onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-              login(e);
+              signUp(e);
             }}
           />
         </div>
         <div>
-          <p>アカウントをお持ちではないですか？</p>
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-              e.preventDefault();
-              setSignUp(true);
-              console.log(signUp);
-            }}
-          >
-            新規登録
-          </button>
+          <button onClick={props.backToLogin}>ログイン画面に戻る</button>
         </div>
       </form>
-      {signUp && <SignUp backToLogin={closeSignUp} />}
     </div>
   );
 };
-export default UserAuthentication;
+
+export default SignUp;
