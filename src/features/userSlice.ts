@@ -23,7 +23,7 @@ export const userSlice = createSlice({
       state.uid = action.payload;
     },
     logout: (state) => {
-      state = initialState;
+      state.uid = "";
     },
   },
 });

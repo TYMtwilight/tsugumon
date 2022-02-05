@@ -24,7 +24,7 @@ const App: React.FC = () => {
     return () => {
       unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
   return <>{user.uid ? <Feed /> : <UserAuthentication />}</>;
 };
