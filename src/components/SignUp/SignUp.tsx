@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { Person, Visibility, VisibilityOff } from "@material-ui/icons";
 
 const SignUp = (props: {
@@ -11,11 +12,24 @@ const SignUp = (props: {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const signUp: (
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ) => Promise<void> = async (e) => {
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>,
+    email: string,
+    password: string
+  ) => Promise<void> = async (e, email, password) => {
     e.preventDefault();
-    if (email && password) {
-      createUserWithEmailAndPassword(auth, email, password);
+    const authUser = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    if (authUser) {
+      const userRef = doc(db, "users", authUser.user.uid);
+      setDoc(userRef, {
+        username: "",
+        icon_url: "",
+        user_type: null,
+        follower_count: 0,
+      });
     }
   };
 
@@ -79,7 +93,7 @@ const SignUp = (props: {
             data-testid="signup_button"
             value="登録する"
             onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-              signUp(e);
+              signUp(e, email, password);
             }}
           />
         </div>
