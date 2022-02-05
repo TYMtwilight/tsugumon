@@ -6,8 +6,7 @@ const Feed = () => {
     <div>
       Feed
       <button
-        onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-          e.preventDefault();
+        onClick={() => {
           signOut(auth).catch((error: any) => {
             console.log(`エラーが発生しました\n${error.message}`);
           });
