@@ -1,15 +1,38 @@
 import React, { useState } from "react";
-import { auth, db } from "../../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useAppDispatch } from "../../app/hooks";
+import { updateUserProfile } from "../../features/userSlice";
+import { auth, db, storage } from "../../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { Person, Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff, AddAPhoto } from "@material-ui/icons";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const SignUp = (props: {
   backToLogin: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }) => {
+  const [displayName, setDisplayName] = useState<string>("");
+  const [avatarImage, setAvatarImage] = useState<File | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [avatarDraft, setAvatarDraft] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+
+  const onChangeImageHandler: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void = (e) => {
+    const file: File = e.target.files![0];
+    if (file) {
+      setAvatarImage(file);
+      // NOTE >> 利用中のブラウザがBlobURLSchemeをサポートしていない場合は
+      //         処理を中断します。
+      if (!window.URL) return;
+      const blobURL: string = window.URL.createObjectURL(file);
+      setAvatarDraft(blobURL);
+    }
+    e.target.value = "";
+  };
 
   const signUp: (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>,
@@ -22,24 +45,98 @@ const SignUp = (props: {
       email,
       password
     );
-    if (authUser) {
+    let url: string = "";
+    if (avatarImage) {
+      const S =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const N = 16;
+      const randomCharactor = Array.from(
+        crypto.getRandomValues(new Uint32Array(N))
+      )
+        .map((n) => S[n % S.length])
+        .join("");
+      const fileName = randomCharactor + avatarImage.name;
+      await uploadBytes(ref(storage, `avatars/${fileName}`), avatarImage);
+      url = await getDownloadURL(ref(storage, `avatars/${fileName}`));
+      console.log(url);
+    }
+    if (authUser.user) {
+      await updateProfile(authUser.user, {
+        displayName: displayName,
+        photoURL: url,
+      });
       const userRef = doc(db, "users", authUser.user.uid);
       setDoc(userRef, {
-        username: "",
-        icon_url: "",
-        user_type: null,
-        follower_count: 0,
+        displayName: displayName,
+        iconUrl: url,
+        userType: null,
+        followerCount: 0,
       });
     }
+
+    dispatch(
+      updateUserProfile({
+        displayName: displayName,
+        photoURL: url,
+      })
+    );
   };
 
   return (
     <div>
       <div>
-        <Person />
+        <div>
+          <img
+            id="avatar"
+            data-testid="avatar"
+            src={
+              avatarDraft
+                ? avatarDraft
+                : `${process.env.PUBLIC_URL}/noAvatar.png`
+            }
+            alt="ユーザーのアバター画像"
+          />
+          <label htmlFor="selectAvatarImage">
+            <AddAPhoto />
+          </label>
+          <input
+            type="file"
+            id="selectAvatarImage"
+            data-testid="selectAvatarImage"
+            accept="image/png,image/jpeg"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChangeImageHandler(e);
+            }}
+          />
+        </div>
+        <div>
+          <button
+            id="clearAvatarImage"
+            data-testid="clearAvatarImage"
+            onClick={() => {
+              setAvatarImage(null);
+              setAvatarDraft("");
+            }}
+          >
+            画像を消す
+          </button>
+        </div>
         <p>ユーザー登録</p>
       </div>
       <form>
+        <div>
+          <label htmlFor="displayName">会社名・個人名</label>
+          <input
+            type="text"
+            id="displayName"
+            data-testid="displayName"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setDisplayName(e.target.value);
+            }}
+            required
+            autoFocus
+          />
+        </div>
         <div>
           <label htmlFor="email">メールアドレス</label>
           <input
@@ -50,7 +147,6 @@ const SignUp = (props: {
               setEmail(e.target.value);
             }}
             placeholder="例) tsugumon@examle.com"
-            autoFocus
             required
           />
         </div>
