@@ -47,15 +47,15 @@ const SignUp = (props: {
     );
     let url: string = "";
     if (avatarImage) {
-      const S =
+      const S: string =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const N = 16;
-      const randomCharactor = Array.from(
+      const N: number = 16;
+      const randomCharactor: string = Array.from(
         crypto.getRandomValues(new Uint32Array(N))
       )
         .map((n) => S[n % S.length])
         .join("");
-      const fileName = randomCharactor + avatarImage.name;
+      const fileName: string = randomCharactor + avatarImage.name;
       await uploadBytes(ref(storage, `avatars/${fileName}`), avatarImage);
       url = await getDownloadURL(ref(storage, `avatars/${fileName}`));
       console.log(url);
@@ -68,7 +68,7 @@ const SignUp = (props: {
       const userRef = doc(db, "users", authUser.user.uid);
       setDoc(userRef, {
         displayName: displayName,
-        iconUrl: url,
+        photoURL: url,
         userType: null,
         followerCount: 0,
       });
