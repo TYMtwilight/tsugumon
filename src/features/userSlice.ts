@@ -9,7 +9,7 @@ export interface UserProfile {
 export interface User {
   uid: string;
   displayName: string;
-  userType: "employer" | "applicant" | null;
+  userType: "enterpriseUser" | "normalUser" | null;
   photoURL: string;
 }
 
@@ -30,16 +30,22 @@ export const userSlice = createSlice({
     logout: (state) => {
       state.uid = "";
     },
-    updateUserProfile: (state, action:PayloadAction<UserProfile>) => {
+    updateUserProfile: (state, action: PayloadAction<UserProfile>) => {
       state.displayName = action.payload.displayName;
       state.photoURL = action.payload.photoURL;
+    },
+    updateUserType: (
+      state,
+      action: PayloadAction<"enterpriseUser"|"normalUser"|null>
+    ) => {
+      state.userType = action.payload;
     },
   },
 });
 
 // NOTE >> 各コンポーネントで使用できるようにuserSliceのアクションを
 //         エクスポートします。
-export const { login, logout, updateUserProfile } = userSlice.actions;
+export const { login, logout, updateUserProfile, updateUserType } = userSlice.actions;
 // NOTE >> ストアで取り込むため、userSliceのリデューサーをエクスポートします。
 export default userSlice.reducer;
 export const selectUser = (state: RootState) => state.user;

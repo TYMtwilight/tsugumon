@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectUser, login, logout } from "./features/userSlice";
+import Feed from "./components/Feed/Feed";
+import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
 import { auth } from "./firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
-import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
-import Feed from "./components/Feed/Feed";
 
 const App: React.FC = () => {
   const user = useAppSelector(selectUser);

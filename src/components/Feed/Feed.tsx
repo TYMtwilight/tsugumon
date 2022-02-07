@@ -1,20 +1,30 @@
-import React from "react";
+import { useAppSelector } from "../../app/hooks";
+import { selectUser } from "../../features/userSlice";
+import SelectUserType from "../SelectUserType/SelectUserType";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
+
 const Feed = () => {
+  const user = useAppSelector(selectUser);
   return (
-    <div>
-      Feed
-      <button
-        onClick={() => {
-          signOut(auth).catch((error: any) => {
-            console.log(`エラーが発生しました\n${error.message}`);
-          });
-        }}
-      >
-        logout
-      </button>
-    </div>
+    <>
+      {user.userType ? (
+        <div>
+          Feed
+          <button
+            onClick={() => {
+              signOut(auth).catch((error: any) => {
+                console.log(`エラーが発生しました\n${error.message}`);
+              });
+            }}
+          >
+            logout
+          </button>
+        </div>
+      ) : (
+        <SelectUserType />
+      )}
+    </>
   );
 };
 
