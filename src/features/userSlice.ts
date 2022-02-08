@@ -8,24 +8,27 @@ export interface UserProfile {
 
 export interface User {
   uid: string;
-  displayName: string;
+  displayName: string | null;
   userType: "enterpriseUser" | "normalUser" | null;
-  photoURL: string;
+  photoURL: string | null;
 }
 
 const initialState: User = {
   uid: "",
   displayName: "",
-  userType: null,
   photoURL: "",
+  userType: null,
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState: initialState,
   reducers: {
-    login: (state, action: PayloadAction<User["uid"]>) => {
-      state.uid = action.payload;
+    login: (state, action: PayloadAction<User>) => {
+      state.uid = action.payload.uid;
+      state.displayName = action.payload.displayName;
+      state.photoURL = action.payload.photoURL;
+      state.userType = action.payload.userType;
     },
     logout: (state) => {
       state.uid = "";
@@ -36,7 +39,7 @@ export const userSlice = createSlice({
     },
     updateUserType: (
       state,
-      action: PayloadAction<"enterpriseUser"|"normalUser"|null>
+      action: PayloadAction<"enterpriseUser" | "normalUser" | null>
     ) => {
       state.userType = action.payload;
     },
@@ -45,7 +48,8 @@ export const userSlice = createSlice({
 
 // NOTE >> 各コンポーネントで使用できるようにuserSliceのアクションを
 //         エクスポートします。
-export const { login, logout, updateUserProfile, updateUserType } = userSlice.actions;
+export const { login, logout, updateUserProfile, updateUserType } =
+  userSlice.actions;
 // NOTE >> ストアで取り込むため、userSliceのリデューサーをエクスポートします。
 export default userSlice.reducer;
 export const selectUser = (state: RootState) => state.user;

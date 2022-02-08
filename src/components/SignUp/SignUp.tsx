@@ -4,8 +4,8 @@ import { updateUserProfile } from "../../features/userSlice";
 import { auth, db, storage } from "../../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { Visibility, VisibilityOff, AddAPhoto } from "@material-ui/icons";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { Visibility, VisibilityOff, AddAPhoto } from "@material-ui/icons";
 
 const SignUp = (props: {
   backToLogin: React.MouseEventHandler<HTMLButtonElement> | undefined;
