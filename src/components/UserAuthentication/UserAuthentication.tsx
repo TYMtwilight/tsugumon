@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SignUp from "../SignUp/SignUp";
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { Lock, Visibility, VisibilityOff } from "@material-ui/icons";
+import { Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 
 const UserAuthentication = () => {
   const [email, setEmail] = useState<string>("");
@@ -26,16 +26,16 @@ const UserAuthentication = () => {
   return (
     <div>
       <div>
-        <Lock />
-        <p>ログイン</p>
+        <Lock/>
+        <p data-testid="title">ログイン</p>
       </div>
-      <form>
+      <form name="form">
         <div>
-          <label htmlFor="email">メールアドレス</label>
+          <label htmlFor="email" >メールアドレス</label>
           <input
+            name="textbox"
             type="email"
             id="email"
-            data-testid="email"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
@@ -44,8 +44,8 @@ const UserAuthentication = () => {
             required
           />
           <div>
-            <p>エラーメッセージ</p>
-            <p>エラーメッセージ</p>
+            <p data-testid="error1">エラーメッセージ</p>
+            <p data-testid="error2">エラーメッセージ</p>
           </div>
         </div>
         <div>
@@ -59,17 +59,17 @@ const UserAuthentication = () => {
             }}
             required
           />
-          <div
-            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
               e.preventDefault();
               setShowPassword(!showPassword);
             }}
           >
             {showPassword ? <Visibility /> : <VisibilityOff />}
-          </div>
+          </button>
           <div>
-            <p>エラーメッセージ</p>
-            <p>エラーメッセージ</p>
+            <p data-testid="error3">エラーメッセージ</p>
+            <p data-testid="error4">エラーメッセージ</p>
           </div>
         </div>
         <div>
