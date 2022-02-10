@@ -26,16 +26,17 @@ const UserAuthentication = () => {
   return (
     <div>
       <div>
-        <Lock/>
+        <Lock />
         <p data-testid="title">ログイン</p>
       </div>
       <form name="form">
         <div>
-          <label htmlFor="email" >メールアドレス</label>
+          <label htmlFor="email">メールアドレス</label>
           <input
             name="textbox"
             type="email"
             id="email"
+            value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
@@ -53,6 +54,7 @@ const UserAuthentication = () => {
           <input
             type={showPassword ? "text" : "password"}
             id="password"
+            value={password}
             data-testid="password"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value);
@@ -75,11 +77,12 @@ const UserAuthentication = () => {
         <div>
           <input
             type="submit"
-            data-testid="login_button"
+            data-testid="loginButton"
             value="ログイン"
             onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
               login(e);
             }}
+            disabled={!email || !password}
           />
         </div>
         <div>
