@@ -96,7 +96,7 @@ const SignUp = (props: {
             }
             alt="ユーザーのアバター画像"
           />
-          <label htmlFor="selectAvatarImage">
+          <label htmlFor="selectAvatarImage" data-testid="labelForAvatar">
             <AddAPhoto />
           </label>
           <input
@@ -112,7 +112,6 @@ const SignUp = (props: {
         <div>
           <button
             id="clearAvatarImage"
-            data-testid="clearAvatarImage"
             onClick={() => {
               setAvatarImage(null);
               setAvatarDraft("");
@@ -123,7 +122,7 @@ const SignUp = (props: {
         </div>
         <p>ユーザー登録</p>
       </div>
-      <form>
+      <form name="form">
         <div>
           <label htmlFor="displayName">会社名・個人名</label>
           <input
@@ -151,8 +150,8 @@ const SignUp = (props: {
           />
         </div>
         <div>
-          <p>エラーメッセージ</p>
-          <p>エラーメッセージ</p>
+          <p data-testid="error1">エラーメッセージ</p>
+          <p data-testid="error2">エラーメッセージ</p>
         </div>
         <div>
           <label htmlFor="password">パスワード</label>
@@ -166,7 +165,7 @@ const SignUp = (props: {
             required
             pattern="[A-Z,a-z,0-9]{8,20}"
           />
-          <div
+          <div data-testid="showPasswordButton"
             onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
               e.preventDefault();
               setShowPassword(!showPassword);
@@ -177,16 +176,16 @@ const SignUp = (props: {
           <div>
             <p>パスワードは8文字以上20文字以下の文字数で設定してください。</p>
             <p>
-              パスワードに入力できる文字は英語大文字、英語小文字、数字の３種類です。
+              パスワードに入力できる文字は英語大文字、英語小文字、数字の3種類です。
             </p>
-            <p>エラーメッセージ</p>
-            <p>エラーメッセージ</p>
+            <p data-testid="error3">エラーメッセージ</p>
+            <p data-testid="error4">エラーメッセージ</p>
           </div>
         </div>
         <div>
           <input
             type="submit"
-            data-testid="signup_button"
+            data-testid="signUpButton"
             value="登録する"
             onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
               signUp(e, email, password);
