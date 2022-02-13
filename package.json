@@ -8,16 +8,19 @@
     "@material-ui/core": "^4.12.3",
     "@mui/icons-material": "^5.4.1",
     "@reduxjs/toolkit": "^1.7.1",
+    "@testing-library/dom": "^8.11.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "@types/enzyme": "^3.10.11",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.20.42",
     "@types/react": "^16.14.21",
     "@types/react-dom": "^16.9.14",
     "@types/react-redux": "^7.1.22",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "firebase": "^9.6.5",
-    "react": "^17.0.2",
+    "react": "17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
     "react-scripts": "5.0.0",
@@ -46,6 +49,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.2",
+    "enzyme": "^3.11.0",
     "postcss": "^8.4.5",
     "tailwindcss": "^3.0.16"
   }

@@ -1,5 +1,6 @@
 import React from "react";
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
+import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import UserAuthentication from "./UserAuthentication";
 
