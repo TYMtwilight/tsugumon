@@ -1862,7 +1862,7 @@
   dependencies:
     "@babel/runtime" "^7.17.0"
 
-"@mui/material@^5.0.0":
+"@mui/material@^5.0.0", "@mui/material@^5.4.1":
   "integrity" "sha512-SxAT43UAjFTBBpJrN+oGrv40xP1uCa5Z49NfHt3m93xYeFzbxKOk0V9IKU7zlUjbsaVQ0i+o24yF5GULZmynlA=="
   "resolved" "https://registry.npmjs.org/@mui/material/-/material-5.4.1.tgz"
   "version" "5.4.1"
