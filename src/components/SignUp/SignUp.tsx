@@ -11,7 +11,7 @@ const SignUp = (props: {
   backToLogin: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }) => {
   const [displayName, setDisplayName] = useState<string>("");
-  const [avatarImage, setAvatarImage] = useState<File | null>(null);
+  const [avatarImage, setAvatarImage] = useState<Blob | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [avatarDraft, setAvatarDraft] = useState<string>("");
@@ -23,14 +23,20 @@ const SignUp = (props: {
     e: React.ChangeEvent<HTMLInputElement>
   ) => void = (e) => {
     const file: File = e.target.files![0];
-    if (file) {
-      setAvatarImage(file);
-      // NOTE >> 利用中のブラウザがBlobURLSchemeをサポートしていない場合は
-      //         処理を中断します。
-      if (!window.URL) return;
-      const blobURL: string = window.URL.createObjectURL(file);
-      setAvatarDraft(blobURL);
-    }
+    const reader: FileReader = new FileReader();
+    reader.addEventListener("load", () => {
+      if (reader.result) {
+        const arrayBuffer:ArrayBuffer = reader.result as ArrayBuffer;
+        const imageBlob:Blob = new Blob([arrayBuffer]);
+        setAvatarImage(imageBlob);
+      }
+    });
+    // NOTE >> 利用中のブラウザがBlobURLSchemeをサポートしていない場合は
+    //         処理を中断します。
+    if (!window.URL) return;
+    const blobURL: string = window.URL.createObjectURL(file);
+    setAvatarDraft(blobURL);
+    reader.readAsArrayBuffer(file);
     e.target.value = "";
   };
 
@@ -55,7 +61,7 @@ const SignUp = (props: {
       )
         .map((n) => S[n % S.length])
         .join("");
-      const fileName: string = randomCharactor + avatarImage.name;
+      const fileName: string = randomCharactor;
       await uploadBytes(ref(storage, `avatars/${fileName}`), avatarImage);
       url = await getDownloadURL(ref(storage, `avatars/${fileName}`));
       console.log(url);
@@ -165,7 +171,8 @@ const SignUp = (props: {
             required
             pattern="[A-Z,a-z,0-9]{8,20}"
           />
-          <div data-testid="showPasswordButton"
+          <div
+            data-testid="showPasswordButton"
             onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
               e.preventDefault();
               setShowPassword(!showPassword);
