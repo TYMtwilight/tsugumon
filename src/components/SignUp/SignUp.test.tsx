@@ -1,6 +1,7 @@
 import React, { MouseEventHandler } from "react";
-import { render,cleanup, } from "@testing-library/react";
-import {screen} from "@testing-library/dom";
+import { render, cleanup } from "@testing-library/react";
+import { screen } from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
 import SignUp from "./SignUp";
 import { store } from "../../app/store";
 import { Provider } from "react-redux";
@@ -49,5 +50,29 @@ describe("rendering", () => {
     expect(screen.getByTestId("error4")).toBeTruthy();
     expect(screen.getByTestId("signUpButton")).toBeTruthy();
     expect(screen.getAllByRole("button")[1]).toBeTruthy();
+  });
+});
+
+describe("Input form onChange Event", () => {
+  it("inputの値が適正にアップデートされているか検証します", () => {
+    const backToLogin: MouseEventHandler<HTMLButtonElement> | undefined =
+      jest.fn();
+    render(
+      <Provider store={store}>
+        <SignUp backToLogin={backToLogin} />
+      </Provider>
+    );
+
+    const inputDisplayName: any = screen.getAllByRole("textbox")[0];
+    userEvent.type(inputDisplayName, "testUser");
+    expect(inputDisplayName.value).toBe("testUser");
+
+    const inputEmail: any = screen.getAllByRole("textbox")[1];
+    userEvent.type(inputEmail, "test@tsugumon.com");
+    expect(inputEmail.value).toBe("test@tsugumon.com");
+
+    const inputPassword: any = screen.getByTestId("password");
+    userEvent.type(inputPassword, "tsugumonPassword");
+    expect(inputPassword.value).toBe("tsugumonPassword");
   });
 });
