@@ -1,4 +1,3 @@
-import React, { MouseEventHandler } from "react";
 import { render, cleanup } from "@testing-library/react";
 import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
@@ -12,8 +11,7 @@ afterEach(() => {
 
 describe("rendering", () => {
   it("SignUpの各要素が適正にレンダリングされているか検証します", () => {
-    const backToLogin: MouseEventHandler<HTMLButtonElement> | undefined =
-      jest.fn();
+    const backToLogin: jest.Mock<any, any> = jest.fn();
     render(
       <Provider store={store}>
         <SignUp backToLogin={backToLogin} />
@@ -55,8 +53,7 @@ describe("rendering", () => {
 
 describe("Input form onChange Event", () => {
   it("inputの値が適正にアップデートされているか検証します", () => {
-    const backToLogin: MouseEventHandler<HTMLButtonElement> | undefined =
-      jest.fn();
+    const backToLogin: jest.Mock<any, any> = jest.fn();
     render(
       <Provider store={store}>
         <SignUp backToLogin={backToLogin} />
@@ -74,5 +71,18 @@ describe("Input form onChange Event", () => {
     const inputPassword: any = screen.getByTestId("password");
     userEvent.type(inputPassword, "tsugumonPassword");
     expect(inputPassword.value).toBe("tsugumonPassword");
+  });
+  it("「ログイン画面に戻る」ボタンが機能するか検証します", () => {
+    const backToLogin: jest.Mock<any, any> = jest.fn();
+    render(
+      <Provider store={store}>
+        <SignUp backToLogin={backToLogin} />
+      </Provider>
+    );
+    const backToLoginButton: HTMLElement =
+      screen.getByText("ログイン画面に戻る");
+      screen.debug(screen.getAllByRole("button"));
+    userEvent.click(backToLoginButton);
+    expect(backToLogin).toHaveBeenCalled();
   });
 });
