@@ -132,22 +132,24 @@ const SignUp = (props: {
         <div>
           <label htmlFor="displayName">会社名・個人名</label>
           <input
+            name="textbox"
             type="text"
             id="displayName"
-            data-testid="displayName"
+            value={displayName}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setDisplayName(e.target.value);
             }}
-            required
             autoFocus
+            required
           />
         </div>
         <div>
           <label htmlFor="email">メールアドレス</label>
           <input
+            name="textbox"
             type="email"
             id="email"
-            data-testid="email"
+            value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
@@ -162,9 +164,11 @@ const SignUp = (props: {
         <div>
           <label htmlFor="password">パスワード</label>
           <input
+            name="textbox"
             type={showPassword ? "text" : "password"}
             id="password"
             data-testid="password"
+            value={password}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(e.target.value);
             }}

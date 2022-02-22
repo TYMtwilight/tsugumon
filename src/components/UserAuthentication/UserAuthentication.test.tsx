@@ -38,7 +38,7 @@ describe("Input form onChange Event", () => {
     userEvent.type(inputEmail, "test@tsugumon.com");
     expect(inputEmail.value).toBe("test@tsugumon.com");
 
-    const inputPassword: HTMLInputElement = screen.getByTestId("password");
+    const inputPassword:HTMLInputElement = screen.getByTestId("password");
     userEvent.type(inputPassword, "tsugumonPassword");
     expect(inputPassword.value).toBe("tsugumonPassword");
   });
