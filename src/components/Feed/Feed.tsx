@@ -3,6 +3,7 @@ import { selectUser } from "../../features/userSlice";
 import SelectUserType from "../SelectUserType/SelectUserType";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
+import EditProfileForEnterprise from "../EditProfileForEnterprise/EditProfileForEnterprise";
 
 const Feed = () => {
   const user = useAppSelector(selectUser);
@@ -10,7 +11,7 @@ const Feed = () => {
     <>
       {user.userType ? (
         <div>
-          Feed
+          <EditProfileForEnterprise />
           <button
             onClick={() => {
               signOut(auth).catch((error: any) => {
