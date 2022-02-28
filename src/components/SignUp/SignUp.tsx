@@ -26,8 +26,8 @@ const SignUp = (props: {
     const reader: FileReader = new FileReader();
     reader.addEventListener("load", () => {
       if (reader.result) {
-        const arrayBuffer:ArrayBuffer = reader.result as ArrayBuffer;
-        const imageBlob:Blob = new Blob([arrayBuffer]);
+        const arrayBuffer: ArrayBuffer = reader.result as ArrayBuffer;
+        const imageBlob: Blob = new Blob([arrayBuffer]);
         setAvatarImage(imageBlob);
       }
     });
