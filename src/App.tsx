@@ -22,7 +22,7 @@ const App: React.FC = () => {
       auth,
       async (authUser: User | null) => {
         if (authUser) {
-          let userType: "enterpriseUser" | "normalUser" | null = null;
+          let userType: "businessUser" | "normalUser" | null = null;
           const userRef: DocumentReference<DocumentData> = doc(
             db,
             "users",

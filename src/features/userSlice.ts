@@ -9,7 +9,7 @@ export interface UserProfile {
 export interface User {
   uid: string;
   displayName: string | null;
-  userType: "enterpriseUser" | "normalUser" | null;
+  userType: "businessUser" | "normalUser" | null;
   photoURL: string | null;
 }
 
@@ -39,7 +39,7 @@ export const userSlice = createSlice({
     },
     updateUserType: (
       state,
-      action: PayloadAction<"enterpriseUser" | "normalUser" | null>
+      action: PayloadAction<"businessUser" | "normalUser" | null>
     ) => {
       state.userType = action.payload;
     },
