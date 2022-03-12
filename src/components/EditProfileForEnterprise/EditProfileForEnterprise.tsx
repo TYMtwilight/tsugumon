@@ -213,7 +213,9 @@ const EditProfileForEnterprise = () => {
             type="submit"
             data-testid="submitProfile"
             value="登録する"
-            onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {}}
+            onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+              // TODO >> inputフォームの編集内容をFirebaseに登録する処理の実装
+            }}
           />
         </div>
       </form>
