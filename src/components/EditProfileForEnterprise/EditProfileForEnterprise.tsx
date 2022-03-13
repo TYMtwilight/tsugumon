@@ -17,16 +17,16 @@ import {
 import { updateProfile } from "firebase/auth";
 
 const EditProfileForEnterprise = () => {
+  const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
+  const [avatarURL, setAvatarURL] = useState<string>("");
+  const [avatarImage, setAvatarImage] = useState<ArrayBuffer | null>(null);
+  const [avatarChange, setAvatarChange] = useState<boolean>(false);
   const [backgroundImage, setBackgroundImage] = useState<ArrayBuffer | null>(
     null
   );
   const [backgroundURL, setBackgroundURL] = useState<string>("");
   const [backgroundChange, setBackgroundChange] = useState<boolean>(false);
-  const [avatarImage, setAvatarImage] = useState<ArrayBuffer | null>(null);
-  const [avatarURL, setAvatarURL] = useState<string>("");
-  const [avatarChange, setAvatarChange] = useState<boolean>(false);
-  const [displayName, setDisplayName] = useState<string>("");
   const [owner, setOwner] = useState<string>("");
   const [typeOfWork, setTypeOfWork] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -76,7 +76,7 @@ const EditProfileForEnterprise = () => {
     await uploadBytesResumable(imageRef, avatarImage!);
     await getDownloadURL(imageRef).then((url) => {
       setAvatarURL(url);
-      setDoc(userRef, { avatarURL: url }, { merge: true });
+      setDoc(userRef, { photoURL: url }, { merge: true });
       updateProfile(auth.currentUser!, {
         photoURL: url,
       });
@@ -98,6 +98,40 @@ const EditProfileForEnterprise = () => {
       setDoc(enterpriseRef, { backgroundURL: url }, { merge: true });
     });
     setBackgroundChange(false);
+  };
+
+  const editProfile = async (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("submit is called.");
+    await setDoc(
+      enterpriseRef,
+      {
+        displayName: displayName,
+        introduction: introduction,
+        owner: owner,
+        typeOfWork: typeOfWork,
+        address: address,
+      },
+      { merge: true }
+    );
+    await setDoc(
+      userRef,
+      {
+        displayName: displayName,
+      },
+      { merge: true }
+    );
+    await updateProfile(auth.currentUser!, {
+      displayName: displayName,
+    }).then(()=>{
+      console.log(auth.currentUser!);
+    });
+    dispatch(
+      updateUserProfile({
+        displayName: displayName,
+        photoURL: avatarURL,
+      })
+    );
   };
 
   return (
@@ -144,7 +178,7 @@ const EditProfileForEnterprise = () => {
           onChangeImageHandler(e, "avatar");
         }}
       />
-      <form name="form">
+      <form name="form" onSubmit={editProfile}>
         <div>
           <label htmlFor="displayName" data-testid="displayName">
             会社名
@@ -209,14 +243,7 @@ const EditProfileForEnterprise = () => {
           />
         </div>
         <div>
-          <input
-            type="submit"
-            data-testid="submitProfile"
-            value="登録する"
-            onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-              // TODO >> inputフォームの編集内容をFirebaseに登録する処理の実装
-            }}
-          />
+          <input type="submit" data-testid="submitProfile" value="登録する" />
         </div>
       </form>
     </div>
