@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectUser, updateUserProfile } from "../../features/userSlice";
 import { auth, db, storage } from "../../firebase";
@@ -6,6 +6,7 @@ import {
   doc,
   DocumentData,
   DocumentReference,
+  getDoc,
   setDoc,
 } from "firebase/firestore";
 import {
@@ -41,6 +42,12 @@ const EditProfileForEnterprise = () => {
     "users",
     `${user.uid}`
   );
+  const getUser = async () => {
+    const userSnap = await getDoc(userRef);
+    if (userSnap) {
+      setDisplayName(userSnap.data()!.displayName);
+    }
+  };
   const enterpriseRef: DocumentReference<DocumentData> = doc(
     db,
     "users",
@@ -48,6 +55,22 @@ const EditProfileForEnterprise = () => {
     "enterprise",
     `${user.uid}`
   );
+  const getEnterprise = async () => {
+    const enterpriseSnap = await getDoc(enterpriseRef);
+    if (enterpriseSnap) {
+      setIntroduction(enterpriseSnap.data()!.introduction);
+      setOwner(enterpriseSnap.data()!.owner);
+      setTypeOfWork(enterpriseSnap.data()!.typeOfWork);
+      setAddress(enterpriseSnap.data()!.address);
+    }
+  };
+
+  useEffect(() => {
+    console.log("useEffect is done!");
+    getUser();
+    getEnterprise();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChangeImageHandler: (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -100,7 +123,7 @@ const EditProfileForEnterprise = () => {
     setBackgroundChange(false);
   };
 
-  const editProfile = async (e:React.FormEvent<HTMLFormElement>) => {
+  const editProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("submit is called.");
     await setDoc(
@@ -123,7 +146,7 @@ const EditProfileForEnterprise = () => {
     );
     await updateProfile(auth.currentUser!, {
       displayName: displayName,
-    }).then(()=>{
+    }).then(() => {
       console.log(auth.currentUser!);
     });
     dispatch(
