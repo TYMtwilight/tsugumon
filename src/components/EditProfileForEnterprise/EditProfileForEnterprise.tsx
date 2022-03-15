@@ -10,6 +10,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import {
+  deleteObject,
   getDownloadURL,
   ref,
   StorageReference,
@@ -23,11 +24,13 @@ const EditProfileForEnterprise = () => {
   const [avatarURL, setAvatarURL] = useState<string>("");
   const [avatarImage, setAvatarImage] = useState<ArrayBuffer | null>(null);
   const [avatarChange, setAvatarChange] = useState<boolean>(false);
+  const [deleteAvatar, setDeleteAvatar] = useState<boolean>(false);
   const [backgroundImage, setBackgroundImage] = useState<ArrayBuffer | null>(
     null
   );
   const [backgroundURL, setBackgroundURL] = useState<string>("");
   const [backgroundChange, setBackgroundChange] = useState<boolean>(false);
+  const [deleteBackground, setDeleteBackground] = useState<boolean>(false);
   const [owner, setOwner] = useState<string>("");
   const [typeOfWork, setTypeOfWork] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -42,6 +45,12 @@ const EditProfileForEnterprise = () => {
     "users",
     `${user.uid}`
   );
+  const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}/`);
+  const backgroundRef: StorageReference = ref(
+    storage,
+    `backgrounds/${user.uid}`
+  );
+
   const getUser = async () => {
     const userSnap = await getDoc(userRef);
     if (userSnap) {
@@ -97,9 +106,8 @@ const EditProfileForEnterprise = () => {
   };
 
   const uploadAvatar: () => Promise<void> = async () => {
-    const imageRef: StorageReference = ref(storage, `avatars/${user.uid}/`);
-    await uploadBytesResumable(imageRef, avatarImage!);
-    await getDownloadURL(imageRef).then((url) => {
+    await uploadBytesResumable(avatarRef, avatarImage!);
+    await getDownloadURL(avatarRef).then((url) => {
       setAvatarURL(url);
       setDoc(userRef, { photoURL: url }, { merge: true });
       updateProfile(auth.currentUser!, {
@@ -116,9 +124,8 @@ const EditProfileForEnterprise = () => {
   };
 
   const uploadBackground: () => Promise<void> = async () => {
-    const imageRef: StorageReference = ref(storage, `backgrounds/${user.uid}`);
-    await uploadBytesResumable(imageRef, backgroundImage!);
-    await getDownloadURL(imageRef).then((url) => {
+    await uploadBytesResumable(backgroundRef, backgroundImage!);
+    await getDownloadURL(backgroundRef).then((url) => {
       setBackgroundURL(url);
       setDoc(enterpriseRef, { backgroundURL: url }, { merge: true });
     });
@@ -159,6 +166,20 @@ const EditProfileForEnterprise = () => {
     );
   };
 
+  const deleteImage: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    imageFor: "avatar" | "background"
+  ) => void = (e, imageFor) => {
+    e.preventDefault();
+    const imageRef: StorageReference =
+      imageFor === "avatar" ? avatarRef : backgroundRef;
+    setDoc(userRef, { photoURL: "" }, { merge: true });
+    setDoc(enterpriseRef, { backgroundURL: "" }, { merge: true });
+    deleteObject(imageRef).then(() => {
+      console.log(`${imageFor}画像を削除しました`);
+    });
+  };
+
   return (
     <div>
       <div>
@@ -169,6 +190,32 @@ const EditProfileForEnterprise = () => {
             src={backgroundURL}
             alt="ユーザーの背景画像"
           />
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              setDeleteBackground(true);
+            }}
+          >
+            削除する
+          </button>
+          {deleteBackground && (
+            <div>
+              <p>現在登録されている画像を消去します。よろしいですか？</p>
+              <button
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                  deleteImage(e, "background")
+                }
+              >
+                はい
+              </button>
+              <button
+                onClick={(e: React.MouseEvent) => {
+                  setDeleteBackground(false);
+                }}
+              >
+                いいえ
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <label htmlFor="backgroundImage">
@@ -203,6 +250,25 @@ const EditProfileForEnterprise = () => {
           onChangeImageHandler(e, "avatar");
         }}
       />
+      {deleteAvatar && (
+        <div>
+          <p>現在登録されている画像を消去します。よろしいですか？</p>
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+              deleteImage(e, "avatar")
+            }
+          >
+            はい
+          </button>
+          <button
+            onClick={(e: React.MouseEvent) => {
+              setDeleteAvatar(false);
+            }}
+          >
+            いいえ
+          </button>
+        </div>
+      )}
       <form name="form" onSubmit={editProfile}>
         <div>
           <label htmlFor="displayName" data-testid="displayName">
