@@ -46,6 +46,7 @@ const EditProfileForEnterprise = () => {
     const userSnap = await getDoc(userRef);
     if (userSnap) {
       setDisplayName(userSnap.data()!.displayName);
+      setAvatarURL(userSnap.data()!.photoURL);
     }
   };
   const enterpriseRef: DocumentReference<DocumentData> = doc(
@@ -59,6 +60,7 @@ const EditProfileForEnterprise = () => {
     const enterpriseSnap = await getDoc(enterpriseRef);
     if (enterpriseSnap) {
       setIntroduction(enterpriseSnap.data()!.introduction);
+      setBackgroundURL(enterpriseSnap.data()!.backgroundURL);
       setOwner(enterpriseSnap.data()!.owner);
       setTypeOfWork(enterpriseSnap.data()!.typeOfWork);
       setAddress(enterpriseSnap.data()!.address);
