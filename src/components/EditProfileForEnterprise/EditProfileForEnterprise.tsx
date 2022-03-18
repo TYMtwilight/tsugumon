@@ -81,7 +81,7 @@ const EditProfileForEnterprise = () => {
     getUser();
     getEnterprise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [avatarURL, backgroundURL]);
 
   const onChangeImageHandler: (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -187,7 +187,7 @@ const EditProfileForEnterprise = () => {
           <img
             id="backgroundPreview"
             data-testid="backgroundPreview"
-            src={backgroundURL}
+            src={backgroundURL ? backgroundURL : ""}
             alt="ユーザーの背景画像"
           />
           <button
@@ -250,6 +250,13 @@ const EditProfileForEnterprise = () => {
           onChangeImageHandler(e, "avatar");
         }}
       />
+      <button
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          setDeleteAvatar(true);
+        }}
+      >
+        削除する
+      </button>
       {deleteAvatar && (
         <div>
           <p>現在登録されている画像を消去します。よろしいですか？</p>
