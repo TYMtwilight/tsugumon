@@ -77,7 +77,9 @@ const EditProfileForEnterprise = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect is done!");
+    if (process.env.NODE_ENV === 'development') {
+      console.log('useEffectが実行されました');
+    }
     getUser();
     getEnterprise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
