@@ -176,13 +176,21 @@ const EditProfileForEnterprise = () => {
     e.preventDefault();
     const imageRef: StorageReference =
       imageFor === "avatar" ? avatarRef : backgroundRef;
-    setDoc(userRef, { photoURL: "" }, { merge: true });
-    setDoc(enterpriseRef, { backgroundURL: "" }, { merge: true });
+    imageFor === "avatar"
+      ? setDoc(userRef, { photoURL: "" }, { merge: true })
+      : setDoc(enterpriseRef, { backgroundURL: "" }, { merge: true });
     deleteObject(imageRef).then(() => {
       if (process.env.NODE_ENV === "development") {
         console.log(`${imageFor}画像を削除しました`);
       }
       imageFor === "avatar" ? setAvatarURL("") : setBackgroundURL("");
+      imageFor === "avatar" &&
+        dispatch(
+          updateUserProfile({
+            displayName: displayName,
+            photoURL: "",
+          })
+        );
       imageFor === "avatar"
         ? setDeleteAvatar(false)
         : setDeleteBackground(false);
