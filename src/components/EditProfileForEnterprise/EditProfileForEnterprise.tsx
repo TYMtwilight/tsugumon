@@ -77,13 +77,13 @@ const EditProfileForEnterprise = () => {
   };
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('useEffectが実行されました');
+    if (process.env.NODE_ENV === "development") {
+      console.log("useEffectが実行されました");
     }
     getUser();
     getEnterprise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [avatarURL, backgroundURL]);
+  }, []);
 
   const onChangeImageHandler: (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -136,7 +136,6 @@ const EditProfileForEnterprise = () => {
 
   const editProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submit is called.");
     await setDoc(
       enterpriseRef,
       {
@@ -158,7 +157,9 @@ const EditProfileForEnterprise = () => {
     await updateProfile(auth.currentUser!, {
       displayName: displayName,
     }).then(() => {
-      console.log(auth.currentUser!);
+      if (process.env.NODE_ENV === "development") {
+        console.log(auth.currentUser!);
+      }
     });
     dispatch(
       updateUserProfile({
@@ -178,7 +179,13 @@ const EditProfileForEnterprise = () => {
     setDoc(userRef, { photoURL: "" }, { merge: true });
     setDoc(enterpriseRef, { backgroundURL: "" }, { merge: true });
     deleteObject(imageRef).then(() => {
-      console.log(`${imageFor}画像を削除しました`);
+      if (process.env.NODE_ENV === "development") {
+        console.log(`${imageFor}画像を削除しました`);
+      }
+      imageFor === "avatar" ? setAvatarURL("") : setBackgroundURL("");
+      imageFor === "avatar"
+        ? setDeleteAvatar(false)
+        : setDeleteBackground(false);
     });
   };
 
@@ -189,16 +196,19 @@ const EditProfileForEnterprise = () => {
           <img
             id="backgroundPreview"
             data-testid="backgroundPreview"
-            src={backgroundURL ? backgroundURL : ""}
+            src={backgroundURL}
             alt="ユーザーの背景画像"
           />
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              setDeleteBackground(true);
-            }}
-          >
-            削除する
-          </button>
+          {backgroundURL && (
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                setDeleteBackground(true);
+              }}
+            >
+              削除する
+            </button>
+          )}
+
           {deleteBackground && (
             <div>
               <p>現在登録されている画像を消去します。よろしいですか？</p>
@@ -252,13 +262,15 @@ const EditProfileForEnterprise = () => {
           onChangeImageHandler(e, "avatar");
         }}
       />
-      <button
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-          setDeleteAvatar(true);
-        }}
-      >
-        削除する
-      </button>
+      {avatarURL && (
+        <button
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            setDeleteAvatar(true);
+          }}
+        >
+          削除する
+        </button>
+      )}
       {deleteAvatar && (
         <div>
           <p>現在登録されている画像を消去します。よろしいですか？</p>
