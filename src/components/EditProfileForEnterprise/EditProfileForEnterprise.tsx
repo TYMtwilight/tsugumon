@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectUser, updateUserProfile } from "../../features/userSlice";
 import { auth, db, storage } from "../../firebase";
+import { updateProfile } from "firebase/auth";
 import {
   doc,
   DocumentData,
@@ -16,7 +17,6 @@ import {
   StorageReference,
   uploadBytesResumable,
 } from "firebase/storage";
-import { updateProfile } from "firebase/auth";
 
 const EditProfileForEnterprise = () => {
   const [displayName, setDisplayName] = useState<string>("");
@@ -40,24 +40,16 @@ const EditProfileForEnterprise = () => {
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const userRef: DocumentReference<DocumentData> = doc(
-    db,
-    "users",
-    `${user.uid}`
-  );
   const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}/`);
   const backgroundRef: StorageReference = ref(
     storage,
     `backgrounds/${user.uid}`
   );
-
-  const getUser = async () => {
-    const userSnap = await getDoc(userRef);
-    if (userSnap) {
-      setDisplayName(userSnap.data()!.displayName);
-      setAvatarURL(userSnap.data()!.photoURL);
-    }
-  };
+  const userRef: DocumentReference<DocumentData> = doc(
+    db,
+    "users",
+    `${user.uid}`
+  );
   const enterpriseRef: DocumentReference<DocumentData> = doc(
     db,
     "users",
@@ -65,6 +57,13 @@ const EditProfileForEnterprise = () => {
     "enterprise",
     `${user.uid}`
   );
+  const getUser = async () => {
+    const userSnap = await getDoc(userRef);
+    if (userSnap) {
+      setDisplayName(userSnap.data()!.displayName);
+      setAvatarURL(userSnap.data()!.photoURL);
+    }
+  };
   const getEnterprise = async () => {
     const enterpriseSnap = await getDoc(enterpriseRef);
     if (enterpriseSnap) {
@@ -199,7 +198,7 @@ const EditProfileForEnterprise = () => {
 
   return (
     <div>
-      <div>
+      <div id="backgroundSection">
         <div>
           <img
             id="backgroundPreview"
@@ -207,97 +206,130 @@ const EditProfileForEnterprise = () => {
             src={backgroundURL}
             alt="ユーザーの背景画像"
           />
-          {backgroundURL && (
-            <button
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                setDeleteBackground(true);
-              }}
-            >
-              削除する
-            </button>
-          )}
-
-          {deleteBackground && (
-            <div>
-              <p>現在登録されている画像を消去します。よろしいですか？</p>
-              <button
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                  deleteImage(e, "background")
-                }
-              >
-                はい
-              </button>
-              <button
-                onClick={(e: React.MouseEvent) => {
-                  setDeleteBackground(false);
-                }}
-              >
-                いいえ
-              </button>
-            </div>
-          )}
+          <input
+            type="file"
+            id="backgroundImage"
+            accept="image/png,image/jpeg"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChangeImageHandler(e, "background");
+            }}
+          />
+          <label htmlFor="backgroundImage">背景画像を選択</label>
         </div>
-      </div>
-      <label htmlFor="backgroundImage">
-        <button>背景画像を選択</button>
-      </label>
-      {backgroundChange && (
-        <button onClick={uploadBackground}>画像を変更する</button>
-      )}
-      <input
-        type="file"
-        id="backgroundImage"
-        accept="image/png,image/jpeg"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          onChangeImageHandler(e, "background");
-        }}
-      />
-      <label htmlFor="selectAvatarImage" data-testid="labelForAvatar">
-        <img
-          id="avatar"
-          data-testid="avatar"
-          src={avatarURL ? avatarURL : `${process.env.PUBLIC_URL}/noAvatar.png`}
-          alt="ユーザーのアバター画像"
-        />
-      </label>
-      {avatarChange && <button onClick={uploadAvatar}>画像を変更する</button>}
-      <input
-        type="file"
-        id="selectAvatarImage"
-        data-testid="selectAvatarImage"
-        accept="image/png,image/jpeg"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          onChangeImageHandler(e, "avatar");
-        }}
-      />
-      {avatarURL && (
-        <button
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-            setDeleteAvatar(true);
-          }}
-        >
-          削除する
-        </button>
-      )}
-      {deleteAvatar && (
-        <div>
-          <p>現在登録されている画像を消去します。よろしいですか？</p>
+        {backgroundURL && (
           <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-              deleteImage(e, "avatar")
-            }
-          >
-            はい
-          </button>
-          <button
-            onClick={(e: React.MouseEvent) => {
-              setDeleteAvatar(false);
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              setDeleteBackground(true);
             }}
           >
-            いいえ
+            削除する
           </button>
+        )}
+        {backgroundChange && (
+          <div id="backgroundChangeModal">
+            <p>背景画像を登録しますか？</p>
+            <p>画像を変更した場合、元の画像は削除されます</p>
+            <button onClick={uploadBackground}>はい</button>
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setBackgroundImage(null);
+                setBackgroundChange(false);
+              }}
+            >
+              いいえ
+            </button>
+          </div>
+        )}
+        {deleteBackground && (
+          <div id="backgroundDeleteModal">
+            <p>現在登録されている背景画像を消去します。よろしいですか？</p>
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                deleteImage(e, "background")
+              }
+            >
+              はい
+            </button>
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setDeleteBackground(false);
+              }}
+            >
+              いいえ
+            </button>
+          </div>
+        )}
+      </div>
+      <div id="avatarSection">
+        <div>
+          <img
+            id="avatar"
+            data-testid="avatar"
+            src={
+              avatarURL ? avatarURL : `${process.env.PUBLIC_URL}/noAvatar.png`
+            }
+            alt="ユーザーのアバター画像"
+          />
+          <label htmlFor="selectAvatarImage" data-testid="labelForAvatar">
+            アバター画像を選択
+          </label>
+          <input
+            type="file"
+            id="selectAvatarImage"
+            data-testid="selectAvatarImage"
+            accept="image/png,image/jpeg"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChangeImageHandler(e, "avatar");
+            }}
+          />
         </div>
-      )}
+        {avatarURL && (
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              setDeleteAvatar(true);
+            }}
+          >
+            削除する
+          </button>
+        )}
+        {avatarChange && (
+          <div id="avatarChangeModal">
+            <p>アバター画像を登録しますか？</p>
+            <p>画像を変更した場合、元の画像は削除されます</p>
+            <button onClick={uploadAvatar}>はい</button>
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setAvatarImage(null);
+                setAvatarChange(false);
+              }}
+            >
+              いいえ
+            </button>
+          </div>
+        )}
+        {deleteAvatar && (
+          <div>
+            <p>現在登録されている画像を消去します。よろしいですか？</p>
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                deleteImage(e, "avatar")
+              }
+            >
+              はい
+            </button>
+            <button
+              onClick={(e: React.MouseEvent) => {
+                setDeleteAvatar(false);
+              }}
+            >
+              いいえ
+            </button>
+          </div>
+        )}
+      </div>
       <form name="form" onSubmit={editProfile}>
         <div>
           <label htmlFor="displayName" data-testid="displayName">
