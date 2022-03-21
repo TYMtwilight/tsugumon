@@ -3,7 +3,12 @@ import { useAppDispatch } from "../../app/hooks";
 import { updateUserProfile, toggleIsNewUser } from "../../features/userSlice";
 import { auth, db, storage } from "../../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  DocumentData,
+  DocumentReference,
+  setDoc,
+} from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Visibility, VisibilityOff, AddAPhoto } from "@mui/icons-material";
 
@@ -51,31 +56,41 @@ const SignUp = (props: {
       email,
       password
     );
+    const avatarRef = ref(storage, `avatars/${authUser.user.uid}`);
     let url: string = "";
     if (avatarImage) {
-      const S: string =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const N: number = 16;
-      const randomCharactor: string = Array.from(
-        crypto.getRandomValues(new Uint32Array(N))
-      )
-        .map((n) => S[n % S.length])
-        .join("");
-      const fileName: string = randomCharactor;
-      await uploadBytes(ref(storage, `avatars/${fileName}`), avatarImage);
-      url = await getDownloadURL(ref(storage, `avatars/${fileName}`));
+      await uploadBytes(avatarRef, avatarImage);
+      url = await getDownloadURL(avatarRef);
     }
     if (authUser.user) {
       await updateProfile(authUser.user, {
         displayName: displayName,
         photoURL: url,
       });
-      const userRef = doc(db, "users", authUser.user.uid);
+      const userRef: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        authUser.user.uid
+      );
+      const enterpriseRef: DocumentReference<DocumentData> = doc(
+        db,
+        "users",
+        authUser.user.uid,
+        "enterprise",
+        authUser.user.uid
+      );
       setDoc(userRef, {
         displayName: displayName,
         photoURL: url,
         userType: null,
         followerCount: 0,
+      });
+      setDoc(enterpriseRef, {
+        introduction: "",
+        backgroundURL: "",
+        owner: "",
+        typeOfWork: "",
+        address: "",
       });
     }
 
