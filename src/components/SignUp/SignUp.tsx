@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
-import { updateUserProfile } from "../../features/userSlice";
+import { updateUserProfile, toggleIsNewUser } from "../../features/userSlice";
 import { auth, db, storage } from "../../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -64,7 +64,6 @@ const SignUp = (props: {
       const fileName: string = randomCharactor;
       await uploadBytes(ref(storage, `avatars/${fileName}`), avatarImage);
       url = await getDownloadURL(ref(storage, `avatars/${fileName}`));
-      console.log(url);
     }
     if (authUser.user) {
       await updateProfile(authUser.user, {
@@ -86,6 +85,7 @@ const SignUp = (props: {
         photoURL: url,
       })
     );
+    dispatch(toggleIsNewUser(true));
   };
 
   return (
