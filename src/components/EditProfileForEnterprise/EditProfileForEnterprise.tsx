@@ -133,7 +133,9 @@ const EditProfileForEnterprise = () => {
     setBackgroundChange(false);
   };
 
-  const editProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+  const editProfile: (
+    e: React.FormEvent<HTMLFormElement>
+  ) => Promise<void> = async (e) => {
     e.preventDefault();
     await setDoc(
       enterpriseRef,
