@@ -3,9 +3,9 @@ import { RootState } from "../app/store";
 
 export interface User {
   uid: string;
-  displayName: string | null;
+  displayName: string;
   userType: "enterpriseUser" | "normalUser" | null;
-  photoURL: string | null;
+  photoURL: string;
   isNewUser: boolean;
 }
 export interface UserProfile {
@@ -14,9 +14,9 @@ export interface UserProfile {
 }
 export interface UserLogin {
   uid: string;
-  displayName: string | null;
+  displayName: string;
   userType: "enterpriseUser" | "normalUser" | null;
-  photoURL: string | null;
+  photoURL: string;
 }
 
 const initialState: User = {
