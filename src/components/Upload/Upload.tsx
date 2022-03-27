@@ -117,7 +117,7 @@ const Upload: React.FC = () => {
         <input id="submit" type="submit" value="投稿する" disabled={!postImage} />
         <button id="cancelBottom">キャンセルする</button>
       </form>
-      {/* {progress==="run" && (
+      {progress==="run" && (
         <div id="modal">
           <p>画像をアップロード...</p>
         </div>
@@ -126,7 +126,7 @@ const Upload: React.FC = () => {
         <div id="toast">
           <p>アップロードが完了しました!</p>
         </div>
-      )} */}
+      )}
     </div>
   );
 };
