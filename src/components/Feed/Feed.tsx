@@ -4,6 +4,7 @@ import SelectUserType from "../SelectUserType/SelectUserType";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
 import EditProfileForEnterprise from "../EditProfileForEnterprise/EditProfileForEnterprise";
+import Upload from "../Upload/Upload";
 import React from "react";
 
 const Feed = () => {
@@ -15,6 +16,7 @@ const Feed = () => {
       {user.userType ? (
         <div>
           <EditProfileForEnterprise />
+          <Upload />
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               signOut(auth).catch((error: any) => {
