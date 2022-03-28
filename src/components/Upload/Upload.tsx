@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser, User } from "../../features/userSlice";
-// import { useBatch } from "../../hooks/useBatch";
+import { useBatch } from "../../hooks/useBatch";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 const Upload: React.FC = () => {
@@ -14,11 +14,11 @@ const Upload: React.FC = () => {
   const [postPreview, setPostPreview] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(false);
-  // const progress: "wait" | "run" | "done" = useBatch(
-  //   upload,
-  //   postImage!,
-  //   caption
-  // );
+  const progress: "wait" | "run" | "done" = useBatch(
+    upload,
+    postImage!,
+    caption
+  );
   
 
   const onChangeImageHandler: (
@@ -43,27 +43,27 @@ const Upload: React.FC = () => {
     e.target.value = "";
   };
 
-  // useEffect(() => {
-  //   switch (progress) {
-  //     case "wait":
-  //       if(process.env.NODE_ENV === "development"){
-  //         console.log(`${progress}: アップロードの待機中`);
-  //       }
-  //       break;
-  //     case "run":
-  //       if(process.env.NODE_ENV === "development"){
-  //         console.log(`${progress}: アップロードの実行中`);
-  //       }
-  //       break;
-  //     case "done":
-  //       if(process.env.NODE_ENV === "development"){
-  //         console.log(`${progress}: アップロード完了`);
-  //       }
-  //       setTimeout(() => {
-  //         setUpload(false);       
-  //       }, 2000);
-  //   }
-  // }, [progress]);
+  useEffect(() => {
+    switch (progress) {
+      case "wait":
+        if(process.env.NODE_ENV === "development"){
+          console.log(`${progress}: アップロードの待機中`);
+        }
+        break;
+      case "run":
+        if(process.env.NODE_ENV === "development"){
+          console.log(`${progress}: アップロードの実行中`);
+        }
+        break;
+      case "done":
+        if(process.env.NODE_ENV === "development"){
+          console.log(`${progress}: アップロード完了`);
+        }
+        setTimeout(() => {
+          setUpload(false);       
+        }, 2000);
+    }
+  }, [progress]);
 
   return (
     <div>
@@ -117,7 +117,7 @@ const Upload: React.FC = () => {
         <input id="submit" type="submit" value="投稿する" disabled={!postImage} />
         <button id="cancelBottom">キャンセルする</button>
       </form>
-      {/* {progress==="run" && (
+      {progress==="run" && (
         <div id="modal">
           <p>画像をアップロード...</p>
         </div>
@@ -126,7 +126,7 @@ const Upload: React.FC = () => {
         <div id="toast">
           <p>アップロードが完了しました!</p>
         </div>
-      )} */}
+      )}
     </div>
   );
 };
