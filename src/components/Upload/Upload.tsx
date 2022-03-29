@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser, User } from "../../features/userSlice";
 import { useBatch } from "../../hooks/useBatch";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { AddPhotoAlternate, Cancel } from "@mui/icons-material";
 
 const Upload: React.FC = () => {
   const user: User = useAppSelector(selectUser);
@@ -19,7 +19,6 @@ const Upload: React.FC = () => {
     postImage!,
     caption
   );
-  
 
   const onChangeImageHandler: (
     e: React.ChangeEvent<HTMLInputElement>
@@ -43,24 +42,29 @@ const Upload: React.FC = () => {
     e.target.value = "";
   };
 
+  const resetImage: (e: React.MouseEvent<HTMLButtonElement>) => void = (e) => {
+    setPostImage(null);
+    setPostPreview("");
+  };
+
   useEffect(() => {
     switch (progress) {
       case "wait":
-        if(process.env.NODE_ENV === "development"){
+        if (process.env.NODE_ENV === "development") {
           console.log(`${progress}: アップロードの待機中`);
         }
         break;
       case "run":
-        if(process.env.NODE_ENV === "development"){
+        if (process.env.NODE_ENV === "development") {
           console.log(`${progress}: アップロードの実行中`);
         }
         break;
       case "done":
-        if(process.env.NODE_ENV === "development"){
+        if (process.env.NODE_ENV === "development") {
           console.log(`${progress}: アップロード完了`);
         }
         setTimeout(() => {
-          setUpload(false);       
+          setUpload(false);
         }, 2000);
     }
   }, [progress]);
@@ -68,7 +72,9 @@ const Upload: React.FC = () => {
   return (
     <div>
       <header>
-        <button id="cancel" type="button">キャンセルする</button>
+        <button id="cancel" type="button">
+          キャンセルする
+        </button>
         <p id="title">新規登録</p>
       </header>
       <div>
@@ -91,8 +97,11 @@ const Upload: React.FC = () => {
             }
             alt="投稿画像のプレビュー"
           />
+          <button onClick={resetImage} disabled={!postImage}>
+            <Cancel />
+          </button>
           <label htmlFor="selectImage">
-            <AddPhotoAlternateIcon />
+            <AddPhotoAlternate />
           </label>
           <label htmlFor="selectImage">画像を選択する</label>
           <input
@@ -114,15 +123,20 @@ const Upload: React.FC = () => {
             }}
           />
         </div>
-        <input id="submit" type="submit" value="投稿する" disabled={!postImage} />
+        <input
+          id="submit"
+          type="submit"
+          value="投稿する"
+          disabled={!postImage}
+        />
         <button id="cancelBottom">キャンセルする</button>
       </form>
-      {progress==="run" && (
+      {progress === "run" && (
         <div id="modal">
           <p>画像をアップロード...</p>
         </div>
       )}
-      {progress==="done" && (
+      {progress === "done" && (
         <div id="toast">
           <p>アップロードが完了しました!</p>
         </div>
