@@ -15,13 +15,13 @@ import { Visibility, VisibilityOff, AddAPhoto } from "@mui/icons-material";
 const SignUp = (props: {
   backToLogin: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }) => {
+  const types: string[] = ["image/png", "image/jpeg"];
   const [displayName, setDisplayName] = useState<string>("");
-  const [avatarImage, setAvatarImage] = useState<Blob | null>(null);
+  const [avatarImage, setAvatarImage] = useState<ArrayBuffer | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [avatarDraft, setAvatarDraft] = useState<string>("");
+  const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
   const dispatch = useAppDispatch();
 
   const onChangeImageHandler: (
@@ -29,20 +29,20 @@ const SignUp = (props: {
   ) => void = (e) => {
     const file: File = e.target.files![0];
     const reader: FileReader = new FileReader();
-    reader.addEventListener("load", () => {
-      if (reader.result) {
+    if (types.includes(file.type)) {
+      reader.addEventListener("load", () => {
         const arrayBuffer: ArrayBuffer = reader.result as ArrayBuffer;
-        const imageBlob: Blob = new Blob([arrayBuffer]);
-        setAvatarImage(imageBlob);
-      }
-    });
-    // NOTE >> 利用中のブラウザがBlobURLSchemeをサポートしていない場合は
-    //         処理を中断します。
-    if (!window.URL) return;
-    const blobURL: string = window.URL.createObjectURL(file);
-    setAvatarDraft(blobURL);
-    reader.readAsArrayBuffer(file);
-    e.target.value = "";
+        setAvatarImage(arrayBuffer);
+      });
+      // NOTE >> 利用中のブラウザがBlobURLSchemeをサポートしていない場合は
+      //         処理を中断します。
+      if (!window.URL) return;
+      setAvatarPreview(window.URL.createObjectURL(file));
+      reader.readAsArrayBuffer(file);
+      e.target.value = "";
+    } else {
+      alert("拡張子が「png」もしくは「jpg」の画像ファイルを選択してください。");
+    }
   };
 
   const signUp: (
@@ -111,8 +111,8 @@ const SignUp = (props: {
             id="avatar"
             data-testid="avatar"
             src={
-              avatarDraft
-                ? avatarDraft
+              avatarPreview
+                ? avatarPreview
                 : `${process.env.PUBLIC_URL}/noAvatar.png`
             }
             alt="ユーザーのアバター画像"
@@ -135,7 +135,7 @@ const SignUp = (props: {
             id="clearAvatarImage"
             onClick={() => {
               setAvatarImage(null);
-              setAvatarDraft("");
+              setAvatarPreview("");
             }}
           >
             画像を消す
