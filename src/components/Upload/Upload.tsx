@@ -9,7 +9,6 @@ const Upload: React.FC = () => {
   const displayName: string = user.displayName;
   const avatarURL: string = user.photoURL;
   const types: string[] = ["image/png", "image/jpeg"];
-
   const [postImage, setPostImage] = useState<ArrayBuffer | null>(null);
   const [postPreview, setPostPreview] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
@@ -32,10 +31,9 @@ const Upload: React.FC = () => {
       });
       // NOTE >> 利用中のブラウザが、BlobURLSchemeをサポートしている場合は、ステートにblobURLを保存します
       if (window.URL) {
-        const blobURL: string = window.URL.createObjectURL(file);
-        setPostPreview(blobURL);
-        reader.readAsArrayBuffer(file);
+        setPostPreview(window.URL.createObjectURL(file));
       }
+      reader.readAsArrayBuffer(file);
     } else {
       alert("拡張子が「png」もしくは「jpg」の画像ファイルを選択してください。");
     }
@@ -43,6 +41,8 @@ const Upload: React.FC = () => {
   };
 
   const resetImage: (e: React.MouseEvent<HTMLButtonElement>) => void = (e) => {
+    e.preventDefault();
+    window.URL.revokeObjectURL(postPreview);
     setPostImage(null);
     setPostPreview("");
   };
