@@ -4,7 +4,11 @@ import { selectUser, User } from "../../features/userSlice";
 import { useBatch } from "../../hooks/useBatch";
 import { AddPhotoAlternate, Cancel } from "@mui/icons-material";
 
-const Upload: React.FC = () => {
+interface Props {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const Upload = (props:Props) => {
   const user: User = useAppSelector(selectUser);
   const displayName: string = user.displayName;
   const avatarURL: string = user.photoURL;
@@ -72,7 +76,7 @@ const Upload: React.FC = () => {
   return (
     <div>
       <header>
-        <button id="cancel" type="button">
+        <button id="cancel" type="button" onClick={props.onClick}>
           キャンセルする
         </button>
         <p id="title">新規登録</p>
@@ -129,7 +133,9 @@ const Upload: React.FC = () => {
           value="投稿する"
           disabled={!postImage}
         />
-        <button id="cancelBottom">キャンセルする</button>
+        <button id="cancelBottom" onClick={props.onClick}>
+          キャンセルする
+        </button>
       </form>
       {progress === "run" && (
         <div id="modal">
