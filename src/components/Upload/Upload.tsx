@@ -8,7 +8,7 @@ interface Props {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Upload = (props:Props) => {
+const Upload = (props: Props) => {
   const user: User = useAppSelector(selectUser);
   const displayName: string = user.displayName;
   const avatarURL: string = user.photoURL;
@@ -17,6 +17,7 @@ const Upload = (props:Props) => {
   const [postPreview, setPostPreview] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(false);
+  const [cancelModal, setCancelModal] = useState<boolean>(false);
   const progress: "wait" | "run" | "done" = useBatch(
     upload,
     postImage!,
@@ -76,7 +77,14 @@ const Upload = (props:Props) => {
   return (
     <div>
       <header>
-        <button id="cancel" type="button" onClick={props.onClick}>
+        <button
+          id="cancel"
+          type="button"
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            setCancelModal(true);
+          }}
+        >
           キャンセルする
         </button>
         <p id="title">新規登録</p>
@@ -133,7 +141,14 @@ const Upload = (props:Props) => {
           value="投稿する"
           disabled={!postImage}
         />
-        <button id="cancelBottom" onClick={props.onClick}>
+        <button
+          id="cancel"
+          type="button"
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            setCancelModal(true);
+          }}
+        >
           キャンセルする
         </button>
       </form>
@@ -145,6 +160,20 @@ const Upload = (props:Props) => {
       {progress === "done" && (
         <div id="toast">
           <p>アップロードが完了しました!</p>
+        </div>
+      )}
+      {cancelModal && (
+        <div id="cancelModal">
+          <p>画像の登録をキャンセルします。よろしいですか？</p>
+          <button onClick={props.onClick}>はい</button>
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.preventDefault();
+              setCancelModal(false);
+            }}
+          >
+            いいえ
+          </button>
         </div>
       )}
     </div>
