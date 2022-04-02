@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectUser, login, logout } from "./features/userSlice";
-import Feed from "./components/Feed/Feed";
+import Basis from "./components/Basis/Basis";
 import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
@@ -56,6 +56,6 @@ const App: React.FC = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-  return <>{user.uid ? <Feed /> : <UserAuthentication />}</>;
+  return <>{user.uid ? <Basis /> : <UserAuthentication />}</>;
 };
 export default App;
