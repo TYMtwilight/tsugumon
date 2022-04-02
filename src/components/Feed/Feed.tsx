@@ -23,20 +23,21 @@ const Feed = () => {
       {user.userType ? (
         <div>
           <EditProfileForEnterprise />
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              setUploadOn(true);
-            }}
-          >
-            <AddCircle />
-          </button>
-          {uploadOn && (
+          {uploadOn ? (
             <Upload
               onClick={() => {
                 closeUpload();
               }}
             />
+          ) : (
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setUploadOn(true);
+              }}
+            >
+              <AddCircle />
+            </button>
           )}
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
