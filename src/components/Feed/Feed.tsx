@@ -4,7 +4,7 @@ import { selectUser, logout, toggleIsNewUser } from "../../features/userSlice";
 import SelectUserType from "../SelectUserType/SelectUserType";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
-import EditProfileForEnterprise from "../EditProfileForEnterprise/EditProfileForEnterprise";
+import ProfileForEnterprise from "../ProfileForEnterprise/ProfileForEnterprise";
 import Upload from "../Upload/Upload";
 import AddCircle from "@mui/icons-material/AddCircle";
 import React from "react";
@@ -22,7 +22,7 @@ const Feed = () => {
     <>
       {user.userType ? (
         <div>
-          <EditProfileForEnterprise />
+          <ProfileForEnterprise />
           {uploadOn ? (
             <Upload
               onClick={() => {
