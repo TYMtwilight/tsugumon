@@ -18,7 +18,11 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 
-const EditProfileForEnterprise = () => {
+interface Props {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
   const [avatarURL, setAvatarURL] = useState<string>("");
@@ -200,6 +204,12 @@ const EditProfileForEnterprise = () => {
 
   return (
     <div>
+      <header>
+        <button id="cancel" onClick={props.onClick}>
+          キャンセルする
+        </button>
+        <p>編集画面</p>
+      </header>
       <div id="backgroundSection">
         <div>
           <img
