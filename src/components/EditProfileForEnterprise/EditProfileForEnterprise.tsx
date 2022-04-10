@@ -19,7 +19,7 @@ import {
 } from "firebase/storage";
 
 interface Props {
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  closeEdit:()=>void;
 }
 
 const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
@@ -172,6 +172,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
         photoURL: avatarURL,
       })
     );
+    props.closeEdit();
   };
 
   const deleteImage: (
@@ -205,7 +206,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
   return (
     <div>
       <header>
-        <button id="cancel" onClick={props.onClick}>
+        <button id="cancel" onClick={props.closeEdit}>
           キャンセルする
         </button>
         <p>編集画面</p>
@@ -407,7 +408,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
           />
         </div>
         <div>
-          <input type="submit" data-testid="submitProfile" value="登録する" />
+          <input type="submit" data-testid="submitProfile" value="登録する"/>
         </div>
       </form>
     </div>
