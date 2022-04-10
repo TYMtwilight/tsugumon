@@ -59,7 +59,7 @@ const ProfileForEnterprise: React.FC = () => {
     getUser();
     getEnterprise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [edit]);
 
   const closeEdit: () => void = () => {
     setEdit(false);
@@ -85,7 +85,11 @@ const ProfileForEnterprise: React.FC = () => {
       )}
       <div id="top">
         <img id="background" src={backgroundURL} alt="背景画像" />
-        <img id="avatar" src={avatarURL} alt="アバター画像" />
+        <img
+          id="avatar"
+          src={avatarURL ? avatarURL : `${process.env.PUBLIC_URL}/noAvatar.png`}
+          alt="アバター画像"
+        />
         <p id="displayName">{displayName}</p>
         {/* TODO >> ログインユーザーがプロフィール画面のユーザーと
                         異なる場合には、「フォロー」ボタンを表示するようにする  */}
@@ -101,24 +105,28 @@ const ProfileForEnterprise: React.FC = () => {
       </div>
       <div id="profile">
         <div id="introduction">
+          <p>紹介文</p>
           <p>{introduction}</p>
           <button>さらに表示</button>
         </div>
         <div id="followerCount">
           <p>フォロワー</p>
-          <p>人</p>
+          <p>０人</p>
         </div>
         <div id="followeeCount">
           <p>フォロー中</p>
-          <p>人</p>
+          <p>０人</p>
         </div>
         <div id="owner">
+          <p>事業主</p>
           <p>{owner}</p>
         </div>
         <div id="typeOfWork">
+          <p>職種</p>
           <p>{typeOfWork}</p>
         </div>
         <div id="address">
+          <p>住所</p>
           <p>{address}</p>
         </div>
       </div>
