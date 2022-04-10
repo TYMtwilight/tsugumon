@@ -1,11 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectUser, toggleIsNewUser } from "../../features/userSlice";
+import { db } from "../../firebase";
+import {
+  doc,
+  DocumentData,
+  DocumentReference,
+  getDoc,
+} from "firebase/firestore";
 import EditProfileForEnterprise from "../EditProfileForEnterprise/EditProfileForEnterprise";
+
 const ProfileForEnterprise: React.FC = () => {
-  const user = useAppSelector(selectUser);
-  const dispatch = useAppDispatch();
   const [edit, setEdit] = useState<boolean>(false);
+  const [displayName, setDisplayName] = useState<string>("");
+  const [introduction, setIntroduction] = useState<string>("");
+  const [avatarURL, setAvataraURL] = useState<string>("");
+  const [backgroundURL, setBackgroundURL] = useState<string>("");
+  const [owner, setOwner] = useState<string>("");
+  const [typeOfWork, setTypeOfWork] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const userRef: DocumentReference<DocumentData> = doc(
+    db,
+    "users",
+    `${user.uid}`
+  );
+  const enterpriseRef: DocumentReference<DocumentData> = doc(
+    db,
+    "users",
+    `${user.uid}`,
+    "enterprise",
+    `${user.uid}`
+  );
+  const getUser: () => Promise<void> = async () => {
+    const userSnap = await getDoc(userRef);
+    if (userSnap) {
+      setDisplayName(userSnap.data()!.displayName);
+      setAvataraURL(userSnap.data()!.photoURL);
+    }
+  };
+  const getEnterprise: () => Promise<void> = async () => {
+    const enterpriseSnap = await getDoc(enterpriseRef);
+    if (enterpriseSnap) {
+      setIntroduction(enterpriseSnap.data()!.introduction);
+      setBackgroundURL(enterpriseSnap.data()!.backgroundURL);
+      setOwner(enterpriseSnap.data()!.owner);
+      setTypeOfWork(enterpriseSnap.data()!.typeOfWork);
+      setAddress(enterpriseSnap.data()!.address);
+    }
+  };
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("useEffectが実行されました");
+    }
+    getUser();
+    getEnterprise();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const closeEdit: () => void = () => {
     setEdit(false);
   };
@@ -29,8 +84,9 @@ const ProfileForEnterprise: React.FC = () => {
         />
       )}
       <div id="top">
-        <img id="background" alt="背景画像" />
-        <img id="avatar" alt="アバター画像" />
+        <img id="background" src={backgroundURL} alt="背景画像" />
+        <img id="avatar" src={avatarURL} alt="アバター画像" />
+        <p id="displayName">{displayName}</p>
         {/* TODO >> ログインユーザーがプロフィール画面のユーザーと
                         異なる場合には、「フォロー」ボタンを表示するようにする  */}
         <button
@@ -44,8 +100,10 @@ const ProfileForEnterprise: React.FC = () => {
         </button>
       </div>
       <div id="profile">
-        <p id="introduction">説明文</p>
-        <button>さらに表示</button>
+        <div id="introduction">
+          <p>{introduction}</p>
+          <button>さらに表示</button>
+        </div>
         <div id="followerCount">
           <p>フォロワー</p>
           <p>人</p>
@@ -54,14 +112,14 @@ const ProfileForEnterprise: React.FC = () => {
           <p>フォロー中</p>
           <p>人</p>
         </div>
-        <div>
-          <p id="owner"></p>
+        <div id="owner">
+          <p>{owner}</p>
         </div>
-        <div>
-          <p id="typeOfWork"></p>
+        <div id="typeOfWork">
+          <p>{typeOfWork}</p>
         </div>
-        <div>
-          <p id="address"></p>
+        <div id="address">
+          <p>{address}</p>
         </div>
       </div>
     </div>
