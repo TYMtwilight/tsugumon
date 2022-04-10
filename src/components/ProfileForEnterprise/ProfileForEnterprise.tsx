@@ -76,13 +76,7 @@ const ProfileForEnterprise: React.FC = () => {
 
   return (
     <div>
-      {edit && (
-        <EditProfileForEnterprise
-          onClick={() => {
-            closeEdit();
-          }}
-        />
-      )}
+      {edit && <EditProfileForEnterprise closeEdit={closeEdit} />}
       <div id="top">
         <img id="background" src={backgroundURL} alt="背景画像" />
         <img
