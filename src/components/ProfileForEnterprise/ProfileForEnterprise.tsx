@@ -9,6 +9,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import EditProfileForEnterprise from "../EditProfileForEnterprise/EditProfileForEnterprise";
+import PastPost from "../PastPost/PastPost";
 
 const ProfileForEnterprise: React.FC = () => {
   const [edit, setEdit] = useState<boolean>(false);
@@ -19,6 +20,7 @@ const ProfileForEnterprise: React.FC = () => {
   const [owner, setOwner] = useState<string>("");
   const [typeOfWork, setTypeOfWork] = useState<string>("");
   const [address, setAddress] = useState<string>("");
+  const [tab, setTab] = useState<"posts" | "advertise">("posts");
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
@@ -124,6 +126,26 @@ const ProfileForEnterprise: React.FC = () => {
           <p>{address}</p>
         </div>
       </div>
+      <div>
+        <button
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            setTab("posts");
+          }}
+        >
+          投稿
+        </button>
+        <button
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            setTab("advertise");
+          }}
+        >
+          募集
+        </button>
+      </div>
+      {tab === "posts" && <PastPost />}
+      {tab === "advertise" && <p>advertise</p>}
     </div>
   );
 };
