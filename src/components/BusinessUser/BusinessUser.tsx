@@ -11,7 +11,7 @@ import {
 import EditProfileForEnterprise from "../EditBusinessUser/EditBusinessUser";
 import PastPost from "../PastPost/PastPost";
 
-const ProfileForEnterprise: React.FC = () => {
+const BusinessUser: React.FC = () => {
   const [edit, setEdit] = useState<boolean>(false);
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
@@ -150,4 +150,4 @@ const ProfileForEnterprise: React.FC = () => {
   );
 };
 
-export default ProfileForEnterprise;
+export default BusinessUser;

@@ -4,7 +4,7 @@ import { selectUser, logout, toggleIsNewUser } from "../../features/userSlice";
 import SelectUserType from "../SelectUserType/SelectUserType";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
-import ProfileForEnterprise from "../ProfileForEnterprise/ProfileForEnterprise";
+import ProfileForEnterprise from "../BusinessUser/BusinessUser";
 import Upload from "../Upload/Upload";
 import AddCircle from "@mui/icons-material/AddCircle";
 import React from "react";
