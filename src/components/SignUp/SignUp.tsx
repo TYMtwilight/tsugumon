@@ -72,11 +72,11 @@ const SignUp = (props: {
         "users",
         authUser.user.uid
       );
-      const enterpriseRef: DocumentReference<DocumentData> = doc(
+      const businessUserRef: DocumentReference<DocumentData> = doc(
         db,
         "users",
         authUser.user.uid,
-        "enterprise",
+        "businessUser",
         authUser.user.uid
       );
       setDoc(userRef, {
@@ -85,7 +85,7 @@ const SignUp = (props: {
         userType: null,
         followerCount: 0,
       });
-      setDoc(enterpriseRef, {
+      setDoc(businessUserRef, {
         introduction: "",
         backgroundURL: "",
         owner: "",
@@ -97,7 +97,7 @@ const SignUp = (props: {
     dispatch(
       updateUserProfile({
         displayName: displayName,
-        photoURL: url,
+        avatarURL: url,
       })
     );
     dispatch(toggleIsNewUser(true));

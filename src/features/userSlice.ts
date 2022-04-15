@@ -4,25 +4,25 @@ import { RootState } from "../app/store";
 export interface User {
   uid: string;
   displayName: string;
-  userType: "enterpriseUser" | "normalUser" | null;
-  photoURL: string;
+  userType: "businessUser" | "normalUser" | null;
+  avatarURL: string;
   isNewUser: boolean;
 }
 export interface UserProfile {
   displayName: string;
-  photoURL: string;
+  avatarURL: string;
 }
 export interface UserLogin {
   uid: string;
   displayName: string;
-  userType: "enterpriseUser" | "normalUser" | null;
-  photoURL: string;
+  userType: "businessUser" | "normalUser" | null;
+  avatarURL: string;
 }
 
 const initialState: User = {
   uid: "",
   displayName: "",
-  photoURL: "",
+  avatarURL: "",
   userType: null,
   isNewUser: false,
 };
@@ -35,21 +35,21 @@ export const userSlice = createSlice({
       state.uid = action.payload.uid;
       state.displayName = action.payload.displayName;
       state.userType = action.payload.userType;
-      state.photoURL = action.payload.photoURL;
+      state.avatarURL = action.payload.avatarURL;
     },
     logout: (state) => {
       state.uid = "";
       state.displayName = "";
       state.userType = null;
-      state.photoURL = "";
+      state.avatarURL = "";
     },
     updateUserProfile: (state, action: PayloadAction<UserProfile>) => {
       state.displayName = action.payload.displayName;
-      state.photoURL = action.payload.photoURL;
+      state.avatarURL = action.payload.avatarURL;
     },
     updateUserType: (
       state,
-      action: PayloadAction<"enterpriseUser" | "normalUser" | null>
+      action: PayloadAction<"businessUser" | "normalUser" | null>
     ) => {
       state.userType = action.payload;
     },

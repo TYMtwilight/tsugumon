@@ -20,9 +20,9 @@ const App: React.FC = () => {
   useEffect(() => {
     const unsubscribe: Unsubscribe = onAuthStateChanged(
       auth,
-      async (authUser:User | null) => {
+      async (authUser: User | null) => {
         if (authUser) {
-          let userType: "enterpriseUser" | "normalUser" | null = null;
+          let userType: "businessUser" | "normalUser" | null = null;
           const userRef: DocumentReference<DocumentData> = doc(
             db,
             "users",
@@ -41,7 +41,7 @@ const App: React.FC = () => {
             login({
               uid: authUser.uid,
               displayName: authUser.displayName ? authUser.displayName : "",
-              photoURL: authUser.photoURL ? authUser.photoURL : "",
+              avatarURL: authUser.photoURL ? authUser.photoURL : "",
               userType: userType,
             })
           );

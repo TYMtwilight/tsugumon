@@ -8,7 +8,7 @@ import {
   DocumentReference,
   getDoc,
 } from "firebase/firestore";
-import EditProfileForEnterprise from "../EditProfileForEnterprise/EditProfileForEnterprise";
+import EditProfileForEnterprise from "../EditBusinessUser/EditBusinessUser";
 import PastPost from "../PastPost/PastPost";
 
 const ProfileForEnterprise: React.FC = () => {
@@ -29,11 +29,11 @@ const ProfileForEnterprise: React.FC = () => {
     "users",
     `${user.uid}`
   );
-  const enterpriseRef: DocumentReference<DocumentData> = doc(
+  const businessUserRef: DocumentReference<DocumentData> = doc(
     db,
     "users",
     `${user.uid}`,
-    "enterprise",
+    "businessUser",
     `${user.uid}`
   );
   const getUser: () => Promise<void> = async () => {
@@ -44,13 +44,13 @@ const ProfileForEnterprise: React.FC = () => {
     }
   };
   const getEnterprise: () => Promise<void> = async () => {
-    const enterpriseSnap = await getDoc(enterpriseRef);
-    if (enterpriseSnap) {
-      setIntroduction(enterpriseSnap.data()!.introduction);
-      setBackgroundURL(enterpriseSnap.data()!.backgroundURL);
-      setOwner(enterpriseSnap.data()!.owner);
-      setTypeOfWork(enterpriseSnap.data()!.typeOfWork);
-      setAddress(enterpriseSnap.data()!.address);
+    const businessUserSnap = await getDoc(businessUserRef);
+    if (businessUserSnap) {
+      setIntroduction(businessUserSnap.data()!.introduction);
+      setBackgroundURL(businessUserSnap.data()!.backgroundURL);
+      setOwner(businessUserSnap.data()!.owner);
+      setTypeOfWork(businessUserSnap.data()!.typeOfWork);
+      setAddress(businessUserSnap.data()!.address);
     }
   };
 

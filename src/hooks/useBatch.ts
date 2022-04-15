@@ -21,7 +21,7 @@ import {
 
 interface PostData {
   uid: string;
-  username: string;
+  displayName: string;
   avatarURL: string;
   imageURL: string;
   caption: string;
@@ -49,8 +49,8 @@ export const useBatch: (
 ) => "wait" | "run" | "done" = (upload, postImage, caption) => {
   const user: User = useAppSelector(selectUser);
   const uid: string = user.uid;
-  const username: string = user.displayName;
-  const avatarURL: string = user.photoURL;
+  const displayName: string = user.displayName;
+  const avatarURL: string = user.avatarURL;
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
   useEffect(() => {
     if (upload) {
@@ -68,12 +68,12 @@ export const useBatch: (
               const postId: string = getRandomString();
               const postRef: DocumentReference<DocumentData> = doc(
                 db,
-                `users/${uid}/enterprise/${uid}/posts/${postId}`
+                `users/${uid}/businessUser/${uid}/posts/${postId}`
               );
               // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
               const postData: PostData = {
                 uid: uid,
-                username: username,
+                displayName: displayName,
                 avatarURL: avatarURL,
                 imageURL: downloadURL,
                 caption: caption,

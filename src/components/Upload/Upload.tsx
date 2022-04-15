@@ -11,7 +11,7 @@ interface Props {
 const Upload = (props: Props) => {
   const user: User = useAppSelector(selectUser);
   const displayName: string = user.displayName;
-  const avatarURL: string = user.photoURL;
+  const avatarURL: string = user.avatarURL;
   const types: string[] = ["image/png", "image/jpeg"];
   const [postImage, setPostImage] = useState<ArrayBuffer | null>(null);
   const [postPreview, setPostPreview] = useState<string>("");

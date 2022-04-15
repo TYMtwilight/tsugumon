@@ -19,10 +19,10 @@ import {
 } from "firebase/storage";
 
 interface Props {
-  closeEdit:()=>void;
+  closeEdit: () => void;
 }
 
-const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
+const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
   const [avatarURL, setAvatarURL] = useState<string>("");
@@ -54,11 +54,11 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
     "users",
     `${user.uid}`
   );
-  const enterpriseRef: DocumentReference<DocumentData> = doc(
+  const businessUserRef: DocumentReference<DocumentData> = doc(
     db,
     "users",
     `${user.uid}`,
-    "enterprise",
+    "businessUser",
     `${user.uid}`
   );
   const getUser = async () => {
@@ -68,14 +68,14 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
       setAvatarURL(userSnap.data()!.photoURL);
     }
   };
-  const getEnterprise = async () => {
-    const enterpriseSnap = await getDoc(enterpriseRef);
-    if (enterpriseSnap) {
-      setIntroduction(enterpriseSnap.data()!.introduction);
-      setBackgroundURL(enterpriseSnap.data()!.backgroundURL);
-      setOwner(enterpriseSnap.data()!.owner);
-      setTypeOfWork(enterpriseSnap.data()!.typeOfWork);
-      setAddress(enterpriseSnap.data()!.address);
+  const getBusinessUser = async () => {
+    const businessUserSnap = await getDoc(businessUserRef);
+    if (businessUserSnap) {
+      setIntroduction(businessUserSnap.data()!.introduction);
+      setBackgroundURL(businessUserSnap.data()!.backgroundURL);
+      setOwner(businessUserSnap.data()!.owner);
+      setTypeOfWork(businessUserSnap.data()!.typeOfWork);
+      setAddress(businessUserSnap.data()!.address);
     }
   };
 
@@ -84,7 +84,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
       console.log("useEffectが実行されました");
     }
     getUser();
-    getEnterprise();
+    getBusinessUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -121,7 +121,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
       dispatch(
         updateUserProfile({
           displayName: displayName,
-          photoURL: url,
+          avatarURL: url,
         })
       );
     });
@@ -132,7 +132,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
     await uploadBytesResumable(backgroundRef, backgroundImage!);
     await getDownloadURL(backgroundRef).then((url) => {
       setBackgroundURL(url);
-      setDoc(enterpriseRef, { backgroundURL: url }, { merge: true });
+      setDoc(businessUserRef, { backgroundURL: url }, { merge: true });
     });
     setBackgroundChange(false);
   };
@@ -142,7 +142,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
   ) => Promise<void> = async (e) => {
     e.preventDefault();
     await setDoc(
-      enterpriseRef,
+      businessUserRef,
       {
         displayName: displayName,
         introduction: introduction,
@@ -169,7 +169,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
     dispatch(
       updateUserProfile({
         displayName: displayName,
-        photoURL: avatarURL,
+        avatarURL: avatarURL,
       })
     );
     props.closeEdit();
@@ -184,7 +184,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
       imageFor === "avatar" ? avatarRef : backgroundRef;
     imageFor === "avatar"
       ? setDoc(userRef, { photoURL: "" }, { merge: true })
-      : setDoc(enterpriseRef, { backgroundURL: "" }, { merge: true });
+      : setDoc(businessUserRef, { backgroundURL: "" }, { merge: true });
     deleteObject(imageRef).then(() => {
       if (process.env.NODE_ENV === "development") {
         console.log(`${imageFor}画像を削除しました`);
@@ -194,7 +194,7 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
         dispatch(
           updateUserProfile({
             displayName: displayName,
-            photoURL: "",
+            avatarURL: "",
           })
         );
       imageFor === "avatar"
@@ -408,11 +408,11 @@ const EditProfileForEnterprise: (props: Props) => JSX.Element = (props) => {
           />
         </div>
         <div>
-          <input type="submit" data-testid="submitProfile" value="登録する"/>
+          <input type="submit" data-testid="submitProfile" value="登録する" />
         </div>
       </form>
     </div>
   );
 };
 
-export default EditProfileForEnterprise;
+export default EditBusinessUser;

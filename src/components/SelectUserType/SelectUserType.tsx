@@ -7,7 +7,7 @@ import { doc, updateDoc } from "firebase/firestore";
 
 const SelectUserType = () => {
   const [userType, setUserType] = useState<
-    "enterpriseUser" | "normalUser" | null
+    "businessUser" | "normalUser" | null
   >(null);
 
   const dispatch = useAppDispatch();
@@ -15,7 +15,7 @@ const SelectUserType = () => {
 
   const registUserType: (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>,
-    userType: "enterpriseUser" | "normalUser" | null
+    userType: "businessUser" | "normalUser" | null
   ) => Promise<void> = async (e, userType) => {
     e.preventDefault();
     const userRef = doc(db, "users", user.uid);
@@ -29,7 +29,7 @@ const SelectUserType = () => {
       <p>ユーザータイプを選択してください。</p>
       <form>
         <div>
-          <label htmlFor="enterpriseUser">
+          <label htmlFor="businessUser">
             <p>企業ユーザー</p>
             <p>働き手を探している企業や事業者向け</p>
             <p>
@@ -38,12 +38,12 @@ const SelectUserType = () => {
           </label>
           <input
             type="radio"
-            value="enterpriseUser"
+            value="businessUser"
             name="userType"
-            id="enterpriseUser"
-            data-testid="enterpriseUser"
+            id="businessUser"
+            data-testid="businessUser"
             onChange={() => {
-              setUserType("enterpriseUser");
+              setUserType("businessUser");
             }}
           />
         </div>
