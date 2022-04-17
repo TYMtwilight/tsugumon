@@ -25,7 +25,6 @@ interface PostData {
   avatarURL: string;
   imageURL: string;
   caption: string;
-  createdAt: FieldValue;
   updatedAt: FieldValue;
 }
 
@@ -77,7 +76,6 @@ export const useBatch: (
                 avatarURL: avatarURL,
                 imageURL: downloadURL,
                 caption: caption,
-                createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
               };
               const batch: WriteBatch = writeBatch(db);
