@@ -9,7 +9,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import EditProfileForEnterprise from "../EditBusinessUser/EditBusinessUser";
-import PastPost from "../PastPost/PastPost";
+import PastPost from "../MyPosts/MyPosts";
 
 const BusinessUser: React.FC = () => {
   const [edit, setEdit] = useState<boolean>(false);
