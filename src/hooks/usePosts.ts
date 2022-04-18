@@ -20,7 +20,8 @@ interface PostData {
   avatarURL: string;
   imageURL: string;
   caption: string;
-  updatedAt: any;
+  updatedAt: string;
+  updatedTime: number;
 }
 
 export const usePosts = () => {
@@ -37,20 +38,21 @@ export const usePosts = () => {
       onSnapshot(postsQuery, (snapshots: QuerySnapshot<DocumentData>) => {
         let updatedPosts: PostData[] = [];
         snapshots.forEach((snapshot: QueryDocumentSnapshot<DocumentData>) => {
-          // const timestamp: Timestamp = snapshot.data().createdAt;
-          // const updatedDate = timestamp.toDate();
-          // const updatedTime: number = updatedDate.getTime();
-          // const updatedAt =
-          //   updatedDate.getFullYear() +
-          //   "年" +
-          //   ("0" + updatedDate.getMonth()).slice(-2) +
-          //   "月" +
-          //   ("0" + updatedDate.getDate()).slice(-2) +
-          //   "日" +
-          //   " " +
-          //   ("0" + updatedDate.getHours()).slice(-2) +
-          //   ":" +
-          //   ("0" + updatedDate.getMinutes()).slice(-2);
+          const updatedTime =
+            snapshot.data().updatedAt.seconds +
+            snapshot.data().updatedAt.nanoseconds / 1000000000;
+          const updatedDate = snapshot.data().updatedAt.toDate();
+          const updatedAt =
+            updatedDate.getFullYear() +
+            "年" +
+            ("0" + updatedDate.getMonth()).slice(-2) +
+            "月" +
+            ("0" + updatedDate.getDate()).slice(-2) +
+            "日" +
+            " " +
+            ("0" + updatedDate.getHours()).slice(-2) +
+            ":" +
+            ("0" + updatedDate.getMinutes()).slice(-2);
           const postData: PostData = {
             id: snapshot.id,
             uid: snapshot.data().uid,
@@ -58,21 +60,16 @@ export const usePosts = () => {
             avatarURL: snapshot.data().avatarURL,
             imageURL: snapshot.data().imageURL,
             caption: snapshot.data().caption,
-            updatedAt: snapshot.data().updatedAt,
+            updatedAt: updatedAt,
+            updatedTime: updatedTime,
           };
           updatedPosts.push(postData);
         });
-        if (process.env.NODE_ENV === "development") {
-          console.log(updatedPosts);
-        }
         let sortedPosts: PostData[] = updatedPosts.sort(
           (firstEl: PostData, secondEl: PostData) => {
-            return secondEl.updatedAt - firstEl.updatedAt;
+            return secondEl.updatedTime - firstEl.updatedTime;
           }
         );
-        if (process.env.NODE_ENV === "development") {
-          console.log(sortedPosts);
-        }
         setPosts(sortedPosts);
       });
     };

@@ -1,6 +1,6 @@
 import { usePosts } from "../../hooks/usePosts";
 import { Favorite } from "@mui/icons-material";
-interface PostData {
+interface Post {
   id: string;
   uid: string;
   displayName: string;
@@ -11,7 +11,7 @@ interface PostData {
 }
 
 const PastPost = () => {
-  const posts: PostData[] = usePosts();
+  const posts: Post[] = usePosts();
 
   return (
     <div>
@@ -20,7 +20,7 @@ const PastPost = () => {
           <div key={post.id}>
             <div>
               <p>{post.displayName}</p>
-              <p>{post.updatedAt.nanoseconds}</p>
+              <p>{post.updatedAt}</p>
               <img id="avatarURL" src={post.avatarURL} alt="アバター画像" />
             </div>
             <div>
