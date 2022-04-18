@@ -75,7 +75,7 @@ export const usePosts = () => {
     };
     unsubscribe();
     return () => {
-      unsubscribe();
+      onSnapshot(postsQuery,()=>{});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

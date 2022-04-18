@@ -10,7 +10,7 @@ interface Post {
   updatedAt: any;
 }
 
-const PastPost = () => {
+const MyPosts = () => {
   const posts: Post[] = usePosts();
 
   return (
@@ -40,4 +40,4 @@ const PastPost = () => {
   );
 };
 
-export default PastPost;
+export default MyPosts;
