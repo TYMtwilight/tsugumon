@@ -1,6 +1,7 @@
+import Post from "../Post/Post";
 import { usePosts } from "../../hooks/usePosts";
-import { Favorite } from "@mui/icons-material";
-interface Post {
+
+interface PostData {
   id: string;
   uid: string;
   displayName: string;
@@ -11,32 +12,24 @@ interface Post {
 }
 
 const MyPosts = () => {
-  const posts: Post[] = usePosts();
+  const posts: PostData[] = usePosts();
 
   return (
-    <div>
+    <>
       {posts.map((post) => {
         return (
-          <div key={post.id}>
-            <div>
-              <p>{post.displayName}</p>
-              <p>{post.updatedAt}</p>
-              <img id="avatarURL" src={post.avatarURL} alt="アバター画像" />
-            </div>
-            <div>
-              <img id="image" src={post.imageURL} alt="投稿画像" />
-              <div>
-                <Favorite />
-                <p id="likeCounts">0</p>
-              </div>
-            </div>
-            <div>
-              <p id="caption">{post.caption}</p>
-            </div>
-          </div>
+          <Post
+            key={post.id}
+            uid={post.uid}
+            displayName={post.displayName}
+            avatarURL={post.avatarURL}
+            imageURL={post.imageURL}
+            caption={post.caption}
+            updatedAt={post.updatedAt}
+          />
         );
       })}
-    </div>
+    </>
   );
 };
 
