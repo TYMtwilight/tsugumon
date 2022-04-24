@@ -89,21 +89,24 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                   .commit()
                   .then(() => {
                     setProgress("done");
+                    if (process.env.NODE_ENV === "development") {
+                      console.log("登録が完了しました");
+                    }
                   })
                   .catch((e: any) => {
-                    if (process.env.PUBLIC_URL === "development") {
+                    if (process.env.NODE_ENV === "development") {
                       console.log(`エラーが発生しました\n${e.message}`);
                     }
                   });
               })
               .catch((e: any) => {
-                if (process.env.PUBLIC_URL === "development") {
+                if (process.env.NODE_ENV === "development") {
                   console.log(`エラーが発生しました\n${e.message}`);
                 }
               });
           })
           .catch((e: any) => {
-            if (process.env.PUBLIC_URL === "development") {
+            if (process.env.NODE_ENV === "development") {
               console.log(`エラーが発生しました\n${e.message}`);
             }
           });
@@ -116,3 +119,5 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
   }, [uploadDemo]);
   return progress;
 };
+
+export default useDemo;

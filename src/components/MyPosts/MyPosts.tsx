@@ -17,17 +17,17 @@ const MyPosts = () => {
   const [uploadDemo, setUploadDemo] = useState<boolean>(false);
   const progress: "wait" | "run" | "done" = useDemo(uploadDemo);
   const posts: PostData[] = usePosts();
-  useDemo(uploadDemo);
   useEffect(() => {
     switch (progress) {
       case "wait":
-        if (process.env.PUBLIC_URL === "development") {
+        if (process.env.NODE_ENV === "development") {
           console.log(`${progress}: アップロードの待機中`);
+          setUploadDemo(false);
         }
         break;
       case "run":
         if (process.env.NODE_ENV === "development") {
-          console.log(`${progress}: アップロードの実行中`);
+          console.log(`${progress}: アップロードの実行中`)
         }
         break;
       case "done":
@@ -35,6 +35,7 @@ const MyPosts = () => {
           console.log(`${progress}: アップロード完了`);
         }
         setUploadDemo(false);
+        console.log(setUploadDemo);
     }
   }, [progress]);
 
