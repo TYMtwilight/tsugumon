@@ -37,11 +37,9 @@ export const usePosts = () => {
     const unsubscribe: () => void = () => {
       onSnapshot(postsQuery, (snapshots: QuerySnapshot<DocumentData>) => {
         let updatedPosts: PostData[] = [];
-        snapshots.forEach((snapshot: QueryDocumentSnapshot<DocumentData>) => {
-          const updatedTime =
-            snapshot.data().updatedAt.seconds +
-            snapshot.data().updatedAt.nanoseconds / 1000000000;
-          const updatedDate = snapshot.data().updatedAt.toDate();
+        snapshots.forEach(async(snapshot: QueryDocumentSnapshot<DocumentData>) => {
+          const updatedTime = await snapshot.data().updatedAt.seconds;
+          const updatedDate = await snapshot.data().updatedAt.toDate();
           const updatedAt =
             updatedDate.getFullYear() +
             "年" +
@@ -75,7 +73,7 @@ export const usePosts = () => {
     };
     unsubscribe();
     return () => {
-      onSnapshot(postsQuery,()=>{});
+      onSnapshot(postsQuery, () => {});
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
