@@ -56,13 +56,11 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
 ) => {
   const user: User = useAppSelector(selectUser);
   const uid: string = user.uid;
-  // const [ready, setReady] = useState<boolean>(false);
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
 
   let fetchedData: FetchedData[] = [];
 
   const fetchData: () => Promise<void> = async () => {
-    // console.log(ready);
     await fetch("data.json")
       .then((response: Response) => {
         return response.json();
@@ -73,9 +71,6 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
           console.log(fetchedData);
         }
       });
-    // console.log(fetchedData.length);
-    // if(fetchedData.length){console.log(true);}
-    // console.log(ready);
   };
 
   const upload = async () => {
