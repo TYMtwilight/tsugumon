@@ -1,0 +1,28 @@
+{
+  "posts": [
+    {
+      "uid": "Wk6hsfRGwPPbwWM2GTz3MqWHUFG2",
+      "displayName": "株式会社つぐもん",
+      "avatarURL": "https://firebasestorage.googleapis.com/v0/b/tsugumon-a83a1.appspot.com/o/avatars%2FWk6hsfRGwPPbwWM2GTz3MqWHUFG2?alt=media&token=93025331-5879-49f7-9236-8ea723fc22bb",
+      "image": "demoImages/1.jpg",
+      "caption": "今年も田植えが無事終わりました☺️秋の収穫まで、どうか無事に育ちますように",
+      "updatedDate": "2022,6,1"
+    },
+    {
+      "uid": "Wk6hsfRGwPPbwWM2GTz3MqWHUFG2",
+      "displayName": "株式会社つぐもん",
+      "avatarURL": "https://firebasestorage.googleapis.com/v0/b/tsugumon-a83a1.appspot.com/o/avatars%2FWk6hsfRGwPPbwWM2GTz3MqWHUFG2?alt=media&token=93025331-5879-49f7-9236-8ea723fc22bb",
+      "image": "demoImages/2.jpg",
+      "caption": "我が家の棚田です👍梅雨の時期なので空は曇っていますが、苗はすくすくと育っています🍀",
+      "updatedDate": "2022,6,20"
+    },
+    {
+      "uid": "Wk6hsfRGwPPbwWM2GTz3MqWHUFG2",
+      "displayName": "株式会社つぐもん",
+      "avatarURL": "https://firebasestorage.googleapis.com/v0/b/tsugumon-a83a1.appspot.com/o/avatars%2FWk6hsfRGwPPbwWM2GTz3MqWHUFG2?alt=media&token=93025331-5879-49f7-9236-8ea723fc22bb",
+      "image": "demoImages/3.jpg",
+      "caption": "半年間育てた稲ももうすぐ収穫の時期です🌾たくさん実りました",
+      "updatedDate": "2022,9,20"
+    }
+  ]
+}

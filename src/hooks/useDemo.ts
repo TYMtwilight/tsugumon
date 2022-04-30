@@ -12,9 +12,8 @@ import {
 import {
   doc,
   DocumentReference,
-  writeBatch,
-  WriteBatch,
   DocumentData,
+  setDoc,
 } from "firebase/firestore";
 
 interface PostData {
@@ -24,6 +23,19 @@ interface PostData {
   imageURL: string;
   caption: string;
   updatedAt: Date;
+}
+
+interface FetchedData {
+  uid: string;
+  displayName: string;
+  avatarURL: string;
+  image: string;
+  caption: string;
+  updatedDate: string;
+}
+
+interface Dataset {
+  posts: FetchedData[];
 }
 
 const getRandomString: () => string = () => {
@@ -44,22 +56,35 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
 ) => {
   const user: User = useAppSelector(selectUser);
   const uid: string = user.uid;
-  const displayName: string = user.displayName;
-  const avatarURL: string = user.avatarURL;
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
-  const caption = "この夕焼けを見てると、今日も1日頑張ったな〜ってなります";
 
-  useEffect(() => {
-    if (uploadDemo) {
-      setProgress("run");
-      const filename: string = getRandomString();
-      const imageRef: StorageReference = ref(
-        storage,
-        `posts/${uid}/${filename}`
-      );
-      const upload = async () => {
+  let fetchedData: FetchedData[] = [];
+
+  const fetchData: () => Promise<void> = async () => {
+    await fetch("data.json")
+      .then((response: Response) => {
+        return response.json();
+      })
+      .then((dataset: Dataset) => {
+        fetchedData = dataset.posts;
+        if (process.env.NODE_ENV === "development") {
+          console.log(fetchedData);
+        }
+      });
+  };
+
+  const upload = async () => {
+    setProgress("run");
+    await fetchData();
+    if (fetchedData.length > 0) {
+      fetchedData.forEach(async (data) => {
+        const filename: string = getRandomString();
+        const imageRef: StorageReference = ref(
+          storage,
+          `posts/${uid}/${filename}`
+        );
         const res: Response = await fetch(
-          `${process.env.PUBLIC_URL}/demo/1.jpg`
+          `${process.env.PUBLIC_URL}/${data.image}`
         );
         const postImage: ArrayBuffer = await res.arrayBuffer();
         const uploadTask: UploadTask = uploadBytesResumable(
@@ -76,28 +101,14 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                   `users/${uid}/businessUser/${uid}/posts/${postId}`
                 );
                 const postData: PostData = {
-                  uid: uid,
-                  displayName: displayName,
-                  avatarURL: avatarURL,
+                  uid: data.uid,
+                  displayName: data.displayName,
+                  avatarURL: data.avatarURL,
                   imageURL: downloadURL,
-                  caption: caption,
-                  updatedAt: new Date(),
+                  caption: data.caption,
+                  updatedAt: new Date(data.updatedDate),
                 };
-                const batch: WriteBatch = writeBatch(db);
-                batch.set(postRef, postData);
-                await batch
-                  .commit()
-                  .then(() => {
-                    setProgress("done");
-                    if (process.env.NODE_ENV === "development") {
-                      console.log("登録が完了しました");
-                    }
-                  })
-                  .catch((e: any) => {
-                    if (process.env.NODE_ENV === "development") {
-                      console.log(`エラーが発生しました\n${e.message}`);
-                    }
-                  });
+                await setDoc(postRef, postData);
               })
               .catch((e: any) => {
                 if (process.env.NODE_ENV === "development") {
@@ -110,7 +121,19 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
               console.log(`エラーが発生しました\n${e.message}`);
             }
           });
-      };
+      });
+
+      setProgress("done");
+      if (process.env.NODE_ENV === "development") {
+        console.log("登録が完了しました");
+      }
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (uploadDemo) {
       upload();
     } else {
       setProgress("wait");
