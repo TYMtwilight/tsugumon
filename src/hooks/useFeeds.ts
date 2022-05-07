@@ -39,17 +39,19 @@ export const useFeeds = () => {
     console.log(followees);
     if (followees.length > 0) {
       followees.forEach((followeeUID) => {
+        console.log(followeeUID);
         const followeeRef: CollectionReference<DocumentData> = collection(
           db,
           `users/${followeeUID}/businessUser/${followeeUID}/posts`
         );
         const feedsQuery = query(
-          followeeRef,
-          where("uid", "==", `${followeeUID}`)
+          followeeRef
         );
-        const getFeeds: Unsubscribe = onSnapshot(
+
+        onSnapshot(
           feedsQuery,
           (snapshots: QuerySnapshot<DocumentData>) => {
+            console.log(snapshots.docs);
             const followeeFeeds = snapshots.docs
               .map((snapshot: QueryDocumentSnapshot<DocumentData>) => {
                 const updatedTime: number = snapshot.data().updatedAt.seconds;
@@ -87,9 +89,8 @@ export const useFeeds = () => {
               });
 
             return followeeFeeds;
-          }
-        );
-        getFeeds();
+          },(error)=>{console.log(error);}
+        ); 
       });
     }
   };
