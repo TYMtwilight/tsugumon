@@ -9,7 +9,6 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
   query,
-  where,
   Query,
 } from "firebase/firestore";
 
@@ -24,45 +23,46 @@ interface PostData {
   updatedTime: number;
 }
 
-export const usePosts = () => {
+export const usePosts: () => PostData[] = () => {
   const user: User = useAppSelector(selectUser);
   const [posts, setPosts] = useState<PostData[]>([]);
 
   const postsQuery: Query<DocumentData> = query(
-    collection(db, `users/${user.uid}/businessUser/${user.uid}/posts`),
-    where("uid", "==", user.uid)
+    collection(db, `users/${user.uid}/businessUser/${user.uid}/posts`)
   );
 
   useEffect(() => {
     const unsubscribe: () => void = () => {
       onSnapshot(postsQuery, (snapshots: QuerySnapshot<DocumentData>) => {
         let updatedPosts: PostData[] = [];
-        snapshots.forEach(async(snapshot: QueryDocumentSnapshot<DocumentData>) => {
-          const updatedTime = await snapshot.data().updatedAt.seconds;
-          const updatedDate = await snapshot.data().updatedAt.toDate();
-          const updatedAt =
-            updatedDate.getFullYear() +
-            "年" +
-            ("0" + updatedDate.getMonth()).slice(-2) +
-            "月" +
-            ("0" + updatedDate.getDate()).slice(-2) +
-            "日" +
-            " " +
-            ("0" + updatedDate.getHours()).slice(-2) +
-            ":" +
-            ("0" + updatedDate.getMinutes()).slice(-2);
-          const postData: PostData = {
-            id: snapshot.id,
-            uid: snapshot.data().uid,
-            displayName: snapshot.data().displayName,
-            avatarURL: snapshot.data().avatarURL,
-            imageURL: snapshot.data().imageURL,
-            caption: snapshot.data().caption,
-            updatedAt: updatedAt,
-            updatedTime: updatedTime,
-          };
-          updatedPosts.push(postData);
-        });
+        snapshots.forEach(
+          async (snapshot: QueryDocumentSnapshot<DocumentData>) => {
+            const updatedTime = await snapshot.data().updatedAt.seconds;
+            const updatedDate = await snapshot.data().updatedAt.toDate();
+            const updatedAt =
+              updatedDate.getFullYear() +
+              "年" +
+              ("0" + updatedDate.getMonth()).slice(-2) +
+              "月" +
+              ("0" + updatedDate.getDate()).slice(-2) +
+              "日" +
+              " " +
+              ("0" + updatedDate.getHours()).slice(-2) +
+              ":" +
+              ("0" + updatedDate.getMinutes()).slice(-2);
+            const postData: PostData = {
+              id: snapshot.id,
+              uid: snapshot.data().uid,
+              displayName: snapshot.data().displayName,
+              avatarURL: snapshot.data().avatarURL,
+              imageURL: snapshot.data().imageURL,
+              caption: snapshot.data().caption,
+              updatedAt: updatedAt,
+              updatedTime: updatedTime,
+            };
+            updatedPosts.push(postData);
+          }
+        );
         let sortedPosts: PostData[] = updatedPosts.sort(
           (firstEl: PostData, secondEl: PostData) => {
             return secondEl.updatedTime - firstEl.updatedTime;
