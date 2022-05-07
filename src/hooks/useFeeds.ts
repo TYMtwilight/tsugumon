@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
 import { selectUser, User } from "../features/userSlice";
 import { db } from "../firebase";
@@ -10,9 +10,7 @@ import {
   QueryDocumentSnapshot,
   query,
   getDocs,
-  CollectionReference,
-  where,
-  Unsubscribe,
+  Query,
 } from "firebase/firestore";
 
 interface PostData {
@@ -28,48 +26,37 @@ interface PostData {
 
 export const useFeeds = () => {
   const user: User = useAppSelector(selectUser);
+  const [feeds, setFeeds] = useState<PostData[]>([]);
   let updatedFeeds: PostData[] = [];
-
+  let sortedFeeds: PostData[] = [];
   const unsubscribe = async () => {
-    const followeesQuery = query(collection(db, `users/${user.uid}/followees`));
-    const followeesSnapshot = await getDocs(followeesQuery);
-    const followees = followeesSnapshot.docs.map((snapshot) => {
-      return snapshot.id;
+    const followeesQuery: Query<DocumentData> = query(
+      collection(db, `users/${user.uid}/followees`)
+    );
+    const followeesSnapshot: QuerySnapshot<DocumentData> = await getDocs(
+      followeesQuery
+    );
+    const followees: string[] = followeesSnapshot.docs.map((snapshot) => {
+      return snapshot.data().uid;
     });
-    console.log(followees);
     if (followees.length > 0) {
-      followees.forEach((followeeUID) => {
-        console.log(followeeUID);
-        const followeeRef: CollectionReference<DocumentData> = collection(
-          db,
-          `users/${followeeUID}/businessUser/${followeeUID}/posts`
+      followees.forEach((followeeUID: string) => {
+        if (process.env.NODE_ENV === "development") {
+          console.log(followeeUID);
+        }
+        const feedsQuery: Query<DocumentData> = query(
+          collection(
+            db,
+            `users/${followeeUID}/businessUser/${followeeUID}/posts`
+          )
         );
-        const feedsQuery = query(
-          followeeRef
-        );
-
         onSnapshot(
           feedsQuery,
           (snapshots: QuerySnapshot<DocumentData>) => {
-            console.log(snapshots.docs);
-            const followeeFeeds = snapshots.docs
-              .map((snapshot: QueryDocumentSnapshot<DocumentData>) => {
+            const followeeFeeds: PostData[] = snapshots.docs.map(
+              (snapshot: QueryDocumentSnapshot<DocumentData>) => {
                 const updatedTime: number = snapshot.data().updatedAt.seconds;
                 const updatedDate: Date = snapshot.data().updatedAt.toDate();
-                const updatedAt: string =
-                  updatedDate.getFullYear() +
-                  "年" +
-                  ("0" + updatedDate.getMonth()).slice(-2) +
-                  "月" +
-                  ("0" + updatedDate.getDate()).slice(-2) +
-                  "日" +
-                  " " +
-                  ("0" + updatedDate.getHours()).slice(-2) +
-                  ":" +
-                  ("0" + updatedDate.getMinutes()).slice(-2);
-                if (process.env.NODE_ENV === "development") {
-                  console.log(`updatadAt:${updatedAt}`);
-                }
                 const feedData: PostData = {
                   id: snapshot.id,
                   uid: snapshot.data().uid,
@@ -77,20 +64,37 @@ export const useFeeds = () => {
                   avatarURL: snapshot.data().avatarURL,
                   imageURL: snapshot.data().imageURL,
                   caption: snapshot.data().caption,
-                  updatedAt: updatedAt,
+                  updatedAt:
+                    updatedDate.getFullYear() +
+                    "年" +
+                    ("0" + updatedDate.getMonth()).slice(-2) +
+                    "月" +
+                    ("0" + updatedDate.getDate()).slice(-2) +
+                    "日" +
+                    " " +
+                    ("0" + updatedDate.getHours()).slice(-2) +
+                    ":" +
+                    ("0" + updatedDate.getMinutes()).slice(-2),
                   updatedTime: updatedTime,
                 };
+                updatedFeeds.filter((updateFeed) => {
+                  return updateFeed.id !== feedData.id;
+                });
                 return feedData;
-              })
-              .concat(updatedFeeds)
+              }
+            );
+            sortedFeeds = updatedFeeds
+              .concat(followeeFeeds)
               .sort((firstEl: PostData, secondEl: PostData) => {
-                console.log(updatedFeeds);
                 return secondEl.updatedTime - firstEl.updatedTime;
               });
-
-            return followeeFeeds;
-          },(error)=>{console.log(error);}
-        ); 
+            console.log(sortedFeeds);
+            setFeeds(sortedFeeds);
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
       });
     }
   };
@@ -102,6 +106,6 @@ export const useFeeds = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  return updatedFeeds;
+  console.log(feeds);
+  return feeds;
 };

@@ -29,7 +29,7 @@ const Feed = () => {
   const closeUpload: () => void = () => {
     setUploadOn(false);
   };
-  const feeds: PostData[] | undefined = useFeeds();
+  const feeds: PostData[] = useFeeds();
   console.log(feeds);
   return (
     <>
