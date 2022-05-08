@@ -30,7 +30,9 @@ const Feed = () => {
     setUploadOn(false);
   };
   const feeds: PostData[] = useFeeds();
-  console.log(feeds);
+  if (process.env.NODE_ENV === "development") {
+    console.log(feeds);
+  }
   return (
     <>
       {user.userType ? (
