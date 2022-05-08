@@ -26,8 +26,12 @@ const Feed = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const [uploadOn, setUploadOn] = useState<boolean>(false);
+  const [profileOn, setProfileOn] = useState<boolean>(false);
   const closeUpload: () => void = () => {
     setUploadOn(false);
+  };
+  const closeProfile: () => void = () => {
+    setProfileOn(false);
   };
   const feeds: PostData[] = useFeeds();
   if (process.env.NODE_ENV === "development") {
@@ -51,7 +55,22 @@ const Feed = () => {
               />
             );
           })}
-          <BusinessUser />
+          {profileOn ? (
+            <BusinessUser
+              onClick={() => {
+                closeProfile();
+              }}
+            />
+          ) : (
+            <button
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setProfileOn(true);
+              }}
+            >
+              プロフィール表示
+            </button>
+          )}
           {uploadOn ? (
             <Upload
               onClick={() => {
