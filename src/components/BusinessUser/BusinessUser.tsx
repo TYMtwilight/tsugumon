@@ -11,7 +11,11 @@ import {
 import EditProfileForEnterprise from "../EditBusinessUser/EditBusinessUser";
 import MyPosts from "../MyPosts/MyPosts";
 
-const BusinessUser: React.FC = () => {
+interface Props {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const BusinessUser = (props: Props) => {
   const [edit, setEdit] = useState<boolean>(false);
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
@@ -80,6 +84,7 @@ const BusinessUser: React.FC = () => {
     <div>
       {edit && <EditProfileForEnterprise closeEdit={closeEdit} />}
       <div id="top">
+        <button onClick={props.onClick}>閉じる</button> 
         <img id="background" src={backgroundURL} alt="背景画像" />
         <img
           id="avatar"
