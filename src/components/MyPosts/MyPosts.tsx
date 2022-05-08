@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Post from "../Post/Post";
 import { usePosts } from "../../hooks/usePosts";
 import { useDemo } from "../../hooks/useDemo";
@@ -13,7 +13,10 @@ interface PostData {
   updatedAt: any;
 }
 
-const MyPosts = () => {
+const MyPosts = memo(() => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("MyPostsがレンダリングされました");
+  }
   const [uploadDemo, setUploadDemo] = useState<boolean>(false);
   const progress: "wait" | "run" | "done" = useDemo(uploadDemo);
   const posts: PostData[] = usePosts();
@@ -27,7 +30,7 @@ const MyPosts = () => {
         break;
       case "run":
         if (process.env.NODE_ENV === "development") {
-          console.log(`${progress}: アップロードの実行中`)
+          console.log(`${progress}: アップロードの実行中`);
         }
         break;
       case "done":
@@ -63,6 +66,6 @@ const MyPosts = () => {
       })}
     </>
   );
-};
+});
 
 export default MyPosts;

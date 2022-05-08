@@ -6,6 +6,9 @@ import { signOut } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 
 const SelectUserType = () => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("SelectUserTypeがレンダリングされました");
+  }
   const [userType, setUserType] = useState<
     "businessUser" | "normalUser" | null
   >(null);
