@@ -35,7 +35,6 @@ const MyPosts = () => {
           console.log(`${progress}: アップロード完了`);
         }
         setUploadDemo(false);
-        console.log(setUploadDemo);
     }
   }, [progress]);
 
