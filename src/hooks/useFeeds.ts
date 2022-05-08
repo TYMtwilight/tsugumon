@@ -41,9 +41,6 @@ export const useFeeds = () => {
     });
     if (followees.length > 0) {
       followees.forEach((followeeUID: string) => {
-        if (process.env.NODE_ENV === "development") {
-          console.log(followeeUID);
-        }
         const feedsQuery: Query<DocumentData> = query(
           collection(
             db,
@@ -88,7 +85,6 @@ export const useFeeds = () => {
               .sort((firstEl: PostData, secondEl: PostData) => {
                 return secondEl.updatedTime - firstEl.updatedTime;
               });
-            console.log(sortedFeeds);
             setFeeds(sortedFeeds);
           },
           (error) => {
@@ -106,6 +102,5 @@ export const useFeeds = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(feeds);
   return feeds;
 };
