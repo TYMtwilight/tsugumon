@@ -74,7 +74,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
     await fetchData();
     if (fetchedData.length > 0) {
       fetchedData.forEach(async (data) => {
-        const uid:string = data.uid
+        const uid: string = data.uid;
         const filename: string = getRandomString();
         const imageRef: StorageReference = ref(
           storage,
@@ -135,6 +135,9 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
     } else {
       setProgress("wait");
     }
+    return () => {
+      setProgress("wait");
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploadDemo]);
   return progress;

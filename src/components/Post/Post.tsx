@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Favorite } from "@mui/icons-material";
 interface Props {
   key: string;
@@ -9,26 +10,30 @@ interface Props {
   updatedAt: any;
 }
 
-const Post= (props:Props) => {
+const Post = memo((props: Props) => {
+  const { displayName, avatarURL, imageURL, caption, updatedAt } = props;
+  if (process.env.NODE_ENV === "development") {
+    console.log("Post.tsxがレンダリングされました");
+  }
   return (
     <div>
       <div>
-        <p id="displayName">{props.displayName}</p>
-        <p id="updatedAt">{props.updatedAt}</p>
-        <img id="avatarURL" src={props.avatarURL} alt="アバター画像" />
+        <p id="displayName">{displayName}</p>
+        <p id="updatedAt">{updatedAt}</p>
+        <img id="avatarURL" src={avatarURL} alt="アバター画像" />
       </div>
       <div>
-        <img id="image" src={props.imageURL} alt="投稿画像" />
+        <img id="image" src={imageURL} alt="投稿画像" />
         <div>
           <Favorite />
           <p id="likeCounts">0</p>
         </div>
       </div>
       <div>
-        <p id="caption">{props.caption}</p>
+        <p id="caption">{caption}</p>
       </div>
     </div>
   );
-};
+});
 
 export default Post;

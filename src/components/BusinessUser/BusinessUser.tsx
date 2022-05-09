@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectUser, toggleIsNewUser } from "../../features/userSlice";
 import { db } from "../../firebase";
@@ -12,10 +12,14 @@ import EditProfileForEnterprise from "../EditBusinessUser/EditBusinessUser";
 import MyPosts from "../MyPosts/MyPosts";
 
 interface Props {
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  closeProfile: () => void;
 }
 
-const BusinessUser = (props: Props) => {
+const BusinessUser = memo((props: Props) => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("BusinessUser.tsxがレンダリングされました");
+  }
+  const closeProfile = props.closeProfile;
   const [edit, setEdit] = useState<boolean>(false);
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
@@ -84,7 +88,7 @@ const BusinessUser = (props: Props) => {
     <div>
       {edit && <EditProfileForEnterprise closeEdit={closeEdit} />}
       <div id="top">
-        <button onClick={props.onClick}>閉じる</button> 
+        <button onClick={closeProfile}>閉じる</button>
         <img id="background" src={backgroundURL} alt="背景画像" />
         <img
           id="avatar"
@@ -153,6 +157,6 @@ const BusinessUser = (props: Props) => {
       {tab === "advertise" && <p>advertise</p>}
     </div>
   );
-};
+});
 
 export default BusinessUser;

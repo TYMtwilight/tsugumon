@@ -24,7 +24,10 @@ interface PostData {
   updatedTime: number;
 }
 
-export const useFeeds = () => {
+export const useFeeds: () => PostData[] = () => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("useFeeds.tsがレンダリングされました");
+  }
   const user: User = useAppSelector(selectUser);
   const [feeds, setFeeds] = useState<PostData[]>([]);
   let updatedFeeds: PostData[] = [];
@@ -50,6 +53,9 @@ export const useFeeds = () => {
         onSnapshot(
           feedsQuery,
           (snapshots: QuerySnapshot<DocumentData>) => {
+            if (process.env.NODE_ENV === "development") {
+              console.log("onSnapshotが実行されました");
+            }
             const followeeFeeds: PostData[] = snapshots.docs.map(
               (snapshot: QueryDocumentSnapshot<DocumentData>) => {
                 const updatedTime: number = snapshot.data().updatedAt.seconds;
@@ -99,6 +105,7 @@ export const useFeeds = () => {
     unsubscribe();
     return () => {
       unsubscribe();
+      console.log("クリーンアップ関数が実行されました");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

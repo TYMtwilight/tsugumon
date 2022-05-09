@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser, User } from "../../features/userSlice";
 import { useBatch } from "../../hooks/useBatch";
 import { AddPhotoAlternate, Cancel } from "@mui/icons-material";
 
 interface Props {
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  closeUpload: () => void;
 }
 
-const Upload = (props: Props) => {
+const Upload: React.FC<Props> = memo((props) => {
+  if (process.env.NODE_ENV === "development") {
+    console.log("Upload.tsxがレンダリングされました");
+  }
+  const closeUpload = props.closeUpload;
   const user: User = useAppSelector(selectUser);
   const displayName: string = user.displayName;
   const avatarURL: string = user.avatarURL;
@@ -165,7 +169,7 @@ const Upload = (props: Props) => {
       {cancelModal && (
         <div id="cancelModal">
           <p>画像の登録をキャンセルします。よろしいですか？</p>
-          <button onClick={props.onClick}>はい</button>
+          <button onClick={closeUpload}>はい</button>
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
@@ -178,6 +182,6 @@ const Upload = (props: Props) => {
       )}
     </div>
   );
-};
+});
 
 export default Upload;
