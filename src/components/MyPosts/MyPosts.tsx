@@ -10,7 +10,8 @@ interface PostData {
   avatarURL: string;
   imageURL: string;
   caption: string;
-  updatedAt: any;
+  updatedAt: string;
+  updatedTime: number;
 }
 
 const MyPosts = memo(() => {
