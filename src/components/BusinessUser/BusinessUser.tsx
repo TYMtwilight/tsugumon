@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo, useCallback } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectUser, toggleIsNewUser } from "../../features/userSlice";
 import { db } from "../../firebase";
@@ -8,7 +8,7 @@ import {
   DocumentReference,
   getDoc,
 } from "firebase/firestore";
-import EditProfileForEnterprise from "../EditBusinessUser/EditBusinessUser";
+import EditBusinessUser from "../EditBusinessUser/EditBusinessUser";
 import MyPosts from "../MyPosts/MyPosts";
 
 interface Props {
@@ -69,11 +69,11 @@ const BusinessUser = memo((props: Props) => {
     getUser();
     getEnterprise();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [edit]);
+  }, []);
 
-  const closeEdit: () => void = () => {
+  const closeEdit: () => void = useCallback(() => {
     setEdit(false);
-  };
+  }, []);
   useEffect(() => {
     if (user.isNewUser) {
       setEdit(true);
@@ -86,7 +86,7 @@ const BusinessUser = memo((props: Props) => {
 
   return (
     <div>
-      {edit && <EditProfileForEnterprise closeEdit={closeEdit} />}
+      {edit && <EditBusinessUser closeEdit={closeEdit} />}
       <div id="top">
         <button onClick={closeProfile}>閉じる</button>
         <img id="background" src={backgroundURL} alt="背景画像" />

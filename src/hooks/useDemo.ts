@@ -54,88 +54,81 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
 ) => {
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
 
-  let fetchedData: FetchedData[] = [];
-
-  const fetchData: () => Promise<void> = async () => {
-    await fetch("data.json")
+  const upload = async (isMounted: boolean) => {
+    setProgress("run");
+    fetch("data.json")
       .then((response: Response) => {
         return response.json();
       })
       .then((dataset: Dataset) => {
-        fetchedData = dataset.posts;
+        dataset.posts.forEach(async (data) => {
+          const uid: string = data.uid;
+          const filename: string = getRandomString();
+          const imageRef: StorageReference = ref(
+            storage,
+            `posts/${uid}/${filename}`
+          );
+          const res: Response = await fetch(
+            `${process.env.PUBLIC_URL}/${data.image}`
+          );
+          const postImage: ArrayBuffer = await res.arrayBuffer();
+          const uploadTask: UploadTask = uploadBytesResumable(
+            imageRef,
+            postImage
+          );
+          uploadTask
+            .then(async () => {
+              await getDownloadURL(imageRef)
+                .then(async (downloadURL: string) => {
+                  const postId: string = getRandomString();
+                  const postRef: DocumentReference<DocumentData> = doc(
+                    db,
+                    `users/${uid}/businessUser/${uid}/posts/${postId}`
+                  );
+                  const postData: PostData = {
+                    uid: uid,
+                    displayName: data.displayName,
+                    avatarURL: data.avatarURL,
+                    imageURL: downloadURL,
+                    caption: data.caption,
+                    updatedAt: new Date(data.updatedDate),
+                  };
+                  if (isMounted) {
+                    await setDoc(postRef, postData);
+                  }
+                })
+                .catch((e: any) => {
+                  if (process.env.NODE_ENV === "development") {
+                    console.log(`エラーが発生しました\n${e.message}`);
+                  }
+                });
+            })
+            .catch((e: any) => {
+              if (process.env.NODE_ENV === "development") {
+                console.log(`エラーが発生しました\n${e.message}`);
+              }
+            });
+        });
+        setProgress("done");
         if (process.env.NODE_ENV === "development") {
-          console.log(fetchedData);
+          console.log("登録が完了しました");
         }
       });
   };
 
-  const upload = async () => {
-    setProgress("run");
-    await fetchData();
-    if (fetchedData.length > 0) {
-      fetchedData.forEach(async (data) => {
-        const uid: string = data.uid;
-        const filename: string = getRandomString();
-        const imageRef: StorageReference = ref(
-          storage,
-          `posts/${uid}/${filename}`
-        );
-        const res: Response = await fetch(
-          `${process.env.PUBLIC_URL}/${data.image}`
-        );
-        const postImage: ArrayBuffer = await res.arrayBuffer();
-        const uploadTask: UploadTask = uploadBytesResumable(
-          imageRef,
-          postImage
-        );
-        uploadTask
-          .then(async () => {
-            await getDownloadURL(imageRef)
-              .then(async (downloadURL: string) => {
-                const postId: string = getRandomString();
-                const postRef: DocumentReference<DocumentData> = doc(
-                  db,
-                  `users/${uid}/businessUser/${uid}/posts/${postId}`
-                );
-                const postData: PostData = {
-                  uid: uid,
-                  displayName: data.displayName,
-                  avatarURL: data.avatarURL,
-                  imageURL: downloadURL,
-                  caption: data.caption,
-                  updatedAt: new Date(data.updatedDate),
-                };
-                await setDoc(postRef, postData);
-              })
-              .catch((e: any) => {
-                if (process.env.NODE_ENV === "development") {
-                  console.log(`エラーが発生しました\n${e.message}`);
-                }
-              });
-          })
-          .catch((e: any) => {
-            if (process.env.NODE_ENV === "development") {
-              console.log(`エラーが発生しました\n${e.message}`);
-            }
-          });
-      });
-
-      setProgress("done");
-      if (process.env.NODE_ENV === "development") {
-        console.log("登録が完了しました");
-      }
-    } else {
-      return;
-    }
-  };
-
   useEffect(() => {
+    let isMounted = true;
+    let abortControl = new AbortController();
     if (uploadDemo) {
-      upload();
+      upload(isMounted);
     } else {
-      setProgress("wait");
+      if (isMounted) {
+        setProgress("wait");
+      }
     }
     return () => {
+      abortControl.abort();
+      isMounted = false;
       setProgress("wait");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

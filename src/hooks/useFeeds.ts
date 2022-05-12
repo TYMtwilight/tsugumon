@@ -32,7 +32,8 @@ export const useFeeds: () => PostData[] = () => {
   const [feeds, setFeeds] = useState<PostData[]>([]);
   let updatedFeeds: PostData[] = [];
   let sortedFeeds: PostData[] = [];
-  const unsubscribe = async () => {
+
+  const unsubscribe = async (isMounted: boolean) => {
     const followeesQuery: Query<DocumentData> = query(
       collection(db, `users/${user.uid}/followees`)
     );
@@ -91,7 +92,9 @@ export const useFeeds: () => PostData[] = () => {
               .sort((firstEl: PostData, secondEl: PostData) => {
                 return secondEl.updatedTime - firstEl.updatedTime;
               });
-            setFeeds(sortedFeeds);
+            if (isMounted) {
+              setFeeds(sortedFeeds);
+            }
           },
           (error) => {
             console.error(error);
@@ -102,10 +105,14 @@ export const useFeeds: () => PostData[] = () => {
   };
 
   useEffect(() => {
-    unsubscribe();
+    let isMounted = true;
+    unsubscribe(isMounted);
     return () => {
-      unsubscribe();
-      console.log("クリーンアップ関数が実行されました");
+      isMounted = false;
+      unsubscribe(isMounted);
+      if (process.env.NODE_ENV === "development") {
+        console.log("useFeedsのクリーンアップ関数が実行されました。");
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

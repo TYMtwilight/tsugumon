@@ -40,7 +40,7 @@ const Feed = memo(() => {
   if (user.userType) {
     return (
       <div>
-        {feeds!.map((feed) => {
+        {feeds.map((feed) => {
           return (
             <Post
               key={feed.id}
