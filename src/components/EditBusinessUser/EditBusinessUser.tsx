@@ -23,6 +23,7 @@ interface Props {
 }
 
 const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
+  const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
   const [avatarURL, setAvatarURL] = useState<string>("");
@@ -71,6 +72,7 @@ const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
   const getBusinessUser = async () => {
     const businessUserSnap = await getDoc(businessUserRef);
     if (businessUserSnap) {
+      setUsername(businessUserSnap.data()!.username);
       setIntroduction(businessUserSnap.data()!.introduction);
       setBackgroundURL(businessUserSnap.data()!.backgroundURL);
       setOwner(businessUserSnap.data()!.owner);
@@ -144,6 +146,7 @@ const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
     await setDoc(
       businessUserRef,
       {
+        username: username,
         displayName: displayName,
         introduction: introduction,
         owner: owner,
@@ -345,6 +348,20 @@ const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
       </div>
       <form name="form" onSubmit={editProfile}>
         <div>
+          {" "}
+          <label htmlFor="username" data-testid="username">
+            ユーザー名
+          </label>
+          <input
+            name="textbox"
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setUsername(e.target.value);
+            }}
+            required
+          />
           <label htmlFor="displayName" data-testid="displayName">
             会社名
           </label>

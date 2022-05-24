@@ -16,6 +16,7 @@ import {
 interface PostData {
   id: string;
   uid: string;
+  username: string;
   displayName: string;
   avatarURL: string;
   imageURL: string;
@@ -64,6 +65,7 @@ export const useFeeds: () => PostData[] = () => {
                 const feedData: PostData = {
                   id: snapshot.id,
                   uid: snapshot.data().uid,
+                  username: snapshot.data().username,
                   displayName: snapshot.data().displayName,
                   avatarURL: snapshot.data().avatarURL,
                   imageURL: snapshot.data().imageURL,

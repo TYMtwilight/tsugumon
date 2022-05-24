@@ -21,6 +21,7 @@ import {
 
 interface PostData {
   uid: string;
+  username: string;
   displayName: string;
   avatarURL: string;
   imageURL: string;
@@ -48,6 +49,7 @@ export const useBatch: (
 ) => "wait" | "run" | "done" = (upload, postImage, caption) => {
   const user: User = useAppSelector(selectUser);
   const uid: string = user.uid;
+  const username: string = user.username;
   const displayName: string = user.displayName;
   const avatarURL: string = user.avatarURL;
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
@@ -72,6 +74,7 @@ export const useBatch: (
               // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
               const postData: PostData = {
                 uid: uid,
+                username: username,
                 displayName: displayName,
                 avatarURL: avatarURL,
                 imageURL: downloadURL,

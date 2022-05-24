@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import {BrowserRouter, Route} from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectUser, login, logout } from "./features/userSlice";
 import Basis from "./components/Basis/Basis";
@@ -24,6 +24,7 @@ const App: React.FC = () => {
       async (authUser: User | null) => {
         if (authUser) {
           let userType: "businessUser" | "normalUser" | null = null;
+          let username: string = "";
           const userRef: DocumentReference<DocumentData> = doc(
             db,
             "users",
@@ -41,6 +42,7 @@ const App: React.FC = () => {
           dispatch(
             login({
               uid: authUser.uid,
+              username: username,
               displayName: authUser.displayName ? authUser.displayName : "",
               avatarURL: authUser.photoURL ? authUser.photoURL : "",
               userType: userType,

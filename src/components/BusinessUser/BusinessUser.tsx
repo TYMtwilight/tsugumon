@@ -21,6 +21,7 @@ const BusinessUser = memo((props: Props) => {
   }
   const closeProfile = props.closeProfile;
   const [edit, setEdit] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
   const [avatarURL, setAvataraURL] = useState<string>("");
@@ -54,6 +55,8 @@ const BusinessUser = memo((props: Props) => {
   const getEnterprise: () => Promise<void> = async () => {
     const businessUserSnap = await getDoc(businessUserRef);
     if (businessUserSnap) {
+      setUsername(businessUserSnap.data()!.username);
+      setDisplayName(businessUserSnap.data()!.displayName);
       setIntroduction(businessUserSnap.data()!.introduction);
       setBackgroundURL(businessUserSnap.data()!.backgroundURL);
       setOwner(businessUserSnap.data()!.owner);
@@ -95,6 +98,7 @@ const BusinessUser = memo((props: Props) => {
           src={avatarURL ? avatarURL : `${process.env.PUBLIC_URL}/noAvatar.png`}
           alt="アバター画像"
         />
+        <p id="username">{username}</p>
         <p id="displayName">{displayName}</p>
         {/* TODO >> ログインユーザーがプロフィール画面のユーザーと
                         異なる場合には、「フォロー」ボタンを表示するようにする  */}
