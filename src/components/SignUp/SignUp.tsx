@@ -86,6 +86,7 @@ const SignUp = (props: {
         followerCount: 0,
       });
       setDoc(businessUserRef, {
+        username: "",
         introduction: "",
         backgroundURL: "",
         owner: "",

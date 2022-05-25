@@ -16,6 +16,7 @@ import {
 
 interface PostData {
   uid: string;
+  username: string;
   displayName: string;
   avatarURL: string;
   imageURL: string;
@@ -25,6 +26,7 @@ interface PostData {
 
 interface FetchedData {
   uid: string;
+  username: string;
   displayName: string;
   avatarURL: string;
   image: string;
@@ -87,6 +89,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                   );
                   const postData: PostData = {
                     uid: uid,
+                    username: data.username,
                     displayName: data.displayName,
                     avatarURL: data.avatarURL,
                     imageURL: downloadURL,

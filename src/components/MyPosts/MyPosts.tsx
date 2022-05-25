@@ -6,6 +6,7 @@ import { useDemo } from "../../hooks/useDemo";
 interface PostData {
   id: string;
   uid: string;
+  username: string;
   displayName: string;
   avatarURL: string;
   imageURL: string;
@@ -57,6 +58,7 @@ const MyPosts = memo(() => {
           <Post
             key={post.id}
             uid={post.uid}
+            username={post.username}
             displayName={post.displayName}
             avatarURL={post.avatarURL}
             imageURL={post.imageURL}

@@ -3,6 +3,7 @@ import { RootState } from "../app/store";
 
 export interface User {
   uid: string;
+  username: string;
   displayName: string;
   userType: "businessUser" | "normalUser" | null;
   avatarURL: string;
@@ -14,6 +15,7 @@ export interface UserProfile {
 }
 export interface UserLogin {
   uid: string;
+  username: string;
   displayName: string;
   userType: "businessUser" | "normalUser" | null;
   avatarURL: string;
@@ -21,6 +23,7 @@ export interface UserLogin {
 
 const initialState: User = {
   uid: "",
+  username: "",
   displayName: "",
   avatarURL: "",
   userType: null,
@@ -33,6 +36,7 @@ export const userSlice = createSlice({
   reducers: {
     login: (state, action: PayloadAction<UserLogin>) => {
       state.uid = action.payload.uid;
+      state.username = action.payload.username;
       state.displayName = action.payload.displayName;
       state.userType = action.payload.userType;
       state.avatarURL = action.payload.avatarURL;

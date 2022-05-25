@@ -14,6 +14,7 @@ import AddCircle from "@mui/icons-material/AddCircle";
 interface PostData {
   id: string;
   uid: string;
+  username: string;
   displayName: string;
   avatarURL: string;
   imageURL: string;
@@ -45,6 +46,7 @@ const Feed = memo(() => {
             <Post
               key={feed.id}
               uid={feed.uid}
+              username={feed.username}
               displayName={feed.displayName}
               avatarURL={feed.avatarURL}
               imageURL={feed.imageURL}
