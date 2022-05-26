@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { BrowserRouter, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectUser, login, logout } from "./features/userSlice";
 import Basis from "./components/Basis/Basis";

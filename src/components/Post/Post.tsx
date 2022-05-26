@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Link } from "react-router-dom";
+import { Link,Outlet } from "react-router-dom";
 import { Favorite } from "@mui/icons-material";
 interface Props {
   key: string;
@@ -15,7 +15,6 @@ interface Props {
 const Post = memo((props: Props) => {
   const { username, displayName, avatarURL, imageURL, caption, updatedAt } =
     props;
-  const path = `/${username}`;
   if (process.env.NODE_ENV === "development") {
     console.log("Post.tsxがレンダリングされました");
   }
@@ -24,7 +23,7 @@ const Post = memo((props: Props) => {
       <div>
         <p id="displayName">{displayName}</p>
         <p id="updatedAt">{updatedAt}</p>
-        <Link to={path}>
+        <Link to={`/${username}`}>
           <img id="avatarURL" src={avatarURL} alt="アバター画像" />
         </Link>
       </div>
@@ -38,6 +37,7 @@ const Post = memo((props: Props) => {
       <div>
         <p id="caption">{caption}</p>
       </div>
+      <Outlet />
     </div>
   );
 });
