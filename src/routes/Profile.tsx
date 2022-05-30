@@ -29,19 +29,20 @@ const Profile: React.VFC = () => {
       usersRef,
       where("username", "==", username)
     );
-    const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(userQuery);
-    querySnapshot.forEach((doc: QueryDocumentSnapshot) => {
+    const usersSnapshot: QuerySnapshot<DocumentData> = await getDocs(userQuery);
+    usersSnapshot.forEach((doc: QueryDocumentSnapshot) => {
       if (isMounted) {
         setDisplayName(doc.data().displayName);
         setPhotoURL(doc.data().photoURL);
         setUserType(doc.data().userType);
-        console.log(userType);
       }
     });
+    
   };
 
+
   useEffect(() => {
-    let isMounted = true;
+    let isMounted: boolean = true;
     setProfile(isMounted);
     return () => {
       isMounted = false;
