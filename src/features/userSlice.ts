@@ -11,6 +11,7 @@ export interface User {
 }
 export interface UserProfile {
   displayName: string;
+  username: string;
   avatarURL: string;
 }
 export interface UserLogin {
@@ -47,8 +48,9 @@ export const userSlice = createSlice({
       state.userType = null;
       state.avatarURL = "";
     },
-    updateUserProfile: (state, action: PayloadAction<UserProfile>) => {
+    setUserProfile: (state, action: PayloadAction<UserProfile>) => {
       state.displayName = action.payload.displayName;
+      state.username = action.payload.username;
       state.avatarURL = action.payload.avatarURL;
     },
     updateUserType: (
@@ -68,7 +70,7 @@ export const userSlice = createSlice({
 export const {
   login,
   logout,
-  updateUserProfile,
+  setUserProfile,
   updateUserType,
   toggleIsNewUser,
 } = userSlice.actions;

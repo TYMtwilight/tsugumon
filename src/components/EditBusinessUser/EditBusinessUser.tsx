@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectUser, updateUserProfile } from "../../features/userSlice";
+import { selectUser, setUserProfile } from "../../features/userSlice";
 import { auth, db, storage } from "../../firebase";
 import { updateProfile } from "firebase/auth";
 import {
@@ -121,8 +121,9 @@ const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
         photoURL: url,
       });
       dispatch(
-        updateUserProfile({
+        setUserProfile({
           displayName: displayName,
+          username: "",
           avatarURL: url,
         })
       );
@@ -170,8 +171,9 @@ const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
       }
     });
     dispatch(
-      updateUserProfile({
+      setUserProfile({
         displayName: displayName,
+        username: "",
         avatarURL: avatarURL,
       })
     );
@@ -195,8 +197,9 @@ const EditBusinessUser: (props: Props) => JSX.Element = (props) => {
       imageFor === "avatar" ? setAvatarURL("") : setBackgroundURL("");
       imageFor === "avatar" &&
         dispatch(
-          updateUserProfile({
+          setUserProfile({
             displayName: displayName,
+            username: "",
             avatarURL: "",
           })
         );
