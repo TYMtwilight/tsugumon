@@ -112,6 +112,7 @@ const SignUp = (props: {
   const signUp: (
     event: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => Promise<void> = async (event) => {
+    event.preventDefault();
     let url: string = "";
     await createUserWithEmailAndPassword(auth, email, password).then(
       async (userCredential: UserCredential) => {
@@ -267,6 +268,7 @@ const SignUp = (props: {
             onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
               signUp(e);
             }}
+            disabled={!displayName || !email || !username || !password }
           />
         </div>
         <div>
