@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SignUp from "../SignUp/SignUp";
+import { Link } from "react-router-dom";
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Lock, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -8,7 +8,6 @@ const UserAuthentication = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [signUp, setSignUp] = useState<boolean>(false);
 
   const login: (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>
@@ -17,10 +16,6 @@ const UserAuthentication = () => {
     if (email && password) {
       signInWithEmailAndPassword(auth, email, password);
     }
-  };
-
-  const closeSignUp = () => {
-    setSignUp(false);
   };
 
   return (
@@ -87,18 +82,9 @@ const UserAuthentication = () => {
         </div>
         <div>
           <p>アカウントをお持ちではないですか？</p>
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-              e.preventDefault();
-              setSignUp(true);
-              console.log(signUp);
-            }}
-          >
-            新規登録
-          </button>
+          <Link to="/signup">新規登録</Link>
         </div>
       </form>
-      {signUp && <SignUp backToLogin={closeSignUp} />}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
+import { Outlet } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
 import Basis from "./components/Basis/Basis";
 import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
@@ -58,6 +59,11 @@ const App: React.FC = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-  return <>{user.uid ? <Basis /> : <UserAuthentication />}</>;
+  return (
+    <>
+      {user.uid ? <Basis /> : <UserAuthentication />}
+      <Outlet />
+    </>
+  );
 };
 export default App;
