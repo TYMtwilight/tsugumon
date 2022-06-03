@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import SignUp from "./routes/SignUp";
 import Profile from "./routes/Profile";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
@@ -13,8 +14,10 @@ ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />}></Route>
-          <Route path=":username" element={<Profile />} />
+          <Route path="/" element={<App />}>
+            <Route path="/signup" element={<SignUp />} />
+            <Route path=":username" element={<Profile />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </Provider>
