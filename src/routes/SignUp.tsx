@@ -3,6 +3,7 @@ import { useAppDispatch } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { setUserProfile, toggleIsNewUser } from "../features/userSlice";
 import { auth, db, storage } from "../firebase";
+import { checkPassword } from "../functions/CheckPassword";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -38,9 +39,15 @@ const SignUp: React.VFC = () => {
   const [duplicate, setDuplicate] = useState<boolean>(false);
   const [avatarImage, setAvatarImage] = useState<ArrayBuffer | null>(null);
   const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [passwordPattern, setPasswordPattern] = useState<boolean>(true);
-  const [passwordLength, setPasswordLength] = useState<boolean>(false);
+  const [password, setPassword] = useState<{
+    lengthCheck: boolean;
+    patternCheck: boolean;
+    targetValue: string;
+  }>({
+    lengthCheck: false,
+    patternCheck: true,
+    targetValue: "",
+  });
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -64,25 +71,6 @@ const SignUp: React.VFC = () => {
       event.target.value = "";
     } else {
       alert("拡張子が「png」もしくは「jpg」の画像ファイルを選択してください。");
-    }
-  };
-
-  const checkPassword: (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => Promise<void> = async (event) => {
-    setPassword(event.target.value);
-    setPasswordPattern(true);
-    setPasswordLength(false);
-    const regex = /^[a-z|A-Z|0-9|_]+$/;
-    if (event.target.value.length > 0) {
-      setPasswordPattern(regex.test(event.target.value));
-    }
-    if (passwordPattern === false) {
-      setPassword("");
-    }
-    if (event.target.value.length < 8 || event.target.value.length > 20) {
-      setPassword("");
-      setPasswordLength(true);
     }
   };
 
@@ -115,31 +103,33 @@ const SignUp: React.VFC = () => {
   ) => Promise<void> = async (event) => {
     event.preventDefault();
     let url: string = "";
-    await createUserWithEmailAndPassword(auth, email, password).then(
-      async (userCredential: UserCredential) => {
-        const user: User = userCredential.user;
-        const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}`);
-        if (avatarImage) {
-          await uploadBytes(avatarRef, avatarImage);
-          url = await getDownloadURL(avatarRef);
-        }
-        await updateProfile(user, {
-          displayName: displayName,
-          photoURL: url,
-        });
-        const userRef: DocumentReference<DocumentData> = doc(
-          db,
-          `users/${user.uid}`
-        );
-        setDoc(userRef, {
-          displayName: displayName,
-          username: username,
-          photoURL: url,
-          userType: null,
-          followerCount: 0,
-        });
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password.targetValue
+    ).then(async (userCredential: UserCredential) => {
+      const user: User = userCredential.user;
+      const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}`);
+      if (avatarImage) {
+        await uploadBytes(avatarRef, avatarImage);
+        url = await getDownloadURL(avatarRef);
       }
-    );
+      await updateProfile(user, {
+        displayName: displayName,
+        photoURL: url,
+      });
+      const userRef: DocumentReference<DocumentData> = doc(
+        db,
+        `users/${user.uid}`
+      );
+      setDoc(userRef, {
+        displayName: displayName,
+        username: username,
+        photoURL: url,
+        userType: null,
+        followerCount: 0,
+      });
+    });
     navigate("/", { replace: true });
     dispatch(
       setUserProfile({
@@ -229,7 +219,7 @@ const SignUp: React.VFC = () => {
             type={showPassword ? "text" : "password"}
             id="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              checkPassword(event);
+              setPassword(checkPassword(event));
             }}
           />
           <div
@@ -240,10 +230,10 @@ const SignUp: React.VFC = () => {
           >
             {showPassword ? <Visibility /> : <VisibilityOff />}
           </div>
+          <p>{!password.patternCheck && "入力できない文字が含まれいます。"}</p>
           <p>
-            {passwordPattern === false && "入力できない文字が含まれいます。"}
+            {!password.lengthCheck && "8文字以上20文字以下で入力してください。"}
           </p>
-          <p>{passwordLength && "8文字以上20文字以下で入力してください。"}</p>
         </div>
         <div>
           <label>ユーザー名を入力</label>
