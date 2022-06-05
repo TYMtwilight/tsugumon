@@ -138,5 +138,5 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
   }, [uploadDemo]);
   return progress;
 };
-
+console.log("It's OK");
 export default useDemo;
