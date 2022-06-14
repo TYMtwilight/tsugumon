@@ -28,9 +28,6 @@ interface FetchedUser {
   userType: string;
   introduction: string;
   background: string;
-  owner: string;
-  address: string;
-  typeOfWork: string;
   posts: [
     {
       uid: string;
@@ -39,9 +36,19 @@ interface FetchedUser {
       avatarURL: string;
       image: string;
       caption: string;
-      updatedDate: string;
+      timestamp: string;
     }
   ];
+  option: "business" | "normal";
+  business?: {
+    address: string;
+    owner: string;
+    typeOfWork: string;
+  };
+  normal?: {
+    birthdate: Date;
+    skill: string;
+  };
 }
 
 interface Post {
@@ -51,7 +58,7 @@ interface Post {
   avatarURL: string;
   imageURL: string;
   caption: string;
-  updatedAt: Date;
+  timestamp: Date;
 }
 
 const getUniqueName: () => string = () => {
@@ -116,16 +123,32 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                     `users/${uid}`
                   );
                   setDoc(userRef, {
-                    displayName: user.displayName,
-                    username: userData.username,
-                    userType: userData.userType,
-                    introduction: userData.introduction,
                     backgroundURL: backgroundURL,
-                    owner: userData.owner,
-                    address: userData.address,
-                    typeOfWork: userData.typeOfWork,
+                    displayName: user.displayName,
+                    introduction: userData.introduction,
+                    userType: userData.userType,
+                    username: userData.username,
                   });
-                  return userRef;
+                  if (userData.option === "business") {
+                    const optionRef: DocumentReference<DocumentData> = doc(
+                      db,
+                      `users/${uid}/option/business`
+                    );
+                    setDoc(optionRef, {
+                      address: userData.business!.address,
+                      owner: userData.business!.owner,
+                      typeOfWork: userData.business!.typeOfWork,
+                    });
+                  } else {
+                    const optionRef: DocumentReference<DocumentData> = doc(
+                      db,
+                      `users/${uid}/option/normal`
+                    );
+                    setDoc(optionRef, {
+                      birthdate: userData.normal!.birthdate,
+                      skill: userData.normal!.skill,
+                    });
+                  }
                 })
                 .then(async () => {
                   const postsData = userData.posts;
@@ -150,7 +173,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                         avatarURL: postData.avatarURL,
                         imageURL: url,
                         caption: postData.caption,
-                        updatedAt: new Date(postData.updatedDate),
+                        timestamp: new Date(postData.timestamp),
                       };
                       await setDoc(postRef, post);
                       setProgress("done");
