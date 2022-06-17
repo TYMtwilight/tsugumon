@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { Outlet } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
-import Basis from "./components/Basis/Basis";
+import { Link } from "react-router-dom";
 import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
@@ -13,6 +13,7 @@ import {
   DocumentSnapshot,
   getDoc,
 } from "firebase/firestore";
+import { Home, Search, Notifications, Email } from "@mui/icons-material";
 
 const App: React.FC = () => {
   const user = useAppSelector(selectUser);
@@ -59,11 +60,29 @@ const App: React.FC = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-  return (
-    <>
-      {user.uid ? <Basis /> : <UserAuthentication />}
-      <Outlet />
-    </>
-  );
+
+  if (user.uid) {
+    return (
+      <>
+        <nav>
+          <Link to="/home">
+            <Home />
+          </Link>
+          <Link to="/search">
+            <Search />
+          </Link>
+          <Link to="/notifications">
+            <Notifications />
+          </Link>
+          <Link to="/email">
+            <Email />
+          </Link>
+        </nav>
+        <Outlet />
+      </>
+    );
+  } else {
+    return <UserAuthentication />;
+  }
 };
 export default App;

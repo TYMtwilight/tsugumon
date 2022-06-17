@@ -1,13 +1,13 @@
 import { useState, memo, useCallback } from "react";
+import { Link, Outlet } from "react-router-dom";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectUser, logout, toggleIsNewUser } from "../../features/userSlice";
-import Post from "../Post/Post";
-import SelectUserType from "../SelectUserType/SelectUserType";
-import BusinessUser from "../BusinessUser/BusinessUser";
-import Upload from "../Upload/Upload";
-import { useFeeds } from "../../hooks/useFeeds";
-import { auth } from "../../firebase";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
+import Post from "../components/Post/Post";
+import SelectUserType from "../components/SelectUserType/SelectUserType";
+import BusinessUser from "../components/BusinessUser/BusinessUser";
+import { useFeeds } from "../hooks/useFeeds";
+import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import AddCircle from "@mui/icons-material/AddCircle";
 
@@ -26,11 +26,7 @@ interface PostData {
 const Feed = memo(() => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const [uploadOn, setUploadOn] = useState<boolean>(false);
   const [profileOn, setProfileOn] = useState<boolean>(false);
-  const closeUpload: () => void = useCallback(() => {
-    setUploadOn(false);
-  }, []);
   const closeProfile: () => void = useCallback(() => {
     setProfileOn(false);
   }, []);
@@ -67,18 +63,9 @@ const Feed = memo(() => {
             プロフィール表示
           </button>
         )}
-        {uploadOn ? (
-          <Upload closeUpload={closeUpload} />
-        ) : (
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              setUploadOn(true);
-            }}
-          >
-            <AddCircle />
-          </button>
-        )}
+        <Link to="/upload">
+          <AddCircle />
+        </Link>
         <button
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             signOut(auth).catch((error: any) => {
@@ -90,6 +77,7 @@ const Feed = memo(() => {
         >
           logout
         </button>
+        <Outlet />
       </div>
     );
   } else {
