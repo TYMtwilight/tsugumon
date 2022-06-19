@@ -79,7 +79,6 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
   uploadDemo
 ) => {
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
-
   const registData: () => void = async () => {
     setProgress("run");
     const response: Response = await fetch("data.json");
@@ -123,30 +122,31 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                     `users/${uid}`
                   );
                   setDoc(userRef, {
+                    avatarURL: avatarURL,
                     backgroundURL: backgroundURL,
                     displayName: user.displayName,
                     introduction: userData.introduction,
                     userType: userData.userType,
                     username: userData.username,
                   });
-                  if (userData.option === "business") {
-                    const optionRef: DocumentReference<DocumentData> = doc(
-                      db,
-                      `users/${uid}/option/business`
-                    );
+                  const optionRef: DocumentReference<DocumentData> = doc(
+                    db,
+                    `option/${uid}/`
+                  );
+                  if (userData.userType === "business") {
                     setDoc(optionRef, {
                       address: userData.business!.address,
                       owner: userData.business!.owner,
                       typeOfWork: userData.business!.typeOfWork,
+                      username: userData.username,
+                      userType: userData.userType,
                     });
                   } else {
-                    const optionRef: DocumentReference<DocumentData> = doc(
-                      db,
-                      `users/${uid}/option/normal`
-                    );
                     setDoc(optionRef, {
                       birthdate: userData.normal!.birthdate,
                       skill: userData.normal!.skill,
+                      username: userData.username,
+                      userType: userData.userType,
                     });
                   }
                 })
@@ -164,7 +164,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                       const url: string = await getDownloadURL(imageRef);
                       const postRef: DocumentReference<DocumentData> = doc(
                         db,
-                        `users/${uid}/posts/${getUniqueName()}`
+                        `posts/${getUniqueName()}`
                       );
                       const post: Post = {
                         uid: uid,
