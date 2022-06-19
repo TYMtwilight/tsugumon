@@ -19,7 +19,7 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route path="home" element={<Home />} />
             <Route path="search" element={<p>Search</p>} />
-            <Route path="notification" element={<p>Notification</p>} />
+            <Route path="notifications" element={<p>Notifications</p>} />
             <Route path="email" element={<p>Email</p>} />
             <Route path="upload" element={<Upload />} />
             <Route path="signup" element={<SignUp />} />
