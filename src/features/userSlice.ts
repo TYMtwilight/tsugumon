@@ -42,8 +42,9 @@ export const userSlice = createSlice({
       state.userType = action.payload.userType;
       state.avatarURL = action.payload.avatarURL;
     },
-    logout: (state) => {
+    logout: (state:UserLogin) => {
       state.uid = "";
+      state.username = "";
       state.displayName = "";
       state.userType = null;
       state.avatarURL = "";

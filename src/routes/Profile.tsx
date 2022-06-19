@@ -18,9 +18,6 @@ const Profile: React.VFC = () => {
   const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [photoURL, setPhotoURL] = useState<string>("");
-  const [userType, setUserType] = useState<
-    "businessUser" | "normalUser" | null
-  >(null);
 
   const setProfile = async (isMounted: boolean) => {
     setUsername(params.username!);
@@ -34,12 +31,9 @@ const Profile: React.VFC = () => {
       if (isMounted) {
         setDisplayName(doc.data().displayName);
         setPhotoURL(doc.data().photoURL);
-        setUserType(doc.data().userType);
       }
     });
-    
   };
-
 
   useEffect(() => {
     let isMounted: boolean = true;
