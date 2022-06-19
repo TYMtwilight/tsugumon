@@ -1,11 +1,10 @@
-import { useState, memo, useCallback } from "react";
+import { memo } from "react";
 import { Link, Outlet } from "react-router-dom";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
 import Post from "../components/Post/Post";
 import SelectUserType from "../components/SelectUserType/SelectUserType";
-import BusinessUser from "../components/BusinessUser/BusinessUser";
 import { useFeeds } from "../hooks/useFeeds";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
@@ -26,48 +25,33 @@ interface PostData {
 const Feed = memo(() => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const [profileOn, setProfileOn] = useState<boolean>(false);
-  const closeProfile: () => void = useCallback(() => {
-    setProfileOn(false);
-  }, []);
   const feeds: PostData[] = useFeeds();
-  if (process.env.NODE_ENV === "development") {
-    console.log("Feed.tsxがレンダリングされました");
-  }
   if (user.userType) {
     return (
       <div>
-        {feeds.map((feed) => {
+        {feeds.map((feed: PostData) => {
           return (
             <Post
+              avatarURL={feed.avatarURL}
+              caption={feed.caption}
+              displayName={feed.displayName}
+              imageURL={feed.imageURL}
               key={feed.id}
               uid={feed.uid}
               username={feed.username}
-              displayName={feed.displayName}
-              avatarURL={feed.avatarURL}
-              imageURL={feed.imageURL}
-              caption={feed.caption}
               updatedAt={feed.updatedAt}
             />
           );
         })}
-        {profileOn ? (
-          <BusinessUser closeProfile={closeProfile} />
-        ) : (
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              setProfileOn(true);
-            }}
-          >
-            プロフィール表示
-          </button>
-        )}
+        <Link to={`/users/${user.username}`}>
+          <p>プロフィールを表示する</p>
+        </Link>
         <Link to="/upload">
           <AddCircle />
         </Link>
         <button
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
             signOut(auth).catch((error: any) => {
               console.log(`エラーが発生しました\n${error.message}`);
             });

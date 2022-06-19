@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
-import Feed from "./routes/Feed";
+import Home from "./routes/Home";
 import SignUp from "./routes/SignUp";
 import Profile from "./routes/Profile";
 import { store } from "./app/store";
@@ -17,13 +17,15 @@ ReactDOM.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />}>
-            <Route path="upload" element={<Upload />} />
-            <Route path="home" element={<Feed />} />
+            <Route path="home" element={<Home />} />
             <Route path="search" element={<p>Search</p>} />
             <Route path="notification" element={<p>Notification</p>} />
             <Route path="email" element={<p>Email</p>} />
+            <Route path="upload" element={<Upload />} />
             <Route path="signup" element={<SignUp />} />
-            <Route path=":username" element={<Profile />} />
+            <Route path="users">
+              <Route path=":username" element={<Profile />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

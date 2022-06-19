@@ -36,6 +36,7 @@ const App: React.FC = () => {
           );
           if (userSnap.exists()) {
             userType = userSnap.data().userType;
+            username = userSnap.data().username;
           } else {
             console.log("対象のドキュメントは見つかりませんでした。");
           }
