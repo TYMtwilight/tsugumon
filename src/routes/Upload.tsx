@@ -41,7 +41,9 @@ const Upload: React.FC = memo(() => {
     event.target.value = "";
   };
 
-  const resetImage: (event: React.MouseEvent<HTMLButtonElement>) => void = (event) => {
+  const resetImage: (event: React.MouseEvent<HTMLButtonElement>) => void = (
+    event
+  ) => {
     event.preventDefault();
     window.URL.revokeObjectURL(postPreview);
     setPostImage(null);
@@ -66,6 +68,7 @@ const Upload: React.FC = memo(() => {
         }
         setTimeout(() => {
           setUpload(false);
+          window.history.back();
         }, 2000);
     }
   }, [progress]);
@@ -161,10 +164,14 @@ const Upload: React.FC = memo(() => {
       {cancelModal && (
         <div id="cancelModal">
           <p>画像の登録をキャンセルします。よろしいですか？</p>
-          <button onClick={(event:React.MouseEvent<HTMLButtonElement>)=>{
-            event.preventDefault();
-            window.history.back();
-          }}>はい</button>
+          <button
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              window.history.back();
+            }}
+          >
+            はい
+          </button>
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
