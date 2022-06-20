@@ -69,7 +69,7 @@ export const useBatch: (
               const postId: string = getRandomString();
               const postRef: DocumentReference<DocumentData> = doc(
                 db,
-                `users/${uid}/businessUser/${uid}/posts/${postId}`
+                `posts/${postId}`
               );
               // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
               const postData: PostData = {
