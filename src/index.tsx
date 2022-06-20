@@ -23,10 +23,8 @@ ReactDOM.render(
             <Route path="email" element={<p>Email</p>} />
             <Route path="upload" element={<Upload />} />
             <Route path="signup" element={<SignUp />} />
-            <Route path="users">
-              <Route path=":username" element={<Profile />} />
-            </Route>
           </Route>
+          <Route path="/:username" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </Provider>

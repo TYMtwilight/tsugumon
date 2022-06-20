@@ -43,7 +43,7 @@ const Feed = memo(() => {
             />
           );
         })}
-        <Link to={`/users/${user.username}`}>
+        <Link to={`/${user.username}`}>
           <p>プロフィールを表示する</p>
         </Link>
         <Link to="/upload">
