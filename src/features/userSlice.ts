@@ -5,7 +5,7 @@ export interface User {
   uid: string;
   username: string;
   displayName: string;
-  userType: "businessUser" | "normalUser" | null;
+  userType: "business" | "normal" | null;
   avatarURL: string;
   isNewUser: boolean;
 }
@@ -18,7 +18,7 @@ export interface UserLogin {
   uid: string;
   username: string;
   displayName: string;
-  userType: "businessUser" | "normalUser" | null;
+  userType: "business" | "normal" | null;
   avatarURL: string;
 }
 
@@ -42,7 +42,7 @@ export const userSlice = createSlice({
       state.userType = action.payload.userType;
       state.avatarURL = action.payload.avatarURL;
     },
-    logout: (state:UserLogin) => {
+    logout: (state: UserLogin) => {
       state.uid = "";
       state.username = "";
       state.displayName = "";
@@ -56,7 +56,7 @@ export const userSlice = createSlice({
     },
     updateUserType: (
       state,
-      action: PayloadAction<"businessUser" | "normalUser" | null>
+      action: PayloadAction<"business" | "normal" | null>
     ) => {
       state.userType = action.payload;
     },
