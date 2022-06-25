@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
-import { Link } from "react-router-dom";
 import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
@@ -24,7 +23,7 @@ const App: React.FC = () => {
       auth,
       async (authUser: User | null) => {
         if (authUser) {
-          let userType: "businessUser" | "normalUser" | null = null;
+          let userType: "business" | "normal" | null = null;
           let username: string = "";
           const userRef: DocumentReference<DocumentData> = doc(
             db,

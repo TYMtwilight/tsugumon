@@ -6,6 +6,7 @@ import App from "./App";
 import Home from "./routes/Home";
 import SignUp from "./routes/SignUp";
 import Profile from "./routes/Profile";
+import Setting from "./routes/Setting";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
@@ -23,8 +24,9 @@ ReactDOM.render(
             <Route path="email" element={<p>Email</p>} />
             <Route path="upload" element={<Upload />} />
             <Route path="signup" element={<SignUp />} />
+            <Route path="setting" element={<Setting />} />
           </Route>
-          <Route path="/:username" element={<Profile />} />
+          <Route path=":username" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </Provider>

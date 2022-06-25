@@ -9,16 +9,14 @@ const SelectUserType = () => {
   if (process.env.NODE_ENV === "development") {
     console.log("SelectUserTypeがレンダリングされました");
   }
-  const [userType, setUserType] = useState<
-    "businessUser" | "normalUser" | null
-  >(null);
+  const [userType, setUserType] = useState<"business" | "normal" | null>(null);
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
 
   const registUserType: (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>,
-    userType: "businessUser" | "normalUser" | null
+    userType: "business" | "normal" | null
   ) => Promise<void> = async (e, userType) => {
     e.preventDefault();
     const userRef = doc(db, "users", user.uid);
@@ -46,7 +44,7 @@ const SelectUserType = () => {
             id="businessUser"
             data-testid="businessUser"
             onChange={() => {
-              setUserType("businessUser");
+              setUserType("business");
             }}
           />
         </div>
@@ -66,7 +64,7 @@ const SelectUserType = () => {
             id="normalUser"
             data-testid="normalUser"
             onChange={() => {
-              setUserType("normalUser");
+              setUserType("normal");
             }}
           />
         </div>

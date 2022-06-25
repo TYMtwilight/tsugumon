@@ -1,5 +1,7 @@
 import React, { useState, useEffect, memo } from "react";
-import { Params, useParams } from "react-router-dom";
+import { useAppSelector } from "../app/hooks";
+import { selectUser } from "../features/userSlice";
+import { Link, Outlet, Params, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import {
   collection,
@@ -18,7 +20,7 @@ const Profile: React.VFC = memo(() => {
   const [address, setAddress] = useState<string>("");
   const [avatarURL, setAvatarURL] = useState<string>("");
   const [backgroundURL, setBackgroundURL] = useState<string>("");
-  const [birthdate, setBirthdate] = useState<Date | null>(null);
+  const [birthdate, setBirthdate] = useState<string>("");
   const [skill, setSkill] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
@@ -26,6 +28,8 @@ const Profile: React.VFC = memo(() => {
   const [typeOfWork, setTypeOfWork] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [userType, setUserType] = useState<"business" | "nurmal" | null>(null);
+
+  const user = useAppSelector(selectUser);
 
   const setProfile = async (isMounted: boolean) => {
     setUsername(params.username!);
@@ -106,7 +110,11 @@ const Profile: React.VFC = memo(() => {
           src={avatarURL ? avatarURL : `${process.env.PUBLIC_URL}/noAvatar.png`}
           alt="アバター画像"
         />
-        <p id="username">{username}</p>
+        {user.username === username && (
+          <Link to="/setting">
+            <p>プロフィールを編集する</p>
+          </Link>
+        )}
         <p id="displayName">{displayName}</p>
       </div>
       <div id="profile">
@@ -148,6 +156,7 @@ const Profile: React.VFC = memo(() => {
           </div>
         )}
       </div>
+      <Outlet />
     </div>
   );
 });

@@ -46,7 +46,7 @@ interface FetchedUser {
     typeOfWork: string;
   };
   normal?: {
-    birthdate: Date;
+    birthdate: string;
     skill: string;
   };
 }
@@ -136,15 +136,20 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                   if (userData.userType === "business") {
                     setDoc(optionRef, {
                       address: userData.business!.address,
+                      birthdate: "",
                       owner: userData.business!.owner,
+                      skill: "",
                       typeOfWork: userData.business!.typeOfWork,
                       username: userData.username,
                       userType: userData.userType,
                     });
                   } else {
                     setDoc(optionRef, {
+                      address: "",
                       birthdate: userData.normal!.birthdate,
+                      owner: "",
                       skill: userData.normal!.skill,
+                      typeOfWork: "",
                       username: userData.username,
                       userType: userData.userType,
                     });
