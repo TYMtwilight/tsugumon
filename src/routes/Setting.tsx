@@ -31,6 +31,7 @@ const Setting: React.VFC = () => {
   const [introduction, setIntroduction] = useState<string>("");
   const [skill, setSkill] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [userType, setUserType] = useState<"business" | "normal" | null>(null);
   const [address, setAddress] = useState<string>("");
   const [owner, setOwner] = useState<string>("");
   const [typeOfWork, setTypeOfWork] = useState<string>("");
@@ -56,8 +57,10 @@ const Setting: React.VFC = () => {
     `${user.uid}`
   );
 
-  let userType: "business" | "normal" | null = null;
-  const getProfile = async () => {
+  const getProfile = async (isMounted: boolean) => {
+    if (isMounted === false) {
+      return;
+    }
     await getDoc(userRef)
       .then((userSnapshot: DocumentSnapshot<DocumentData>) => {
         setAvatarURL(user.avatarURL);
@@ -65,7 +68,7 @@ const Setting: React.VFC = () => {
         setDisplayName(user.displayName);
         setIntroduction(userSnapshot.data()!.introduction);
         setUsername(user.username);
-        userType = user.userType;
+        setUserType(user.userType);
       })
       .catch((error: any) => {
         if (process.env.NODE_ENV === "development") {
@@ -88,10 +91,11 @@ const Setting: React.VFC = () => {
   };
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("useEffectが実行されました");
-    }
-    getProfile();
+    let isMounted: boolean = true;
+    getProfile(isMounted);
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -105,7 +109,7 @@ const Setting: React.VFC = () => {
       const reader: FileReader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
-        const imgElement: HTMLImageElement = document.createElement("img");
+        const imgElement: HTMLImageElement = new Image();
         const original: string = reader.result as string;
         imgElement.src = original;
         imgElement!.onload = () => {
@@ -187,7 +191,22 @@ const Setting: React.VFC = () => {
         usernamevent: username,
       },
       { merge: true }
-    );
+    )
+      .then(() => {
+        dispatch(
+          setUserProfile({
+            displayName: displayName,
+            username: username,
+            avatarURL: avatarURL,
+          })
+        );
+      })
+      .catch((error) => {
+        if (process.env.NODE_ENV === "development") {
+          console.log(error);
+        }
+      });
+
     await setDoc(
       optionRef,
       {
@@ -196,14 +215,12 @@ const Setting: React.VFC = () => {
         address: address,
       },
       { merge: true }
-    );
-    dispatch(
-      setUserProfile({
-        displayName: displayName,
-        username: username,
-        avatarURL: avatarURL,
-      })
-    );
+    ).catch((error) => {
+      if (process.env.NODE_ENV === "development") {
+        console.log(error);
+      }
+    });
+    window.history.back();
   };
 
   const deleteImage: (
@@ -335,7 +352,7 @@ const Setting: React.VFC = () => {
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               onChangeImageHandler(event, "avatar");
             }}
-            disabled = {!!deleteAvatar}
+            disabled={!!deleteAvatar}
           />
         </div>
         {avatarURL && (
@@ -344,7 +361,7 @@ const Setting: React.VFC = () => {
               event.preventDefault();
               setDeleteAvatar(true);
             }}
-            disabled = {!!avatarImage}
+            disabled={!!avatarImage}
           >
             削除する
           </button>
@@ -384,7 +401,11 @@ const Setting: React.VFC = () => {
           </div>
         )}
       </div>
-      <form name="form" onSubmit={editProfile}>
+      <form
+        onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+          editProfile(event);
+        }}
+      >
         <div>
           {" "}
           <label htmlFor="username" data-testid="username">
@@ -398,10 +419,9 @@ const Setting: React.VFC = () => {
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setUsername(event.target.value);
             }}
-            required
           />
           <label htmlFor="displayName" data-testid="displayName">
-            {userType === "business" ? "会社名" : "ユーザー名"}
+            {userType === "business" ? "会社名" : "個人名"}
           </label>
           <input
             name="textbox"
@@ -411,7 +431,6 @@ const Setting: React.VFC = () => {
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDisplayName(event.target.value);
             }}
-            required
           />
         </div>
         <div>
@@ -426,7 +445,7 @@ const Setting: React.VFC = () => {
             }}
           />
         </div>
-        {userType === "business" ? (
+        {userType === "business" && (
           <div>
             <div>
               <label htmlFor="owner">事業主</label>
@@ -465,7 +484,8 @@ const Setting: React.VFC = () => {
               />
             </div>
           </div>
-        ) : (
+        )}
+        {userType === "normal" && (
           <div>
             <div>
               <label htmlFor="birthdate">生年月日</label>
@@ -493,9 +513,13 @@ const Setting: React.VFC = () => {
             </div>
           </div>
         )}
-
         <div>
-          <input type="submit" data-testid="submitProfile" value="登録する" />
+          <input
+            type="submit"
+            data-testid="submit"
+            value="登録する"
+            disabled={!username || !displayName}
+          />
         </div>
       </form>
     </div>
