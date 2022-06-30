@@ -1,7 +1,7 @@
 import React, { useState, useEffect, memo } from "react";
+import { Link, Outlet, Params, useParams } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectUser } from "../features/userSlice";
-import { Link, Outlet, Params, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import {
   collection,
@@ -14,6 +14,18 @@ import {
   QuerySnapshot,
   where,
 } from "firebase/firestore";
+import { usePosts } from "../hooks/usePosts";
+
+interface PostData {
+  avatarURL: string;
+  caption: string;
+  displayName: string;
+  id: string;
+  imageURL: string;
+  timestamp: Date;
+  uid: string;
+  username: string;
+}
 
 const Profile: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
@@ -26,13 +38,13 @@ const Profile: React.VFC = memo(() => {
   const [introduction, setIntroduction] = useState<string>("");
   const [owner, setOwner] = useState<string>("");
   const [typeOfWork, setTypeOfWork] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
   const [userType, setUserType] = useState<"business" | "nurmal" | null>(null);
 
   const user = useAppSelector(selectUser);
+  const username = params.username!;
+  const posts: PostData[] = usePosts(username);
 
   const setProfile = async (isMounted: boolean) => {
-    setUsername(params.username!);
     const usersRef: CollectionReference<DocumentData> = collection(db, "users");
     const userQuery: Query<DocumentData> = query(
       usersRef,
@@ -156,9 +168,21 @@ const Profile: React.VFC = memo(() => {
           </div>
         )}
       </div>
+      <div>
+        {posts.map((post: PostData) => {
+          return (
+            <Link to={`/${post.id}`} key={post.id}>
+              <img src={post.avatarURL} alt={post.username} />
+              <p>{post.username}</p>
+              {/* <p>{post.timestamp.getDate}</p> */}
+              <img src={post.imageURL} alt={post.id} />
+              <p>{post.caption}</p>
+            </Link>
+          );
+        })}
+      </div>
       <Outlet />
     </div>
   );
 });
-
 export default Profile;

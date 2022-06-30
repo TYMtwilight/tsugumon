@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
-import Post from "../components/Post/Post";
+import Post from "./Post";
 import SelectUserType from "../components/SelectUserType/SelectUserType";
 import { useFeeds } from "../hooks/useFeeds";
 import { auth } from "../firebase";
@@ -32,14 +32,14 @@ const Feed = memo(() => {
         {feeds.map((feed: PostData) => {
           return (
             <Post
-              avatarURL={feed.avatarURL}
-              caption={feed.caption}
-              displayName={feed.displayName}
-              imageURL={feed.imageURL}
-              key={feed.id}
-              uid={feed.uid}
-              username={feed.username}
-              updatedAt={feed.updatedAt}
+            // // avatarURL={feed.avatarURL}
+            // caption={feed.caption}
+            // displayName={feed.displayName}
+            // imageURL={feed.imageURL}
+            // key={feed.id}
+            // uid={feed.uid}
+            // username={feed.username}
+            // updatedAt={feed.updatedAt}
             />
           );
         })}
