@@ -4,12 +4,19 @@ import { selectUser, setUserProfile } from "../features/userSlice";
 import { auth, db, storage } from "../firebase";
 import { updateProfile } from "firebase/auth";
 import {
+  collection,
   doc,
   DocumentData,
   DocumentReference,
   DocumentSnapshot,
   getDoc,
+  getDocs,
+  query,
+  Query,
+  QuerySnapshot,
   setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import {
   deleteObject,
@@ -56,7 +63,10 @@ const Setting: React.VFC = () => {
     "option",
     `${user.uid}`
   );
-
+  const postsQuery: Query<DocumentData> = query(
+    collection(db, "posts"),
+    where("uid", "==", user.uid)
+  );
   const getProfile = async (isMounted: boolean) => {
     if (isMounted === false) {
       return;
@@ -144,11 +154,16 @@ const Setting: React.VFC = () => {
   const uploadAvatar: () => Promise<void> = async () => {
     if (avatarImage) {
       await uploadString(avatarRef, avatarImage, "data_url");
-      await getDownloadURL(avatarRef).then((url: string) => {
+      await getDownloadURL(avatarRef).then(async (url: string) => {
         setAvatarURL(url);
-        setDoc(userRef, { photoURL: url }, { merge: true });
-        updateProfile(auth.currentUser!, {
+        await setDoc(userRef, { photoURL: url }, { merge: true });
+        await updateProfile(auth.currentUser!, {
           photoURL: url,
+        });
+        await getDocs(postsQuery).then((posts: QuerySnapshot<DocumentData>) => {
+          posts.forEach((post) => {
+            updateDoc(post.ref, { avatarURL: url });
+          });
         });
         dispatch(
           setUserProfile({
@@ -184,15 +199,22 @@ const Setting: React.VFC = () => {
     await setDoc(
       userRef,
       {
-        avatarURL: avatarURL,
-        backgroundURL: backgroundURL,
-        displayNamevent: displayName,
+        displayName: displayName,
         introduction: introduction,
-        usernamevent: username,
+        username: username,
       },
       { merge: true }
     )
-      .then(() => {
+      .then(async () => {
+        await getDocs(postsQuery).then((posts: QuerySnapshot<DocumentData>) => {
+          posts.forEach((post) => {
+            updateDoc(post.ref, {
+              displayName: displayName,
+              introduction: introduction,
+              username: username,
+            });
+          });
+        });
         dispatch(
           setUserProfile({
             displayName: displayName,
@@ -226,30 +248,34 @@ const Setting: React.VFC = () => {
   const deleteImage: (
     event: React.MouseEvent<HTMLButtonElement>,
     imageFor: "avatar" | "background"
-  ) => void = (e, imageFor) => {
-    e.preventDefault();
-    const imageRef: StorageReference =
-      imageFor === "avatar" ? avatarRef : backgroundRef;
-    imageFor === "avatar"
-      ? setDoc(userRef, { photoURL: "" }, { merge: true })
-      : setDoc(userRef, { backgroundURL: "" }, { merge: true });
-    deleteObject(imageRef).then(() => {
-      if (process.env.NODE_ENV === "development") {
-        console.log(`${imageFor}画像を削除しました`);
-      }
-      imageFor === "avatar" ? setAvatarURL("") : setBackgroundURL("");
-      imageFor === "avatar" &&
-        dispatch(
-          setUserProfile({
-            displayName: displayName,
-            username: username,
-            avatarURL: "",
-          })
-        );
-      imageFor === "avatar"
-        ? setDeleteAvatar(false)
-        : setDeleteBackground(false);
-    });
+  ) => void = async (event, imageFor) => {
+    event.preventDefault();
+    if (imageFor === "avatar") {
+      await setDoc(userRef, { photoURL: "" }, { merge: true });
+      getDocs(postsQuery)
+        .then((posts: QuerySnapshot<DocumentData>) => {
+          posts.forEach((post: DocumentSnapshot<DocumentData>) => {
+            updateDoc(post.ref, { avatarURL: "" });
+          });
+        })
+        .then(() => {
+          deleteObject(avatarRef);
+          setAvatarURL("");
+          dispatch(
+            setUserProfile({
+              displayName: displayName,
+              username: username,
+              avatarURL: "",
+            })
+          );
+          setDeleteAvatar(false);
+        });
+    } else {
+      await setDoc(userRef, { photoURL: "" }, { merge: true });
+      deleteObject(backgroundRef);
+      setBackgroundURL("");
+      setDeleteBackground(false);
+    }
   };
 
   return (

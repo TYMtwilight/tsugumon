@@ -85,123 +85,103 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
     const object: any = await response.json();
     const usersData: FetchedUser[] = await object.users;
     for (let userData of usersData) {
-      // NOTE >> デモユーザーのアカウントを作成します
-      createUserWithEmailAndPassword(auth, userData.email, userData.password)
-        .then(async (userCredential: UserCredential) => {
-          const user: User = userCredential.user;
-          const uid: string = user.uid;
-          // NOTE >> アバター画像をStorageにアップロードします
-          const avatarRef: StorageReference = ref(storage, `avatars/${uid}`);
-          const avatarImage: ArrayBuffer = await (
-            await fetch(`${process.env.PUBLIC_URL}/${userData.avatar}`)
-          ).arrayBuffer();
-          uploadBytes(avatarRef, avatarImage)
-            .then(async () => {
-              const avatarURL: string = await getDownloadURL(avatarRef);
-              // NOTE >> ユーザーアカウントのプロフィール情報をアップデートします
-              await updateProfile(user, {
-                displayName: userData.displayName,
-                photoURL: avatarURL,
-              });
-              // NOTE >> 背景画像をStorageにアップロードします
-              const backgroundRef: StorageReference = ref(
-                storage,
-                `backgrounds/${uid}`
-              );
-              const backgroundImage: ArrayBuffer = await (
-                await fetch(`${process.env.PUBLIC_URL}/${userData.background}`)
-              ).arrayBuffer();
-              uploadBytes(backgroundRef, backgroundImage)
-                .then(async () => {
-                  // NOTE >> Firestoreにユーザーのプロフィール情報を登録します
-                  const backgroundURL: string = await getDownloadURL(
-                    backgroundRef
-                  );
-                  const userRef: DocumentReference<DocumentData> = doc(
-                    db,
-                    `users/${uid}`
-                  );
-                  setDoc(userRef, {
-                    avatarURL: avatarURL,
-                    backgroundURL: backgroundURL,
-                    displayName: user.displayName,
-                    introduction: userData.introduction,
-                    userType: userData.userType,
-                    username: userData.username,
-                  });
-                  const optionRef: DocumentReference<DocumentData> = doc(
-                    db,
-                    `option/${uid}/`
-                  );
-                  if (userData.userType === "business") {
-                    setDoc(optionRef, {
-                      address: userData.business!.address,
-                      birthdate: "",
-                      owner: userData.business!.owner,
-                      skill: "",
-                      typeOfWork: userData.business!.typeOfWork,
-                      username: userData.username,
-                      userType: userData.userType,
-                    });
-                  } else {
-                    setDoc(optionRef, {
-                      address: "",
-                      birthdate: userData.normal!.birthdate,
-                      owner: "",
-                      skill: userData.normal!.skill,
-                      typeOfWork: "",
-                      username: userData.username,
-                      userType: userData.userType,
-                    });
-                  }
-                })
-                .then(async () => {
-                  const postsData = userData.posts;
-                  for (let postData of postsData) {
-                    const imageRef: StorageReference = ref(
-                      storage,
-                      `posts/${uid}/${getUniqueName()}`
-                    );
-                    const postImage: ArrayBuffer = await (
-                      await fetch(`${process.env.PUBLIC_URL}/${postData.image}`)
-                    ).arrayBuffer();
-                    uploadBytes(imageRef, postImage).then(async () => {
-                      const url: string = await getDownloadURL(imageRef);
-                      const postRef: DocumentReference<DocumentData> = doc(
-                        db,
-                        `posts/${getUniqueName()}`
-                      );
-                      const post: Post = {
-                        uid: uid,
-                        username: postData.username,
-                        displayName: postData.displayName,
-                        avatarURL: postData.avatarURL,
-                        imageURL: url,
-                        caption: postData.caption,
-                        timestamp: new Date(postData.timestamp),
-                      };
-                      await setDoc(postRef, post);
-                      setProgress("done");
-                    });
-                  }
-                })
-                .catch((error: any) => {
-                  if (process.env.NODE_ENV === "development") {
-                    console.log(error);
-                  }
-                });
-            })
-            .catch((error: any) => {
-              if (process.env.NODE_ENV === "development") {
-                console.log(error);
-              }
+      createUserWithEmailAndPassword(
+        auth,
+        userData.email,
+        userData.password
+      ).then(async (userCredential: UserCredential) => {
+        const user: User = userCredential.user;
+        const uid: string = user.uid;
+        const avatarRef: StorageReference = ref(storage, `avatars/${uid}`);
+        const avatarImage: ArrayBuffer = await (
+          await fetch(`${process.env.PUBLIC_URL}/${userData.avatar}`)
+        ).arrayBuffer();
+        const backgroundRef: StorageReference = ref(
+          storage,
+          `backgrounds/${uid}`
+        );
+        const backgroundImage: ArrayBuffer = await (
+          await fetch(`${process.env.PUBLIC_URL}/${userData.background}`)
+        ).arrayBuffer();
+        await uploadBytes(avatarRef, avatarImage)
+          .then(async () => {
+            await uploadBytes(backgroundRef, backgroundImage);
+          })
+          .then(async () => {
+            const avatarURL: string = await getDownloadURL(avatarRef);
+            const backgroundURL: string = await getDownloadURL(backgroundRef);
+            // NOTE >> ユーザーアカウントのプロフィール情報をアップデートします
+            await updateProfile(user, {
+              displayName: userData.displayName,
+              photoURL: avatarURL,
             });
-        })
-        .catch((error: any) => {
-          if (process.env.NODE_ENV === "development") {
-            console.log(error);
-          }
-        });
+            const userRef: DocumentReference<DocumentData> = doc(
+              db,
+              `users/${uid}`
+            );
+            await setDoc(userRef, {
+              avatarURL: avatarURL,
+              backgroundURL: backgroundURL,
+              displayName: user.displayName,
+              introduction: userData.introduction,
+              userType: userData.userType,
+              username: userData.username,
+            });
+            const optionRef: DocumentReference<DocumentData> = doc(
+              db,
+              `option/${uid}/`
+            );
+            if (userData.userType === "business") {
+              await setDoc(optionRef, {
+                address: userData.business!.address,
+                birthdate: "",
+                owner: userData.business!.owner,
+                skill: "",
+                typeOfWork: userData.business!.typeOfWork,
+                username: userData.username,
+                userType: userData.userType,
+              });
+            } else {
+              await setDoc(optionRef, {
+                address: "",
+                birthdate: userData.normal!.birthdate,
+                owner: "",
+                skill: userData.normal!.skill,
+                typeOfWork: "",
+                username: userData.username,
+                userType: userData.userType,
+              });
+            }
+            const postsData = userData.posts;
+            for (let postData of postsData) {
+              const imageRef: StorageReference = ref(
+                storage,
+                `posts/${uid}/${getUniqueName()}`
+              );
+              const postImage: ArrayBuffer = await (
+                await fetch(`${process.env.PUBLIC_URL}/${postData.image}`)
+              ).arrayBuffer();
+              uploadBytes(imageRef, postImage).then(async () => {
+                const url: string = await getDownloadURL(imageRef);
+                const postRef: DocumentReference<DocumentData> = doc(
+                  db,
+                  `posts/${getUniqueName()}`
+                );
+                const post: Post = {
+                  uid: uid,
+                  username: postData.username,
+                  displayName: postData.displayName,
+                  avatarURL: avatarURL,
+                  imageURL: url,
+                  caption: postData.caption,
+                  timestamp: new Date(postData.timestamp),
+                };
+                await setDoc(postRef, post);
+                setProgress("done");
+              });
+            }
+          });
+      });
     }
   };
 

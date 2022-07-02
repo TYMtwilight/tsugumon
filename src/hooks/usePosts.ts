@@ -56,8 +56,7 @@ export const usePosts: (username: string) => PostData[] = (username) => {
             return changedPost;
           }
         );
-        sortedPosts = sortedPosts
-          .concat(changedPosts)
+        sortedPosts = sortedPosts.concat(changedPosts);
         setPosts(sortedPosts);
       },
       (error) => {
