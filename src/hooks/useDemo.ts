@@ -4,7 +4,7 @@ import {
   ref,
   getDownloadURL,
   StorageReference,
-  uploadBytes,
+  uploadString,
 } from "firebase/storage";
 import {
   doc,
@@ -75,6 +75,17 @@ const getUniqueName: () => string = () => {
   return uniqueName;
 };
 
+const arrayBufferToDataURL: (buffer: ArrayBuffer) => string = (buffer) => {
+  let binaryString: string = "";
+  const bytes: Uint8Array = new Uint8Array(buffer);
+  const length: number = bytes.length;
+  for (let i = 0; i < length; i++) {
+    binaryString += String.fromCharCode(bytes[i]);
+  }
+  const base64 = window.btoa(binaryString);
+  return `data:image/jpeg;base64,${base64}`;
+};
+
 export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
   uploadDemo
 ) => {
@@ -93,19 +104,21 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
         const user: User = userCredential.user;
         const uid: string = user.uid;
         const avatarRef: StorageReference = ref(storage, `avatars/${uid}`);
-        const avatarImage: ArrayBuffer = await (
+        const avatarBuffer: ArrayBuffer = await (
           await fetch(`${process.env.PUBLIC_URL}/${userData.avatar}`)
         ).arrayBuffer();
+        const avatarImage: string = arrayBufferToDataURL(avatarBuffer);
         const backgroundRef: StorageReference = ref(
           storage,
           `backgrounds/${uid}`
         );
-        const backgroundImage: ArrayBuffer = await (
+        const backgroundBuffer: ArrayBuffer = await (
           await fetch(`${process.env.PUBLIC_URL}/${userData.background}`)
         ).arrayBuffer();
-        await uploadBytes(avatarRef, avatarImage)
+        const backgroundImage: string = arrayBufferToDataURL(backgroundBuffer);
+        await uploadString(avatarRef, avatarImage, "data_url")
           .then(async () => {
-            await uploadBytes(backgroundRef, backgroundImage);
+            await uploadString(backgroundRef, backgroundImage, "data_url");
           })
           .then(async () => {
             const avatarURL: string = await getDownloadURL(avatarRef);
@@ -158,10 +171,11 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                 storage,
                 `posts/${uid}/${getUniqueName()}`
               );
-              const postImage: ArrayBuffer = await (
+              const postBuffer: ArrayBuffer = await (
                 await fetch(`${process.env.PUBLIC_URL}/${postData.image}`)
               ).arrayBuffer();
-              uploadBytes(imageRef, postImage).then(async () => {
+              const postImage: string = arrayBufferToDataURL(postBuffer);
+              uploadString(imageRef, postImage, "data_url").then(async () => {
                 const url: string = await getDownloadURL(imageRef);
                 const postRef: DocumentReference<DocumentData> = doc(
                   db,

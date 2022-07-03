@@ -5,9 +5,9 @@ import { db, storage } from "../firebase";
 import {
   ref,
   getDownloadURL,
-  uploadBytesResumable,
-  UploadTask,
+  uploadString,
   StorageReference,
+  UploadResult,
 } from "firebase/storage";
 import {
   doc,
@@ -44,7 +44,7 @@ const getRandomString: () => string = () => {
 
 export const useBatch: (
   upload: boolean,
-  postImage: ArrayBuffer,
+  postImage: string,
   caption: string
 ) => "wait" | "run" | "done" = (upload, postImage, caption) => {
   const user: User = useAppSelector(selectUser);
@@ -61,44 +61,39 @@ export const useBatch: (
         storage,
         `posts/${uid}/${filename}`
       );
-      const uploadTask: UploadTask = uploadBytesResumable(imageRef, postImage);
-      uploadTask
+      const uploadPromise: Promise<UploadResult> = uploadString(
+        imageRef,
+        postImage,
+        "data_url"
+      );
+      uploadPromise
         .then(async () => {
-          await getDownloadURL(imageRef)
-            .then(async (downloadURL: string) => {
-              const postId: string = getRandomString();
-              const postRef: DocumentReference<DocumentData> = doc(
-                db,
-                `posts/${postId}`
-              );
-              // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
-              const postData: PostData = {
-                uid: uid,
-                username: username,
-                displayName: displayName,
-                avatarURL: avatarURL,
-                imageURL: downloadURL,
-                caption: caption,
-                updatedAt: serverTimestamp(),
-              };
-              const batch: WriteBatch = writeBatch(db);
-              batch.set(postRef, postData);
-              // TODO >> フォローしているユーザーのFeedドキュメントにpostDataを書き込む処理を実装する
-              await batch
-                .commit()
-                .then(() => {
-                  setProgress("done");
-                })
-                .catch((e: any) => {
-                  console.log(`エラーが発生しました\n${e.message}`);
-                });
-            })
-            .catch((e: any) => {
-              alert(`エラーが発生しました\n${e.message}`);
+          await getDownloadURL(imageRef).then(async (downloadURL: string) => {
+            const postId: string = getRandomString();
+            const postRef: DocumentReference<DocumentData> = doc(
+              db,
+              `posts/${postId}`
+            );
+            // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
+            const postData: PostData = {
+              uid: uid,
+              username: username,
+              displayName: displayName,
+              avatarURL: avatarURL,
+              imageURL: downloadURL,
+              caption: caption,
+              updatedAt: serverTimestamp(),
+            };
+            const batch: WriteBatch = writeBatch(db);
+            batch.set(postRef, postData);
+            // TODO >> フォローしているユーザーのFeedドキュメントにpostDataを書き込む処理を実装する
+            await batch.commit().then(() => {
+              setProgress("done");
             });
+          });
         })
-        .catch((e: any) => {
-          alert(`エラーが発生しました\n${e.message}`);
+        .catch((error: any) => {
+          alert(`エラーが発生しました\n${error.message}`);
         });
     } else {
       setProgress("wait");

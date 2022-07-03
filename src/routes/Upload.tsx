@@ -8,33 +8,28 @@ const Upload: React.FC = memo(() => {
   const user: User = useAppSelector(selectUser);
   const displayName: string = user.displayName;
   const avatarURL: string = user.avatarURL;
-  const types: string[] = ["image/png", "image/jpeg"];
-  const [postImage, setPostImage] = useState<ArrayBuffer | null>(null);
+  const [postImage, setPostImage] = useState<string>("");
   const [postPreview, setPostPreview] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(false);
   const [cancelModal, setCancelModal] = useState<boolean>(false);
   const progress: "wait" | "run" | "done" = useBatch(
     upload,
-    postImage!,
+    postImage,
     caption
   );
 
   const onChangeImageHandler: (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => void = (event) => {
+  ) => void = async (event) => {
+    event.preventDefault();
     const file: File = event.target.files![0];
-    const reader: FileReader = new FileReader();
-    if (types.includes(file.type)) {
-      reader.addEventListener("load", () => {
-        const arrayBuffer: ArrayBuffer = reader.result as ArrayBuffer;
-        setPostImage(arrayBuffer);
-      });
-      // NOTE >> 利用中のブラウザが、BlobURLSchemeをサポートしている場合は、ステートにblobURLを保存します
-      if (window.URL) {
-        setPostPreview(window.URL.createObjectURL(file));
-      }
-      reader.readAsArrayBuffer(file);
+    if (["image/png", "image/jpeg"].includes(file.type) === true) {
+      const reader: FileReader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setPostImage(reader.result as string);
+      };
     } else {
       alert("拡張子が「png」もしくは「jpg」の画像ファイルを選択してください。");
     }
@@ -45,8 +40,7 @@ const Upload: React.FC = memo(() => {
     event
   ) => {
     event.preventDefault();
-    window.URL.revokeObjectURL(postPreview);
-    setPostImage(null);
+    setPostImage("");
     setPostPreview("");
   };
 
@@ -102,9 +96,7 @@ const Upload: React.FC = memo(() => {
           <img
             id="postPreview"
             src={
-              postPreview
-                ? postPreview
-                : `${process.env.PUBLIC_URL}/noPhoto.png`
+              postImage ? postImage : `${process.env.PUBLIC_URL}/noPhoto.png`
             }
             alt="投稿画像のプレビュー"
           />
