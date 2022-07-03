@@ -3,13 +3,13 @@ import { useAppSelector } from "../app/hooks";
 import { selectUser, User } from "../features/userSlice";
 import { useBatch } from "../hooks/useBatch";
 import { AddPhotoAlternate, Cancel } from "@mui/icons-material";
+import { resizeImage } from "../functions/ResizeImage";
 
 const Upload: React.FC = memo(() => {
   const user: User = useAppSelector(selectUser);
   const displayName: string = user.displayName;
   const avatarURL: string = user.avatarURL;
   const [postImage, setPostImage] = useState<string>("");
-  const [postPreview, setPostPreview] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(false);
   const [cancelModal, setCancelModal] = useState<boolean>(false);
@@ -27,8 +27,9 @@ const Upload: React.FC = memo(() => {
     if (["image/png", "image/jpeg"].includes(file.type) === true) {
       const reader: FileReader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        setPostImage(reader.result as string);
+      reader.onload = async () => {
+        const processed: string = await resizeImage(reader.result as string);
+        setPostImage(processed);
       };
     } else {
       alert("拡張子が「png」もしくは「jpg」の画像ファイルを選択してください。");
@@ -41,7 +42,6 @@ const Upload: React.FC = memo(() => {
   ) => {
     event.preventDefault();
     setPostImage("");
-    setPostPreview("");
   };
 
   useEffect(() => {

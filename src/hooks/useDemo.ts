@@ -18,6 +18,7 @@ import {
   User,
   UserCredential,
 } from "firebase/auth";
+import { resizeImage } from "../functions/ResizeImage";
 
 interface FetchedUser {
   email: string;
@@ -107,7 +108,8 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
         const avatarBuffer: ArrayBuffer = await (
           await fetch(`${process.env.PUBLIC_URL}/${userData.avatar}`)
         ).arrayBuffer();
-        const avatarImage: string = arrayBufferToDataURL(avatarBuffer);
+        const avatarOrigin: string = arrayBufferToDataURL(avatarBuffer);
+        const avatarImage: string = await resizeImage(avatarOrigin);
         const backgroundRef: StorageReference = ref(
           storage,
           `backgrounds/${uid}`
@@ -115,7 +117,8 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
         const backgroundBuffer: ArrayBuffer = await (
           await fetch(`${process.env.PUBLIC_URL}/${userData.background}`)
         ).arrayBuffer();
-        const backgroundImage: string = arrayBufferToDataURL(backgroundBuffer);
+        const backgroundOrigin: string = arrayBufferToDataURL(backgroundBuffer);
+        const backgroundImage: string = await resizeImage(backgroundOrigin);
         await uploadString(avatarRef, avatarImage, "data_url")
           .then(async () => {
             await uploadString(backgroundRef, backgroundImage, "data_url");
@@ -174,7 +177,8 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
               const postBuffer: ArrayBuffer = await (
                 await fetch(`${process.env.PUBLIC_URL}/${postData.image}`)
               ).arrayBuffer();
-              const postImage: string = arrayBufferToDataURL(postBuffer);
+              const postOrigin: string = arrayBufferToDataURL(postBuffer);
+              const postImage: string = await resizeImage(postOrigin);
               uploadString(imageRef, postImage, "data_url").then(async () => {
                 const url: string = await getDownloadURL(imageRef);
                 const postRef: DocumentReference<DocumentData> = doc(
