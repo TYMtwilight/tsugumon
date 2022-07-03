@@ -25,6 +25,7 @@ import {
   StorageReference,
   uploadString,
 } from "firebase/storage";
+import { resizeImage } from "../functions/ResizeImage";
 
 const Setting: React.VFC = () => {
   const [avatarImage, setAvatarImage] = useState<string>("");
@@ -118,30 +119,13 @@ const Setting: React.VFC = () => {
     if (["image/png", "image/jpeg"].includes(file.type) === true) {
       const reader: FileReader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        const imgElement: HTMLImageElement = new Image();
-        const original: string = reader.result as string;
-        imgElement.src = original;
-        imgElement!.onload = () => {
-          const canvas: HTMLCanvasElement = document.createElement("canvas");
-          const MAX_WIDTH: number = 640;
-          const IMG_WIDTH: number = imgElement.naturalWidth;
-          const IMG_HEIGHT: number = imgElement.naturalHeight;
-          const SCALING: number = MAX_WIDTH / IMG_WIDTH;
-          canvas.width = MAX_WIDTH;
-          canvas.height = IMG_HEIGHT * SCALING;
-          const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
-          context.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
-          const compressed: string = context.canvas.toDataURL();
-          const result: string = [original, compressed].sort(
-            (a: string, b: string) => a.length - b.length
-          )[0];
-          if (imageFor === "avatar") {
-            setAvatarImage(result);
-          } else {
-            setBackgroundImage(result);
-          }
-        };
+      reader.onload = async () => {
+        const processed: string = await resizeImage(reader.result as string);
+        if (imageFor === "avatar") {
+          setAvatarImage(processed);
+        } else {
+          setBackgroundImage(processed);
+        }
       };
       reader.onerror = () => {
         if (process.env.NODE_ENV === "development") {
