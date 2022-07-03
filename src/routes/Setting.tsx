@@ -26,6 +26,7 @@ import {
   uploadString,
 } from "firebase/storage";
 import { resizeImage } from "../functions/ResizeImage";
+import { checkUsername } from "../functions/CheckUsername";
 
 const Setting: React.VFC = () => {
   const [avatarImage, setAvatarImage] = useState<string>("");
@@ -38,7 +39,15 @@ const Setting: React.VFC = () => {
   const [displayName, setDisplayName] = useState<string>("");
   const [introduction, setIntroduction] = useState<string>("");
   const [skill, setSkill] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [username, setUsername] = useState<{
+    patternCheck: boolean;
+    uniqueCheck: boolean;
+    input: string;
+  }>({
+    patternCheck: true,
+    uniqueCheck: true,
+    input: "",
+  });
   const [userType, setUserType] = useState<"business" | "normal" | null>(null);
   const [address, setAddress] = useState<string>("");
   const [owner, setOwner] = useState<string>("");
@@ -78,7 +87,11 @@ const Setting: React.VFC = () => {
         setBackgroundURL(userSnapshot.data()!.backgroundURL);
         setDisplayName(user.displayName);
         setIntroduction(userSnapshot.data()!.introduction);
-        setUsername(user.username);
+        setUsername({
+          patternCheck: true,
+          uniqueCheck: true,
+          input: user.username,
+        });
         setUserType(user.userType);
       })
       .catch((error: any) => {
@@ -151,8 +164,8 @@ const Setting: React.VFC = () => {
         });
         dispatch(
           setUserProfile({
-            displayName: displayName,
-            username: username,
+            displayName: user.displayName,
+            username: user.username,
             avatarURL: url,
           })
         );
@@ -185,7 +198,7 @@ const Setting: React.VFC = () => {
       {
         displayName: displayName,
         introduction: introduction,
-        username: username,
+        username: username.input,
       },
       { merge: true }
     )
@@ -195,7 +208,7 @@ const Setting: React.VFC = () => {
             updateDoc(post.ref, {
               displayName: displayName,
               introduction: introduction,
-              username: username,
+              username: username.input,
             });
           });
         });
@@ -211,13 +224,13 @@ const Setting: React.VFC = () => {
         dispatch(
           setUserProfile({
             displayName: displayName,
-            username: username,
+            username: username.input,
             avatarURL: avatarURL,
           })
         );
       })
       .then(() => {
-        window.location.href = `http://localhost:3000/${username}`;
+        window.location.href = `http://localhost:3000/${username.input}`;
       })
       .catch((error) => {
         if (process.env.NODE_ENV === "development") {
@@ -244,8 +257,8 @@ const Setting: React.VFC = () => {
           setAvatarURL("");
           dispatch(
             setUserProfile({
-              displayName: displayName,
-              username: username,
+              displayName: user.displayName,
+              username: user.username,
               avatarURL: "",
             })
           );
@@ -422,9 +435,9 @@ const Setting: React.VFC = () => {
             name="textbox"
             type="text"
             id="username"
-            value={username}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setUsername(event.target.value);
+            value={username.input}
+            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+              setUsername(await checkUsername(event.target.value));
             }}
           />
           <label htmlFor="displayName" data-testid="displayName">
