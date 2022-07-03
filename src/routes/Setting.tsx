@@ -215,6 +215,15 @@ const Setting: React.VFC = () => {
             });
           });
         });
+        await setDoc(
+          optionRef,
+          {
+            owner: owner,
+            typeOfWork: typeOfWork,
+            address: address,
+          },
+          { merge: true }
+        );
         dispatch(
           setUserProfile({
             displayName: displayName,
@@ -223,26 +232,14 @@ const Setting: React.VFC = () => {
           })
         );
       })
+      .then(() => {
+        window.location.href = `http://localhost:3000/${username}`;
+      })
       .catch((error) => {
         if (process.env.NODE_ENV === "development") {
           console.log(error);
         }
       });
-
-    await setDoc(
-      optionRef,
-      {
-        owner: owner,
-        typeOfWork: typeOfWork,
-        address: address,
-      },
-      { merge: true }
-    ).catch((error) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log(error);
-      }
-    });
-    window.history.back();
   };
 
   const deleteImage: (
@@ -285,7 +282,7 @@ const Setting: React.VFC = () => {
           id="cancel"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
-            window.history.back();
+            window.location.href = `http://localhost:3000/${user.username}`;
           }}
         >
           キャンセルする
