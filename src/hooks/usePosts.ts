@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useAppSelector } from "../app/hooks";
-import { selectUser, User } from "../features/userSlice";
 import { db } from "../firebase";
 import {
   collection,
@@ -10,76 +8,56 @@ import {
   QueryDocumentSnapshot,
   query,
   Query,
+  where,
 } from "firebase/firestore";
 
 interface PostData {
+  avatarURL: string;
+  caption: string;
+  displayName: string;
   id: string;
+  imageURL: string;
+  timestamp: Date;
   uid: string;
   username: string;
-  displayName: string;
-  avatarURL: string;
-  imageURL: string;
-  caption: string;
-  updatedAt: string;
-  updatedTime: number;
 }
 
-export const usePosts: () => PostData[] = () => {
-  if (process.env.NODE_ENV === "development") {
-    console.log("usePosts.tsがレンダリングされました");
-  }
-  const user: User = useAppSelector(selectUser);
+export const usePosts: (username: string) => PostData[] = (username) => {
   const [posts, setPosts] = useState<PostData[]>([]);
-  let updatedPosts: PostData[] = [];
+  console.log("usePost");
   let sortedPosts: PostData[] = [];
 
   const unsubscribe: (isMounted: boolean) => void = (isMounted) => {
+    if (isMounted === false) {
+      return;
+    }
     const postsQuery: Query<DocumentData> = query(
-      collection(db, `users/${user.uid}/businessUser/${user.uid}/posts`)
+      collection(db, "posts"),
+      where("username", "==", username)
     );
     onSnapshot(
       postsQuery,
       (snapshots: QuerySnapshot<DocumentData>) => {
-        if (process.env.NODE_ENV === "development") {
-          console.log("onSnapshotが実行されました");
-        }
-        const userPosts: PostData[] = snapshots.docs.map(
+        const changedPosts: PostData[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-            const updatedTime: number = snapshot.data().updatedAt.seconds;
-            const updatedDate: Date = snapshot.data().updatedAt.toDate();
-            const postData: PostData = {
+            const changedPost: PostData = {
+              avatarURL: snapshot.data().avatarURL,
+              caption: snapshot.data().caption,
+              displayName: snapshot.data().displayName,
               id: snapshot.id,
+              imageURL: snapshot.data().imageURL,
+              timestamp: snapshot.data().timestamp,
               uid: snapshot.data().uid,
               username: snapshot.data().username,
-              displayName: snapshot.data().displayName,
-              avatarURL: snapshot.data().avatarURL,
-              imageURL: snapshot.data().imageURL,
-              caption: snapshot.data().caption,
-              updatedAt:
-                updatedDate.getFullYear() +
-                "年" +
-                ("0" + updatedDate.getMonth()).slice(-2) +
-                "月" +
-                ("0" + updatedDate.getDate()).slice(-2) +
-                "日" +
-                " " +
-                ("0" + updatedDate.getHours()).slice(-2) +
-                ":" +
-                ("0" + updatedDate.getMinutes()).slice(-2),
-              updatedTime: updatedTime,
             };
-            updatedPosts.filter((updatedPost) => {
-              return updatedPost.id !== postData.id;
+            sortedPosts.filter((sortedPost) => {
+              return sortedPost.id !== changedPost.id;
             });
-            return postData;
+            return changedPost;
           }
         );
-        sortedPosts = updatedPosts
-          .concat(userPosts)
-          .sort((firstEl: PostData, secondEl: PostData) => {
-            return secondEl.updatedTime - firstEl.updatedTime;
-          });
-        isMounted && setPosts(sortedPosts);
+        sortedPosts = sortedPosts.concat(changedPosts);
+        setPosts(sortedPosts);
       },
       (error) => {
         console.error(error);
@@ -93,9 +71,6 @@ export const usePosts: () => PostData[] = () => {
     return () => {
       isMounted = false;
       unsubscribe(isMounted);
-      if (process.env.NODE_ENV === "development") {
-        console.log("usePostsのクリーンアップ関数が実行されました");
-      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

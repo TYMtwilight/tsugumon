@@ -4,13 +4,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Home from "./routes/Home";
-import SignUp from "./routes/SignUp";
+import Post from "./routes/Post";
 import Profile from "./routes/Profile";
 import Setting from "./routes/Setting";
+import SignUp from "./routes/SignUp";
+import Upload from "./routes/Upload";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
-import Upload from "./routes/Upload";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -27,6 +28,7 @@ ReactDOM.render(
             <Route path="setting" element={<Setting />} />
           </Route>
           <Route path=":username" element={<Profile />} />
+          <Route path=":docId" element={<Post />} />
         </Routes>
       </BrowserRouter>
     </Provider>
