@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { auth } from "../../firebase";
 import { useDemo } from "../../hooks/useDemo";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -141,6 +141,7 @@ const UserAuthentication = () => {
       >
         デモデータの登録
       </button>
+      <Outlet />
     </div>
   );
 };

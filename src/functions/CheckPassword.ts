@@ -4,18 +4,18 @@ export const checkPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
   const checkedResults: {
     lengthCheck: boolean;
     patternCheck: boolean;
-    targetValue: string;
+    input: string;
   } = {
     lengthCheck: false,
     patternCheck: true,
-    targetValue: "",
+    input: "",
   };
   // NOTE >> lengthCheckとpatternCheckの両方がtrueのとき、approvalをtrueにします
   const checkApproval = () => {
     if (checkedResults.lengthCheck && checkedResults.patternCheck) {
-      checkedResults.targetValue = event.target.value;
+      checkedResults.input = event.target.value;
     }else{
-      checkedResults.targetValue = "";
+      checkedResults.input = "";
     }
   };
   // NOTE >> 入力文字数をチェックします

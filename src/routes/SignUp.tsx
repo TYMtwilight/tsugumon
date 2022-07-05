@@ -3,7 +3,6 @@ import { useAppDispatch } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { setUserProfile, toggleIsNewUser } from "../features/userSlice";
 import { auth, db, storage } from "../firebase";
-import { checkPassword } from "../functions/CheckPassword";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -15,13 +14,6 @@ import {
   DocumentData,
   DocumentReference,
   setDoc,
-  collection,
-  getDocs,
-  where,
-  query,
-  QuerySnapshot,
-  CollectionReference,
-  Query,
 } from "firebase/firestore";
 import {
   getDownloadURL,
@@ -30,30 +22,37 @@ import {
   uploadBytes,
 } from "firebase/storage";
 import { Visibility, VisibilityOff, AddAPhoto } from "@mui/icons-material";
+import { checkPassword } from "../functions/CheckPassword";
+import { checkUsername } from "../functions/CheckUsername";
 
 const SignUp: React.VFC = () => {
   const types: string[] = ["image/png", "image/jpeg"];
   const [displayName, setDisplayName] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [usernamePattern, setUsernamePattern] = useState<boolean>(true);
-  const [duplicate, setDuplicate] = useState<boolean>(false);
+  const [username, setUsername] = useState<{
+    patternCheck: boolean;
+    uniqueCheck: boolean;
+    input: string;
+  }>({
+    patternCheck: true,
+    uniqueCheck: true,
+    input: "",
+  });
   const [avatarImage, setAvatarImage] = useState<ArrayBuffer | null>(null);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<{
     lengthCheck: boolean;
     patternCheck: boolean;
-    targetValue: string;
+    input: string;
   }>({
     lengthCheck: false,
     patternCheck: true,
-    targetValue: "",
+    input: "",
   });
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
   const onChangeAvatarImage: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void = (event) => {
@@ -74,71 +73,51 @@ const SignUp: React.VFC = () => {
     }
   };
 
-  const checkUsername: (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => Promise<void> = async (event) => {
-    setUsername(`@${event.target.value}`);
-
-    setUsernamePattern(true);
-    const regex = /^[a-z|A-Z|0-9|_]+$/;
-    if (event.target.value.length > 0) {
-      setUsernamePattern(regex.test(event.target.value));
-    }
-
-    setDuplicate(false);
-    const usersRef: CollectionReference<DocumentData> = collection(db, "users");
-    const usersQuery: Query<DocumentData> = query(
-      usersRef,
-      where("username", "==", `@${event.target.value}`)
-    );
-    const usersSnap: QuerySnapshot<DocumentData> = await getDocs(usersQuery);
-    usersSnap.forEach(() => {
-      setDuplicate(true);
-      setUsername("");
-    });
-  };
-
   const signUp: (
     event: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => Promise<void> = async (event) => {
     event.preventDefault();
     let url: string = "";
-    await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password.targetValue
-    ).then(async (userCredential: UserCredential) => {
-      const user: User = userCredential.user;
-      const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}`);
-      if (avatarImage) {
-        await uploadBytes(avatarRef, avatarImage);
-        url = await getDownloadURL(avatarRef);
-      }
-      await updateProfile(user, {
-        displayName: displayName,
-        photoURL: url,
-      });
-      const userRef: DocumentReference<DocumentData> = doc(
-        db,
-        `users/${user.uid}`
-      );
-      setDoc(userRef, {
-        displayName: displayName,
-        username: username,
-        photoURL: url,
-        userType: null,
-        followerCount: 0,
-      });
-    });
-    navigate("/", { replace: true });
-    dispatch(
-      setUserProfile({
-        displayName: displayName,
-        username: username,
-        avatarURL: url,
+    await createUserWithEmailAndPassword(auth, email, password.input)
+      .then(async (userCredential: UserCredential) => {
+        const user: User = userCredential.user;
+        const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}`);
+        if (avatarImage) {
+          await uploadBytes(avatarRef, avatarImage);
+          url = await getDownloadURL(avatarRef);
+        }
+        await updateProfile(user, {
+          displayName: displayName,
+          photoURL: url,
+        });
+        const userRef: DocumentReference<DocumentData> = doc(
+          db,
+          `users/${user.uid}`
+        );
+        setDoc(userRef, {
+          displayName: displayName,
+          username: `@${username.input}`,
+          photoURL: url,
+          userType: null,
+          followerCount: 0,
+        });
+        dispatch(
+          setUserProfile({
+            displayName: displayName,
+            username: `@${username.input}`,
+            avatarURL: url,
+          })
+        );
+        dispatch(toggleIsNewUser(true));
+        navigate("/", { replace: true });
       })
-    );
-    dispatch(toggleIsNewUser(true));
+      .catch((error: any) => {
+        if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+          alert("このメールアドレスは既に使われています。");
+        } else {
+          console.log(error.message);
+        }
+      });
   };
 
   return (
@@ -219,6 +198,7 @@ const SignUp: React.VFC = () => {
             type={showPassword ? "text" : "password"}
             id="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              event.preventDefault();
               setPassword(checkPassword(event));
             }}
           />
@@ -243,13 +223,18 @@ const SignUp: React.VFC = () => {
           <input
             type="text"
             id="username"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              checkUsername(event);
+            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+              event.preventDefault();
+              setUsername(await checkUsername(event.target.value));
             }}
           />
-          <p>{duplicate && "既に使用されているユーザー名です。"}</p>
           <p>
-            {usernamePattern === false && "入力できない文字が含まれいます。"}
+            {username.uniqueCheck === false &&
+              "既に使用されているユーザー名です。"}
+          </p>
+          <p>
+            {username.patternCheck === false &&
+              "入力できない文字が含まれいます。"}
           </p>
         </div>
         <div>
@@ -261,14 +246,23 @@ const SignUp: React.VFC = () => {
             ) => {
               signUp(event);
             }}
-            disabled={!displayName || !email || !username || !password}
+            disabled={
+              !displayName ||
+              !email ||
+              !username.patternCheck ||
+              !username.uniqueCheck ||
+              !username.input ||
+              !password.lengthCheck ||
+              !password.patternCheck ||
+              !password.input
+            }
           />
         </div>
         <div>
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              navigate(-1);
+              navigate("/", { replace: true });
             }}
           >
             ログイン画面に戻る
