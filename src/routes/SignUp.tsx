@@ -78,8 +78,8 @@ const SignUp: React.VFC = () => {
   ) => Promise<void> = async (event) => {
     event.preventDefault();
     let url: string = "";
-    await createUserWithEmailAndPassword(auth, email, password.input).then(
-      async (userCredential: UserCredential) => {
+    await createUserWithEmailAndPassword(auth, email, password.input)
+      .then(async (userCredential: UserCredential) => {
         const user: User = userCredential.user;
         const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}`);
         if (avatarImage) {
@@ -101,17 +101,23 @@ const SignUp: React.VFC = () => {
           userType: null,
           followerCount: 0,
         });
-      }
-    );
-    navigate("/", { replace: true });
-    dispatch(
-      setUserProfile({
-        displayName: displayName,
-        username: `@${username.input}`,
-        avatarURL: url,
+        dispatch(
+          setUserProfile({
+            displayName: displayName,
+            username: `@${username.input}`,
+            avatarURL: url,
+          })
+        );
+        dispatch(toggleIsNewUser(true));
+        navigate("/", { replace: true });
       })
-    );
-    dispatch(toggleIsNewUser(true));
+      .catch((error: any) => {
+        if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+          alert("このメールアドレスは既に使われています。");
+        } else {
+          console.log(error.message);
+        }
+      });
   };
 
   return (
@@ -240,14 +246,23 @@ const SignUp: React.VFC = () => {
             ) => {
               signUp(event);
             }}
-            disabled={!displayName || !email || !username || !password}
+            disabled={
+              !displayName ||
+              !email ||
+              !username.patternCheck ||
+              !username.uniqueCheck ||
+              !username.input ||
+              !password.lengthCheck ||
+              !password.patternCheck ||
+              !password.input
+            }
           />
         </div>
         <div>
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              navigate(-1);
+              navigate("/", { replace: true });
             }}
           >
             ログイン画面に戻る
