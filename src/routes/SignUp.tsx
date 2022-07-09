@@ -19,14 +19,14 @@ import {
   getDownloadURL,
   ref,
   StorageReference,
-  uploadBytes,
+  uploadString,
 } from "firebase/storage";
 import { Visibility, VisibilityOff, AddAPhoto } from "@mui/icons-material";
 import { checkPassword } from "../functions/CheckPassword";
 import { checkUsername } from "../functions/CheckUsername";
+import { resizeImage } from "../functions/ResizeImage";
 
 const SignUp: React.VFC = () => {
-  const types: string[] = ["image/png", "image/jpeg"];
   const [displayName, setDisplayName] = useState<string>("");
   const [username, setUsername] = useState<{
     patternCheck: boolean;
@@ -37,7 +37,7 @@ const SignUp: React.VFC = () => {
     uniqueCheck: true,
     input: "",
   });
-  const [avatarImage, setAvatarImage] = useState<ArrayBuffer | null>(null);
+  const [avatarImage, setAvatarImage] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<{
     lengthCheck: boolean;
@@ -48,26 +48,28 @@ const SignUp: React.VFC = () => {
     patternCheck: true,
     input: "",
   });
-  const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const onChangeAvatarImage: (
+  const onChangeImageHandler: (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => void = (event) => {
+  ) => void = async (event) => {
+    event.preventDefault();
     const file: File = event.target.files![0];
-    const reader: FileReader = new FileReader();
-    if (types.includes(file.type)) {
-      reader.addEventListener("load", () => {
-        const arrayBuffer: ArrayBuffer = reader.result as ArrayBuffer;
-        setAvatarImage(arrayBuffer);
-      });
+    if (["image/png", "image/jpeg"].includes(file.type) === true) {
+      const reader: FileReader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const processed: string = await resizeImage(reader.result as string);
+        setAvatarImage(processed);
+      };
+      reader.onerror = () => {
+        if (process.env.NODE_ENV === "development") {
+          console.log(reader.error);
+        }
+      };
       // NOTE >> ブラウザがBlobURLSchemeをサポートしていない場合は処理を中断
-      if (!window.URL) return;
-      setAvatarPreview(window.URL.createObjectURL(file));
-      reader.readAsArrayBuffer(file);
-      event.target.value = "";
     } else {
       alert("拡張子が「png」もしくは「jpg」の画像ファイルを選択してください。");
     }
@@ -83,7 +85,7 @@ const SignUp: React.VFC = () => {
         const user: User = userCredential.user;
         const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}`);
         if (avatarImage) {
-          await uploadBytes(avatarRef, avatarImage);
+          await uploadString(avatarRef, avatarImage, "data_url");
           url = await getDownloadURL(avatarRef);
         }
         await updateProfile(user, {
@@ -95,11 +97,12 @@ const SignUp: React.VFC = () => {
           `users/${user.uid}`
         );
         setDoc(userRef, {
+          avatarURL: url,
+          backgroundURL: "",
           displayName: displayName,
-          username: `@${username.input}`,
-          photoURL: url,
+          introduction: "",
           userType: null,
-          followerCount: 0,
+          username: `@${username.input}`,
         });
         dispatch(
           setUserProfile({
@@ -157,8 +160,8 @@ const SignUp: React.VFC = () => {
             <img
               id="avatar"
               src={
-                avatarPreview
-                  ? avatarPreview
+                avatarImage
+                  ? avatarImage
                   : `${process.env.PUBLIC_URL}/noAvatar.png`
               }
               alt="ユーザーのアバター画像"
@@ -171,7 +174,7 @@ const SignUp: React.VFC = () => {
               id="selectAvatarImage"
               accept="image/png,image/jpeg"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                onChangeAvatarImage(event);
+                onChangeImageHandler(event);
               }}
             />
           </div>
@@ -179,8 +182,7 @@ const SignUp: React.VFC = () => {
             <button
               id="clearAvatarImage"
               onClick={() => {
-                setAvatarImage(null);
-                setAvatarPreview("");
+                setAvatarImage("");
               }}
             >
               画像を消す
