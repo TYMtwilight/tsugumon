@@ -1,4 +1,5 @@
 import React, { useEffect, useState, memo } from "react";
+import { useNavigate, NavigateFunction } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectUser, User } from "../features/userSlice";
 import { useBatch } from "../hooks/useBatch";
@@ -13,6 +14,7 @@ const Upload: React.FC = memo(() => {
   const [caption, setCaption] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(false);
   const [cancelModal, setCancelModal] = useState<boolean>(false);
+  const navigate: NavigateFunction = useNavigate();
   const progress: "wait" | "run" | "done" = useBatch(
     upload,
     postImage,
@@ -62,9 +64,10 @@ const Upload: React.FC = memo(() => {
         }
         setTimeout(() => {
           setUpload(false);
-          window.history.back();
+          navigate(-1);
         }, 2000);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress]);
 
   return (
@@ -121,8 +124,8 @@ const Upload: React.FC = memo(() => {
           <textarea
             placeholder="タップして入力する"
             value={caption}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              setCaption(e.target.value);
+            onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+              setCaption(event.target.value);
             }}
           />
         </div>
@@ -159,7 +162,7 @@ const Upload: React.FC = memo(() => {
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              window.history.back();
+              navigate(-1);
             }}
           >
             はい

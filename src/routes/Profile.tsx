@@ -1,5 +1,12 @@
 import React, { useState, useEffect, memo } from "react";
-import { Link, Outlet, Params, useParams } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  Params,
+  useParams,
+  useNavigate,
+  NavigateFunction,
+} from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectUser } from "../features/userSlice";
 import { db } from "../firebase";
@@ -42,6 +49,7 @@ const Profile: React.VFC = memo(() => {
 
   const user = useAppSelector(selectUser);
   const username = params.username!;
+  const navigate: NavigateFunction = useNavigate();
   const posts: PostData[] = usePosts(username);
 
   const setProfile = async (isMounted: boolean) => {
@@ -111,7 +119,7 @@ const Profile: React.VFC = memo(() => {
         <button
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
-            window.history.back();
+            navigate(`/home`);
           }}
         >
           戻る

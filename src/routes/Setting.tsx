@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, setUserProfile } from "../features/userSlice";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { auth, db, storage } from "../firebase";
 import { updateProfile } from "firebase/auth";
 import {
@@ -56,6 +57,7 @@ const Setting: React.VFC = () => {
   // TODO >> 広告文の表示の有無を記録するステート「advertiseRef」を実装する。
   // const [advertiseRef, setAdvertiseRef] = useState<string>("");
 
+  const navigate: NavigateFunction = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const avatarRef: StorageReference = ref(storage, `avatars/${user.uid}/`);
@@ -230,7 +232,7 @@ const Setting: React.VFC = () => {
         );
       })
       .then(() => {
-        window.location.href = `http://localhost:3000/${username.input}`;
+        navigate(`/${username.input}`, { replace: true });
       })
       .catch((error) => {
         if (process.env.NODE_ENV === "development") {
@@ -279,7 +281,7 @@ const Setting: React.VFC = () => {
           id="cancel"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
-            window.location.href = `http://localhost:3000/${user.username}`;
+            navigate(-1);
           }}
         >
           キャンセルする
