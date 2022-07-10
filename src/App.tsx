@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { Link, Outlet } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
-import UserAuthentication from "./components/UserAuthentication/UserAuthentication";
+import Auth from "./routes/Auth";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
 import {
@@ -82,7 +82,7 @@ const App: React.FC = () => {
       </>
     );
   } else {
-    return <UserAuthentication />;
+    return <Auth />;
   }
 };
 export default App;
