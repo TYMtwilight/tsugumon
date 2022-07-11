@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
 import Auth from "./routes/Auth";
 import { auth, db } from "./firebase";
@@ -12,8 +12,10 @@ import {
   DocumentSnapshot,
   getDoc,
 } from "firebase/firestore";
-import { Home, Search, Notifications, Email } from "@mui/icons-material";
-
+import HomeIcon from "@mui/icons-material/Home";
+import SearchIcon from "@mui/icons-material/Search";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import EmailIcon from "@mui/icons-material/Email";
 const App: React.FC = () => {
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
@@ -66,19 +68,22 @@ const App: React.FC = () => {
       <>
         <nav>
           <Link to="/home">
-            <Home />
+            <HomeIcon />
           </Link>
           <Link to="/search">
-            <Search />
+            <SearchIcon />
           </Link>
           <Link to="/notifications">
-            <Notifications />
+            <NotificationsIcon />
           </Link>
           <Link to="/email">
-            <Email />
+            <EmailIcon />
           </Link>
         </nav>
         <Outlet />
+        <Routes>
+          <Route path="/" element={<Navigate to="/home" />} />
+        </Routes>
       </>
     );
   } else {
