@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet,useNavigate,NavigateFunction } from "react-router-dom";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
@@ -24,6 +24,7 @@ interface PostData {
 
 const Feed = memo(() => {
   const dispatch = useAppDispatch();
+  const navigate:NavigateFunction = useNavigate();
   const user = useAppSelector(selectUser);
   const feeds: PostData[] = useFeeds();
   if (user.userType) {
@@ -52,6 +53,7 @@ const Feed = memo(() => {
         <button
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
+            navigate("/");
             signOut(auth).catch((error: any) => {
               console.log(`エラーが発生しました\n${error.message}`);
             });
