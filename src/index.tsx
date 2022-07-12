@@ -18,7 +18,7 @@ ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />}>
+          <Route path="*" element={<App />}>
             <Route path="home" element={<Home />} />
             <Route path="search" element={<p>Search</p>} />
             <Route path="notifications" element={<p>Notifications</p>} />
