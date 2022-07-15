@@ -22,12 +22,10 @@ interface PostData {
   username: string;
 }
 
-export const usePosts: (username: string) => PostData[] = (username) => {
+export const usePosts = (username: string) => {
   const [posts, setPosts] = useState<PostData[]>([]);
-  console.log("usePost");
-  let sortedPosts: PostData[] = [];
 
-  const unsubscribe: (isMounted: boolean) => void = (isMounted) => {
+  const unsubscribe: (isMounted: boolean) => void = async (isMounted) => {
     if (isMounted === false) {
       return;
     }
@@ -35,9 +33,11 @@ export const usePosts: (username: string) => PostData[] = (username) => {
       collection(db, "posts"),
       where("username", "==", username)
     );
+
     onSnapshot(
       postsQuery,
       (snapshots: QuerySnapshot<DocumentData>) => {
+        const unChangedPosts:PostData[] = posts;
         const changedPosts: PostData[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
             const changedPost: PostData = {
@@ -50,14 +50,13 @@ export const usePosts: (username: string) => PostData[] = (username) => {
               uid: snapshot.data().uid,
               username: snapshot.data().username,
             };
-            sortedPosts.filter((sortedPost) => {
-              return sortedPost.id !== changedPost.id;
+            unChangedPosts.filter((unChangedPost) => {
+              return unChangedPost.id !== changedPost.id;
             });
             return changedPost;
           }
         );
-        sortedPosts = sortedPosts.concat(changedPosts);
-        setPosts(sortedPosts);
+        setPosts(unChangedPosts.concat(changedPosts));
       },
       (error) => {
         console.error(error);
@@ -74,5 +73,7 @@ export const usePosts: (username: string) => PostData[] = (username) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  console.log(posts);
   return posts;
 };
+
