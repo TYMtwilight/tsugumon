@@ -29,6 +29,7 @@ interface FetchedUser {
   userType: string;
   introduction: string;
   background: string;
+  cropsTags: string[];
   posts: [
     {
       uid: string;
@@ -138,6 +139,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
             await setDoc(userRef, {
               avatarURL: avatarURL,
               backgroundURL: backgroundURL,
+              cropsTags:userData.cropsTags,
               displayName: user.displayName,
               introduction: userData.introduction,
               userType: userData.userType,
