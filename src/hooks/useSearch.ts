@@ -13,10 +13,7 @@ import { db } from "../firebase";
 
 export const useSearch: (filter: string | null) => string[] = (filter) => {
   const [usernames, setUsernames] = useState<string[]>([]);
-  let isMounted: boolean = true;
-  if (filter === null) {
-    isMounted = false;
-  }
+  let isMounted: boolean = filter !== null;
   const usersQuery: Query<DocumentData> = query(
     collection(db, "users"),
     where("cropsTags", "array-contains", filter)
