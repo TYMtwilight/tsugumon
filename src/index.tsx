@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Home from "./routes/Home";
+import Search from "./routes/Search";
 import Post from "./routes/Post";
 import Profile from "./routes/Profile";
 import Setting from "./routes/Setting";
@@ -20,7 +21,7 @@ ReactDOM.render(
         <Routes>
           <Route path="*" element={<App />}>
             <Route path="home" element={<Home />} />
-            <Route path="search" element={<p>Search</p>} />
+            <Route path="search" element={<Search />} />
             <Route path="notifications" element={<p>Notifications</p>} />
             <Route path="email" element={<p>Email</p>} />
             <Route path="upload" element={<Upload />} />
