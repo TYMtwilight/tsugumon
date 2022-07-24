@@ -1,11 +1,22 @@
 import { useSearchParams } from "react-router-dom";
 import { useSearch } from "../hooks/useSearch";
 
+interface PostData {
+  avatarURL: string;
+  caption: string;
+  displayName: string;
+  id: string;
+  imageURL: string;
+  timestamp: Date;
+  uid: string;
+  username: string;
+}
+
 const Search: React.VFC = () => {
   const tags: string[] = ["トマト", "米"];
   const [searchParams, setSearchParams] = useSearchParams();
   const filter = searchParams.get("tag");
-  const usernames: string[] = useSearch(filter);
+  const posts: PostData[] = useSearch(filter);
 
   return (
     <div>
@@ -32,8 +43,8 @@ const Search: React.VFC = () => {
           </button>
         );
       })}
-      {usernames.map((username: string) => {
-        return <p key={username}>{username}</p>;
+      {posts.map((post: PostData) => {
+        return <img key={post.id} src={post.imageURL} alt={post.caption}/>;
       })}
     </div>
   );
