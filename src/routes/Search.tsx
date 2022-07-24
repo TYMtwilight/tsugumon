@@ -43,9 +43,10 @@ const Search: React.VFC = () => {
           </button>
         );
       })}
-      {posts.map((post: PostData) => {
-        return <img key={post.id} src={post.imageURL} alt={post.caption}/>;
-      })}
+      {posts.length > 0 &&
+        posts.map((post: PostData) => {
+          return <img key={post.id} src={post.imageURL} alt={post.caption} />;
+        })}
     </div>
   );
 };

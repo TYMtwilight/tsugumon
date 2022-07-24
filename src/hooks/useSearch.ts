@@ -5,13 +5,11 @@ import {
   getDocs,
   limit,
   query,
-  Query,
   QueryDocumentSnapshot,
   QuerySnapshot,
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
-
 interface PostData {
   avatarURL: string;
   caption: string;
@@ -25,51 +23,63 @@ interface PostData {
 
 export const useSearch: (filter: string | null) => PostData[] = (filter) => {
   const [posts, setPosts] = useState<PostData[]>([]);
-  const usersQuery: Query<DocumentData> = query(
-    collection(db, "users"),
-    where("cropsTags", "array-contains", filter)
-  );
-  let usernames: string[] = [];
+  let isMounted = filter !== null;
+
   const getPosts: () => void = () => {
     setPosts([]);
-    getDocs(usersQuery).then((userSnaps: QuerySnapshot<DocumentData>) => {
-      usernames = userSnaps.docs.map(
+    if(isMounted === false){
+      return;
+    }
+    getDocs(
+      query(
+        collection(db, "users"),
+        where("cropsTags", "array-contains", filter)
+      )
+    ).then((userSnaps: QuerySnapshot<DocumentData>) => {
+      let usernames: string[] = userSnaps.docs.map(
         (userSnap: QueryDocumentSnapshot<DocumentData>) => {
           return userSnap.data().username;
         }
       );
-      getDocs(
-        query(
-          collection(db, "posts"),
-          where("username", "in", usernames),
-          limit(50)
-        )
-      ).then((postSnaps: QuerySnapshot<DocumentData>) => {
-        // eslint-disable-next-line array-callback-return
-        postSnaps.docs.forEach(
-          (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-            const postSnap: PostData = {
-              avatarURL: snapshot.data().avatarURL,
-              caption: snapshot.data().caption,
-              displayName: snapshot.data().displayName,
-              id: snapshot.data().id,
-              imageURL: snapshot.data().imageURL,
-              timestamp: snapshot.data().timestamp,
-              uid: snapshot.data().uid,
-              username: snapshot.data().username,
-            };
-            setPosts((prev: PostData[]) => {
-              return prev.concat([postSnap]);
-            });
+      if (usernames.length > 0) {
+        getDocs(
+          query(
+            collection(db, "posts"),
+            where("username", "in", usernames),
+            limit(50)
+          )
+        ).then((postSnaps: QuerySnapshot<DocumentData>) => {
+          // eslint-disable-next-line array-callback-return
+          const postsArray: PostData[] = postSnaps.docs.map(
+            (snapshot: QueryDocumentSnapshot<DocumentData>) => {
+              const postSnap: PostData = {
+                avatarURL: snapshot.data().avatarURL,
+                caption: snapshot.data().caption,
+                displayName: snapshot.data().displayName,
+                id: snapshot.id,
+                imageURL: snapshot.data().imageURL,
+                timestamp: snapshot.data().timestamp,
+                uid: snapshot.data().uid,
+                username: snapshot.data().username,
+              };
+              return postSnap;
+            }
+          );
+          if (postsArray.length === postSnaps.docs.length) {
+            setPosts(postsArray);
           }
-        );
-      });
+        });
+      }
     });
   };
 
   useEffect(() => {
     getPosts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
   return posts;
 };
