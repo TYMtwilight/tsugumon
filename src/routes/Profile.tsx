@@ -123,13 +123,15 @@ const Profile: React.VFC = memo(() => {
       <div>
         {posts.map((post: PostData) => {
           return (
-            <Link to={`/${post.id}`} key={post.id}>
+            <div key={post.id}>
               <img src={post.avatarURL} alt={post.username} />
               <p>{post.username}</p>
               {/* <p>{post.timestamp.getDate}</p> */}
-              <img src={post.imageURL} alt={post.id} />
-              <p>{post.caption}</p>
-            </Link>
+              <Link to={`/${username}/${post.id}`}>
+                <img src={post.imageURL} alt={post.id} />
+                <p>{post.caption}</p>
+              </Link>
+            </div>
           );
         })}
       </div>

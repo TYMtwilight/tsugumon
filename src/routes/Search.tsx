@@ -56,7 +56,7 @@ const Search: React.VFC = () => {
                 </Link>
               </div>
               <div>
-                <Link to={`/${post.id}`}>
+                <Link to={`/${post.username}/${post.id}`}>
                   <img src={post.imageURL} alt={post.caption} />
                 </Link>
                 <div>
