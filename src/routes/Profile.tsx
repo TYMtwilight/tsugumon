@@ -55,7 +55,7 @@ const Profile: React.VFC = memo(() => {
         <button
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
-            navigate(`/home`);
+            navigate(-1);
           }}
         >
           戻る
