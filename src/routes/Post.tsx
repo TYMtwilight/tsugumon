@@ -1,5 +1,12 @@
-import { memo, useState, useEffect } from "react";
-import { Link, Outlet, Params, useParams } from "react-router-dom";
+import React, { memo, useState, useEffect } from "react";
+import {
+  Link,
+  Outlet,
+  Params,
+  useParams,
+  useNavigate,
+  NavigateFunction,
+} from "react-router-dom";
 import { Favorite } from "@mui/icons-material";
 import { db } from "../firebase";
 import {
@@ -24,7 +31,7 @@ interface PostData {
 const Post: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
   const postId = params.docId!;
-  console.log(postId);
+  const navigate: NavigateFunction = useNavigate();
   const [post, setPost] = useState<PostData>({
     avatarURL: "",
     caption: "",
@@ -68,6 +75,14 @@ const Post: React.VFC = memo(() => {
   return (
     <div>
       <div>
+        <button
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            navigate(-1);
+          }}
+        >
+          戻る
+        </button>
         <p id="displayName">{post.displayName}</p>
         {/* <p id="timestamp">{post.timestamp}</p> */}
         <Link to={`/${post.username}`}>
