@@ -29,7 +29,7 @@ ReactDOM.render(
             <Route path="setting" element={<Setting />} />
           </Route>
           <Route path=":username" element={<Profile />} />
-          <Route path=":docId" element={<Post />} />
+          <Route path=":username/:docId" element={<Post />} />
         </Routes>
       </BrowserRouter>
     </Provider>
