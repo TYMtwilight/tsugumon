@@ -7,6 +7,9 @@ import {
   useNavigate,
   NavigateFunction,
 } from "react-router-dom";
+import { useAppSelector } from "../app/hooks";
+import { selectUser, User } from "../features/userSlice";
+import { useLikes } from "../hooks/useLikes";
 import { Favorite } from "@mui/icons-material";
 import { db } from "../firebase";
 import {
@@ -16,6 +19,14 @@ import {
   DocumentSnapshot,
   getDoc,
 } from "firebase/firestore";
+
+interface likeUser {
+  avatarURL: string;
+  displayName: string;
+  uid: string;
+  username: string;
+  userType: "business" | "normal" | null;
+}
 
 interface PostData {
   avatarURL: string;
@@ -30,6 +41,14 @@ interface PostData {
 
 const Post: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
+  const user: User = useAppSelector(selectUser);
+  const likeUser: likeUser = {
+    avatarURL: user.avatarURL,
+    displayName: user.displayName,
+    uid: user.uid,
+    username: user.username,
+    userType: user.userType,
+  };
   const postId = params.docId!;
   const navigate: NavigateFunction = useNavigate();
   const [post, setPost] = useState<PostData>({
@@ -42,7 +61,8 @@ const Post: React.VFC = memo(() => {
     uid: "",
     username: "",
   });
-
+  const [like, setLike] = useState<boolean>(false);
+  const likeCounts = useLikes(like, likeUser, post);
   const getPost = async (isMounted: boolean) => {
     if (isMounted === false) {
       return;
@@ -92,8 +112,12 @@ const Post: React.VFC = memo(() => {
       <div>
         <img id="image" src={post.imageURL} alt="投稿画像" />
         <div>
-          <Favorite />
-          <p id="likeCounts">0</p>
+          <Favorite
+            onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+              setLike((prev) => !prev);
+            }}
+          />
+          <p id="likeCounts">{likeCounts}</p>
         </div>
       </div>
       <div>
