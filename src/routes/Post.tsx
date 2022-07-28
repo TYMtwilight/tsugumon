@@ -9,18 +9,22 @@ import {
 } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectUser, User } from "../features/userSlice";
-import { useLikes } from "../hooks/useLikes";
+import { addLikes } from "../functions/AddLikes";
 import { Favorite } from "@mui/icons-material";
 import { db } from "../firebase";
 import {
+  collection,
+  CollectionReference,
   doc,
   DocumentData,
   DocumentReference,
   DocumentSnapshot,
   getDoc,
+  onSnapshot,
+  QuerySnapshot,
 } from "firebase/firestore";
 
-interface likeUser {
+interface UserData {
   avatarURL: string;
   displayName: string;
   uid: string;
@@ -42,15 +46,14 @@ interface PostData {
 const Post: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
   const user: User = useAppSelector(selectUser);
-  const likeUser: likeUser = {
+  const userData: UserData = {
     avatarURL: user.avatarURL,
     displayName: user.displayName,
     uid: user.uid,
     username: user.username,
     userType: user.userType,
   };
-  const postId = params.docId!;
-  const navigate: NavigateFunction = useNavigate();
+  const [counts, setCounts] = useState<number | null>(null);
   const [post, setPost] = useState<PostData>({
     avatarURL: "",
     caption: "",
@@ -61,8 +64,8 @@ const Post: React.VFC = memo(() => {
     uid: "",
     username: "",
   });
-  const [like, setLike] = useState<boolean>(false);
-  const likeCounts = useLikes(like, likeUser, post);
+  const postId: string = params.docId!;
+  const navigate: NavigateFunction = useNavigate();
   const getPost = async (isMounted: boolean) => {
     if (isMounted === false) {
       return;
@@ -79,6 +82,13 @@ const Post: React.VFC = memo(() => {
         timestamp: postSnap.data().timestamp,
         uid: postSnap.data().uid,
         username: postSnap.data().username,
+      });
+      const likeUsersRef: CollectionReference<DocumentData> = collection(
+        db,
+        `posts/${postSnap.id}/likeUsers`
+      );
+      onSnapshot(likeUsersRef, (likeUsersSnap:QuerySnapshot<DocumentData>) => {
+        setCounts(likeUsersSnap.size);
       });
     }
   };
@@ -114,10 +124,11 @@ const Post: React.VFC = memo(() => {
         <div>
           <Favorite
             onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-              setLike((prev) => !prev);
+              event.preventDefault();
+              addLikes(postId, userData);
             }}
           />
-          <p id="likeCounts">{likeCounts}</p>
+          <p id="likeCounts">{counts}</p>
         </div>
       </div>
       <div>
