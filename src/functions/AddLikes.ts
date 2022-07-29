@@ -35,15 +35,15 @@ export const addLikes: (postId: string, userData: UserData) => void = async (
   const likeUserSnap: DocumentSnapshot<DocumentData> = await getDoc(
     likeUserRef
   );
-  if (!likePostSnap.exists()) {
-    setDoc(likePostRef, { timestamp: new Date() });
-    if (!likeUserSnap.exists()) {
-      setDoc(likeUserRef, userData);
+  if (!likeUserSnap.exists()) {
+    setDoc(likeUserRef, userData);
+    if (!likePostSnap.exists()) {
+      setDoc(likePostRef, { timestamp: new Date() });
     }
-  } else if (likePostSnap.exists()) {
-    deleteDoc(likePostRef);
-    if (likeUserSnap.exists()) {
-      deleteDoc(likeUserRef);
+  } else if (likeUserSnap.exists()) {
+    deleteDoc(likeUserRef);
+    if (likePostSnap.exists()) {
+      deleteDoc(likePostRef);
     }
   }
 };

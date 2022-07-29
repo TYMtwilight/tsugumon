@@ -21,6 +21,7 @@ import {
   DocumentSnapshot,
   getDoc,
   onSnapshot,
+  QueryDocumentSnapshot,
   QuerySnapshot,
 } from "firebase/firestore";
 
@@ -53,7 +54,8 @@ const Post: React.VFC = memo(() => {
     username: user.username,
     userType: user.userType,
   };
-  const [likeUsers, setLikeUsers] = useState<UserData[]>([]);
+  const [counts, setCounts] = useState<number | null>(null);
+  const [like, setLike] = useState<boolean>(false);
   const [post, setPost] = useState<PostData>({
     avatarURL: "",
     caption: "",
@@ -88,18 +90,18 @@ const Post: React.VFC = memo(() => {
         `posts/${postSnap.id}/likeUsers`
       );
       onSnapshot(likeUsersRef, (likeUsersSnap: QuerySnapshot<DocumentData>) => {
-        setLikeUsers(
-          likeUsersSnap.docs.map((likeUserSnap) => {
-            const likeUser = {
-              avatarURL: likeUserSnap.data().avatarURL,
-              displayName: likeUserSnap.data().displayName,
-              uid: likeUserSnap.data().uid,
-              username: likeUserSnap.data().username,
-              userType: likeUserSnap.data().userType,
-            };
-            return likeUser;
-          })
-        );
+        setCounts(likeUsersSnap.size);
+        if (
+          likeUsersSnap.docs.find(
+            (likeUserSnap: QueryDocumentSnapshot<DocumentData>) => {
+              return likeUserSnap.data().uid === user.uid;
+            }
+          ) !== undefined
+        ) {
+          setLike(true);
+        } else {
+          setLike(false);
+        }
       });
     }
   };
@@ -132,16 +134,20 @@ const Post: React.VFC = memo(() => {
       </div>
       <div>
         <img id="image" src={post.imageURL} alt="投稿画像" />
-        <div>
+        <div color={like ? "red" : "white"}>
           <Favorite
             onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
               event.preventDefault();
               addLikes(postId, userData);
             }}
           />
-          <Link to={`/${post.username}/${postId}/likeUsers`}>
-            <p id="likeCounts">{likeUsers.length}</p>
-          </Link>
+          {counts === null || counts === 0 ? (
+            <p id="likeCounts">{counts}</p>
+          ) : (
+            <Link to={`/${post.username}/${postId}/likeUsers`}>
+              <p id="likeCounts">{counts}</p>
+            </Link>
+          )}
         </div>
       </div>
       <div>
