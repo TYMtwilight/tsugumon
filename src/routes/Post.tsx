@@ -53,7 +53,7 @@ const Post: React.VFC = memo(() => {
     username: user.username,
     userType: user.userType,
   };
-  const [counts, setCounts] = useState<number | null>(null);
+  const [likeUsers, setLikeUsers] = useState<UserData[]>([]);
   const [post, setPost] = useState<PostData>({
     avatarURL: "",
     caption: "",
@@ -87,8 +87,19 @@ const Post: React.VFC = memo(() => {
         db,
         `posts/${postSnap.id}/likeUsers`
       );
-      onSnapshot(likeUsersRef, (likeUsersSnap:QuerySnapshot<DocumentData>) => {
-        setCounts(likeUsersSnap.size);
+      onSnapshot(likeUsersRef, (likeUsersSnap: QuerySnapshot<DocumentData>) => {
+        setLikeUsers(
+          likeUsersSnap.docs.map((likeUserSnap) => {
+            const likeUser = {
+              avatarURL: likeUserSnap.data().avatarURL,
+              displayName: likeUserSnap.data().displayName,
+              uid: likeUserSnap.data().uid,
+              username: likeUserSnap.data().username,
+              userType: likeUserSnap.data().userType,
+            };
+            return likeUser;
+          })
+        );
       });
     }
   };
@@ -128,7 +139,9 @@ const Post: React.VFC = memo(() => {
               addLikes(postId, userData);
             }}
           />
-          <p id="likeCounts">{counts}</p>
+          <Link to={`/${post.username}/${postId}/likeUsers`}>
+            <p id="likeCounts">{likeUsers.length}</p>
+          </Link>
         </div>
       </div>
       <div>
