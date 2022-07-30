@@ -6,7 +6,7 @@ import App from "./App";
 import Home from "./routes/Home";
 import Search from "./routes/Search";
 import Post from "./routes/Post";
-import Likes from "./routes/LikeUsers";
+import LikeUsers from "./routes/LikeUsers";
 import Profile from "./routes/Profile";
 import Setting from "./routes/Setting";
 import SignUp from "./routes/SignUp";
@@ -28,10 +28,10 @@ ReactDOM.render(
             <Route path="upload" element={<Upload />} />
             <Route path="signup" element={<SignUp />} />
             <Route path="setting" element={<Setting />} />
+            <Route path=":username" element={<Profile />} />
+            <Route path=":username/:docId" element={<Post />} />
+            <Route path=":username/:docId/likeUsers" element={<LikeUsers />} />
           </Route>
-          <Route path=":username" element={<Profile />} />
-          <Route path=":username/:docId" element={<Post />} />
-          <Route path=":username/:docId/likeUsers" element={<Likes />} />
         </Routes>
       </BrowserRouter>
     </Provider>
