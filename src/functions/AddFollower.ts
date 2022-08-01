@@ -8,28 +8,25 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-interface UserData {
+interface FollowUser {
   avatarURL: string;
   displayName: string;
+  uid: string;
   username: string;
   userType: "business" | "normal" | null;
 }
 
 export const addFollower: (
-  followerUID: string,
-  followingUID: string,
-  followerData: UserData,
-  followingData: UserData
-) => void = async (
-  followerUID,
-  followingUID,
-  followerData,
-  followingData
-) => {
-  const followerRef = doc(db, `users/${followingUID}/followers/${followerUID}`);
+  following: FollowUser,
+  follower: FollowUser
+) => void = async (following, follower) => {
+  const followerRef = doc(
+    db,
+    `users/${following.uid}/followers/${follower.uid}`
+  );
   const followingRef = doc(
     db,
-    `users/${followerUID}/followings/${followingUID}`
+    `users/${follower.uid}/followings/${following.uid}`
   );
   const followerSnap: DocumentSnapshot<DocumentData> = await getDoc(
     followerRef
@@ -38,12 +35,12 @@ export const addFollower: (
     followingRef
   );
   if (!followerSnap.exists()) {
-    setDoc(followerRef, followerData);
+    setDoc(followerRef, follower);
   } else {
     deleteDoc(followerRef);
   }
   if (!followingSnap.exists()) {
-    setDoc(followingRef, followingData);
+    setDoc(followingRef, following);
   } else {
     deleteDoc(followingRef);
   }

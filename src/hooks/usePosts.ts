@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import { db } from "../firebase";
 import {
   collection,
@@ -24,8 +24,9 @@ interface PostData {
 
 export const usePosts = (username: string) => {
   const [posts, setPosts] = useState<PostData[]>([]);
+  let isMounted:boolean = true;
 
-  const unsubscribe: (isMounted: boolean) => void = async (isMounted) => {
+  const unsubscribe: () => void = async () => {
     if (isMounted === false) {
       return;
     }
@@ -66,10 +67,11 @@ export const usePosts = (username: string) => {
 
   useEffect(() => {
     let isMounted = true;
-    unsubscribe(isMounted);
+    unsubscribe();
     return () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isMounted = false;
-      unsubscribe(isMounted);
+      unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

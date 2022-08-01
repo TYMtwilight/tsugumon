@@ -1,13 +1,13 @@
 import React, { useEffect, useState, memo } from "react";
 import { useNavigate, NavigateFunction } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
-import { selectUser, User } from "../features/userSlice";
+import { selectUser, LoginUser } from "../features/userSlice";
 import { useBatch } from "../hooks/useBatch";
 import { AddPhotoAlternate, Cancel } from "@mui/icons-material";
 import { resizeImage } from "../functions/ResizeImage";
 
 const Upload: React.FC = memo(() => {
-  const user: User = useAppSelector(selectUser);
+  const user: LoginUser = useAppSelector(selectUser);
   const displayName: string = user.displayName;
   const avatarURL: string = user.avatarURL;
   const [postImage, setPostImage] = useState<string>("");

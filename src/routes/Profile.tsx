@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { memo } from "react";
 import {
   Link,
   Outlet,
@@ -7,44 +7,11 @@ import {
   useNavigate,
   NavigateFunction,
 } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
-import { db } from "../firebase";
-import { selectUser } from "../features/userSlice";
 import { useProfile } from "../hooks/useProfile";
 import { usePosts } from "../hooks/usePosts";
 import { addFollower } from "../functions/AddFollower";
-import {
-  collection,
-  CollectionReference,
-  DocumentData,
-  getDocs,
-  onSnapshot,
-  Query,
-  query,
-  QueryDocumentSnapshot,
-  QuerySnapshot,
-  where,
-} from "firebase/firestore";
 
-interface UserData {
-  avatarURL: string;
-  backgroundURL: string;
-  cropsTags: string[];
-  displayName: string;
-  introduction: string;
-  username: string;
-  userType: "business" | "normal" | null;
-}
-
-interface OptionData {
-  address: string;
-  birthdate: string;
-  owner: string;
-  skill: string;
-  typeOfWork: string;
-}
-
-interface PostData {
+interface Post {
   avatarURL: string;
   caption: string;
   displayName: string;
@@ -55,64 +22,27 @@ interface PostData {
   username: string;
 }
 
+interface FollowUser {
+  avatarURL: string;
+  displayName: string;
+  uid: string;
+  username: string;
+  userType: "business" | "normal" | null;
+}
+
 const Profile: React.VFC = memo(() => {
-  const [followersCount, setFollowersCount] = useState<number | null>(null);
-  const [followingsCount, setFollowingsCount] = useState<number | null>(null);
-  const [follow, setFollow] = useState<boolean>(false);
   const params: Readonly<Params<string>> = useParams();
-  const currentUser = useAppSelector(selectUser);
-  const followerUID = currentUser.uid;
-  const username = params.username!;
+  const username: string = params.username!;
   const navigate: NavigateFunction = useNavigate();
-  const user: UserData = useProfile(username)!.user;
-  const uid: string = useProfile(username)!.uid;
-  const option: OptionData = useProfile(username)!.option;
-  const posts: PostData[] = usePosts(username);
-
-  const getFollowers = async (isMounted: boolean) => {
-    if (isMounted === false) {
-      return;
-    }
-    
-    const followingQuery: Query<DocumentData> = query(
-      collection(db, "users"),
-      where("username", "==", username)
-    );
-    getDocs(followingQuery).then(
-      (followingsSnap: QuerySnapshot<DocumentData>) => {
-    const followersRef: CollectionReference<DocumentData> = collection(
-      db,
-      `users/${followingsSnap.docs[0].id}/followers`
-    );
-    const followingsRef: CollectionReference<DocumentData> = collection(
-      db,
-      `users/${followingsSnap.docs[0].id}/followings`
-    );
-    onSnapshot(followersRef, (followersSnap: QuerySnapshot<DocumentData>) => {
-      setFollowersCount(followersSnap.size);
-      setFollow(
-        followersSnap.docs.find(
-          (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
-            return followerSnap.id === followerUID;
-          }
-        ) !== undefined
-      );
-    });
-
-    onSnapshot(followingsRef, (followingsSnap: QuerySnapshot<DocumentData>) => {
-      setFollowingsCount(followingsSnap.size);
-    });
-  });
-  };
-
-  useEffect(() => {
-    let isMounted: boolean = true;
-    getFollowers(isMounted);
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const {
+    user,
+    option,
+    followingsCount,
+    followersCount,
+    isFollowing,
+    loginUser,
+  } = useProfile(username)!;
+  const posts: Post[] = usePosts(username);
 
   return (
     <div>
@@ -135,7 +65,7 @@ const Profile: React.VFC = memo(() => {
           }
           alt="アバター画像"
         />
-        {currentUser.username === username ? (
+        {loginUser.uid === user.uid ? (
           <Link to="/setting">
             <p>プロフィールを編集する</p>
           </Link>
@@ -143,11 +73,24 @@ const Profile: React.VFC = memo(() => {
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              console.log("フォローボタンが押されました");
-              addFollower(followerUID, uid, currentUser, user);
+              const following: FollowUser = {
+                avatarURL: user.avatarURL,
+                displayName: user.displayName,
+                uid: user.uid,
+                username: user.username,
+                userType: user.userType,
+              };
+              const follower: FollowUser = {
+                avatarURL: loginUser.avatarURL,
+                displayName: loginUser.displayName,
+                uid: loginUser.uid,
+                username: loginUser.username,
+                userType: loginUser.userType,
+              };
+              addFollower(following, follower);
             }}
           >
-            {follow ? "フォロー解除" : "フォローする"}
+            {isFollowing ? "フォロー解除" : "フォローする"}
           </button>
         )}
         <p id="displayName">{user.displayName}</p>
@@ -162,22 +105,22 @@ const Profile: React.VFC = memo(() => {
         </div>
         <div id="followerCounts">
           <p>フォロワー</p>
-          {followersCount === null || followersCount === 0 ? (
-            <p>{followersCount}</p>
-          ) : (
+          {followersCount > 0 ? (
             <Link to={`/users/${username}/followers`}>
               <p>{followersCount}</p>
             </Link>
+          ) : (
+            <p>{followersCount}</p>
           )}
         </div>
         <div id="followingCounts">
           <p>フォロー中</p>
-          {followingsCount === null || followingsCount === 0 ? (
-            <p>{followingsCount}</p>
-          ) : (
+          {followingsCount > 0 ? (
             <Link to={`/users/${username}/followings`}>
               <p>{followingsCount}</p>
             </Link>
+          ) : (
+            <p>{followingsCount}</p>
           )}
         </div>
         {user.userType === "business" ? (
@@ -208,7 +151,7 @@ const Profile: React.VFC = memo(() => {
         )}
       </div>
       <div>
-        {posts.map((post: PostData) => {
+        {posts.map((post: Post) => {
           return (
             <div key={post.id}>
               <img src={post.avatarURL} alt={post.username} />

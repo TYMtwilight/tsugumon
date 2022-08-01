@@ -8,7 +8,7 @@ import {
   NavigateFunction,
 } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
-import { selectUser, User } from "../features/userSlice";
+import { selectUser, LoginUser } from "../features/userSlice";
 import { addLikes } from "../functions/AddLikes";
 import { Favorite } from "@mui/icons-material";
 import { db } from "../firebase";
@@ -46,7 +46,7 @@ interface PostData {
 
 const Post: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
-  const user: User = useAppSelector(selectUser);
+  const user: LoginUser = useAppSelector(selectUser);
   const userData: UserData = {
     avatarURL: user.avatarURL,
     displayName: user.displayName,

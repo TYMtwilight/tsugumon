@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
-export interface User {
+export interface LoginUser {
   uid: string;
   username: string;
   displayName: string;
@@ -22,11 +22,11 @@ export interface UserLogin {
   avatarURL: string;
 }
 
-const initialState: User = {
+const initialState: LoginUser = {
+  avatarURL: "",
+  displayName: "",
   uid: "",
   username: "",
-  displayName: "",
-  avatarURL: "",
   userType: null,
   isNewUser: false,
 };

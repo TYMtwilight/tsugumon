@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
-import { selectUser, User } from "../features/userSlice";
+import { selectUser, LoginUser } from "../features/userSlice";
 import { db, storage } from "../firebase";
 import {
   ref,
@@ -47,7 +47,7 @@ export const useBatch: (
   postImage: string,
   caption: string
 ) => "wait" | "run" | "done" = (upload, postImage, caption) => {
-  const user: User = useAppSelector(selectUser);
+  const user: LoginUser = useAppSelector(selectUser);
   const uid: string = user.uid;
   const username: string = user.username;
   const displayName: string = user.displayName;
