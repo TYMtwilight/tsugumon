@@ -15,6 +15,7 @@ interface UserData {
   cropsTags: string[];
   displayName: string;
   introduction: string;
+  username: string;
   userType: "business" | "normal" | null;
 }
 
@@ -33,6 +34,7 @@ export const useProfile = (username: string) => {
     cropsTags: [],
     displayName: "",
     introduction: "",
+    username: "",
     userType: null,
   });
   const [option, setOption] = useState<OptionData>({
@@ -42,6 +44,7 @@ export const useProfile = (username: string) => {
     skill: "",
     typeOfWork: "",
   });
+  const [uid, setUid] = useState<string>("");
   let isMounted: boolean = true;
 
   const getUser = async () => {
@@ -59,8 +62,10 @@ export const useProfile = (username: string) => {
       cropsTags: userSnap.docs[0].data().cropsTags,
       displayName: userSnap.docs[0].data().displayName,
       introduction: userSnap.docs[0].data().introduction,
+      username: userSnap.docs[0].data().username,
       userType: userSnap.docs[0].data().userType,
     });
+    setUid(userSnap.docs[0].id);
   };
 
   const getOption = async () => {
@@ -91,7 +96,7 @@ export const useProfile = (username: string) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (user && option) {
-    console.log({ user: user, option: option });
-    return { user: user, option: option };
+    console.log({ user: user, option: option ,uid:uid});
+    return { user: user, option: option, uid: uid };
   }
 };

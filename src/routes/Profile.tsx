@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { useState, useEffect, memo } from "react";
 import {
   Link,
   Outlet,
@@ -8,9 +8,23 @@ import {
   NavigateFunction,
 } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
+import { db } from "../firebase";
 import { selectUser } from "../features/userSlice";
 import { useProfile } from "../hooks/useProfile";
 import { usePosts } from "../hooks/usePosts";
+import { addFollower } from "../functions/AddFollower";
+import {
+  collection,
+  CollectionReference,
+  DocumentData,
+  getDocs,
+  onSnapshot,
+  Query,
+  query,
+  QueryDocumentSnapshot,
+  QuerySnapshot,
+  where,
+} from "firebase/firestore";
 
 interface UserData {
   avatarURL: string;
@@ -18,6 +32,7 @@ interface UserData {
   cropsTags: string[];
   displayName: string;
   introduction: string;
+  username: string;
   userType: "business" | "normal" | null;
 }
 
@@ -41,13 +56,63 @@ interface PostData {
 }
 
 const Profile: React.VFC = memo(() => {
+  const [followersCount, setFollowersCount] = useState<number | null>(null);
+  const [followingsCount, setFollowingsCount] = useState<number | null>(null);
+  const [follow, setFollow] = useState<boolean>(false);
   const params: Readonly<Params<string>> = useParams();
   const currentUser = useAppSelector(selectUser);
+  const followerUID = currentUser.uid;
   const username = params.username!;
   const navigate: NavigateFunction = useNavigate();
   const user: UserData = useProfile(username)!.user;
+  const uid: string = useProfile(username)!.uid;
   const option: OptionData = useProfile(username)!.option;
   const posts: PostData[] = usePosts(username);
+
+  const getFollowers = async (isMounted: boolean) => {
+    if (isMounted === false) {
+      return;
+    }
+    
+    const followingQuery: Query<DocumentData> = query(
+      collection(db, "users"),
+      where("username", "==", username)
+    );
+    getDocs(followingQuery).then(
+      (followingsSnap: QuerySnapshot<DocumentData>) => {
+    const followersRef: CollectionReference<DocumentData> = collection(
+      db,
+      `users/${followingsSnap.docs[0].id}/followers`
+    );
+    const followingsRef: CollectionReference<DocumentData> = collection(
+      db,
+      `users/${followingsSnap.docs[0].id}/followings`
+    );
+    onSnapshot(followersRef, (followersSnap: QuerySnapshot<DocumentData>) => {
+      setFollowersCount(followersSnap.size);
+      setFollow(
+        followersSnap.docs.find(
+          (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
+            return followerSnap.id === followerUID;
+          }
+        ) !== undefined
+      );
+    });
+
+    onSnapshot(followingsRef, (followingsSnap: QuerySnapshot<DocumentData>) => {
+      setFollowingsCount(followingsSnap.size);
+    });
+  });
+  };
+
+  useEffect(() => {
+    let isMounted: boolean = true;
+    getFollowers(isMounted);
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div>
@@ -70,10 +135,20 @@ const Profile: React.VFC = memo(() => {
           }
           alt="アバター画像"
         />
-        {currentUser.username === username && (
+        {currentUser.username === username ? (
           <Link to="/setting">
             <p>プロフィールを編集する</p>
           </Link>
+        ) : (
+          <button
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              console.log("フォローボタンが押されました");
+              addFollower(followerUID, uid, currentUser, user);
+            }}
+          >
+            {follow ? "フォロー解除" : "フォローする"}
+          </button>
         )}
         <p id="displayName">{user.displayName}</p>
       </div>
@@ -85,13 +160,25 @@ const Profile: React.VFC = memo(() => {
             return <p key={cropsTag}>{cropsTag}</p>;
           })}
         </div>
-        <div id="followerCount">
+        <div id="followerCounts">
           <p>フォロワー</p>
-          <p>０人</p>
+          {followersCount === null || followersCount === 0 ? (
+            <p>{followersCount}</p>
+          ) : (
+            <Link to={`/users/${username}/followers`}>
+              <p>{followersCount}</p>
+            </Link>
+          )}
         </div>
-        <div id="followeeCount">
+        <div id="followingCounts">
           <p>フォロー中</p>
-          <p>０人</p>
+          {followingsCount === null || followingsCount === 0 ? (
+            <p>{followingsCount}</p>
+          ) : (
+            <Link to={`/users/${username}/followings`}>
+              <p>{followingsCount}</p>
+            </Link>
+          )}
         </div>
         {user.userType === "business" ? (
           <div id="business">
