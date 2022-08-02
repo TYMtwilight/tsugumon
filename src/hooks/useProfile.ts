@@ -65,12 +65,13 @@ export const useProfile: (username: string) => {
   const loginUser: LoginUser = useAppSelector(selectUser);
   let isMounted: boolean = true;
 
-  const unsubscribe: () => Promise<void> = async () => {
+  const userQuery: Query<DocumentData> = query(
+    collection(db, "users"),
+    where("username", "==", username)
+  );
+
+  const getUser: () => Promise<void> = async () => {
     // NOTE >> ユーザーの基本プロフィールを取得します
-    const userQuery: Query<DocumentData> = query(
-      collection(db, "users"),
-      where("username", "==", username)
-    );
     const userSnap = await getDocs(userQuery);
     if (isMounted === false) {
       return;
@@ -84,28 +85,6 @@ export const useProfile: (username: string) => {
       uid: userSnap.docs[0].id,
       username: userSnap.docs[0].data().username,
       userType: userSnap.docs[0].data().userType,
-    });
-    // NOTE >> フォロー・フォロワー数を取得します
-    const followingsRef: CollectionReference<DocumentData> = collection(
-      db,
-      `users/${userSnap.docs[0].id}/followings`
-    );
-    const followersRef: CollectionReference<DocumentData> = collection(
-      db,
-      `users/${userSnap.docs[0].id}/followers`
-    );
-    onSnapshot(followingsRef, (followingsSnap: QuerySnapshot<DocumentData>) => {
-      setFollowingsCount(followingsSnap.size);
-    });
-    onSnapshot(followersRef, (followersSnap: QuerySnapshot<DocumentData>) => {
-      setFollowersCount(followersSnap.size);
-      setIsFollowing(
-        followersSnap.docs.find(
-          (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
-            return followerSnap.id === loginUser.uid;
-          }
-        ) !== undefined
-      );
     });
 
     const optionQuery: Query<DocumentData> = query(
@@ -122,7 +101,38 @@ export const useProfile: (username: string) => {
     });
   };
 
+  const unsubscribe = async () => {
+    const userSnap = await getDocs(userQuery);
+    // NOTE >> フォロー・フォロワー数を取得します
+    const followingsRef: CollectionReference<DocumentData> = collection(
+      db,
+      `users/${userSnap.docs[0].id}/followings`
+    );
+    const followersRef: CollectionReference<DocumentData> = collection(
+      db,
+      `users/${userSnap.docs[0].id}/followers`
+    );
+    onSnapshot(followingsRef, (followingsSnap: QuerySnapshot<DocumentData>) => {
+      if (isMounted === true) {
+        setFollowingsCount(followingsSnap.size);
+      }
+    });
+    onSnapshot(followersRef, (followersSnap: QuerySnapshot<DocumentData>) => {
+      if (isMounted === true) {
+        setFollowersCount(followersSnap.size);
+        setIsFollowing(
+          followersSnap.docs.find(
+            (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
+              return followerSnap.id === loginUser.uid;
+            }
+          ) !== undefined
+        );
+      }
+    });
+  };
+
   useEffect(() => {
+    getUser();
     unsubscribe();
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps

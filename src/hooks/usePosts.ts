@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import {
   collection,
@@ -24,12 +24,8 @@ interface PostData {
 
 export const usePosts = (username: string) => {
   const [posts, setPosts] = useState<PostData[]>([]);
-  let isMounted:boolean = true;
-
+  let isMounted = true;
   const unsubscribe: () => void = async () => {
-    if (isMounted === false) {
-      return;
-    }
     const postsQuery: Query<DocumentData> = query(
       collection(db, "posts"),
       where("username", "==", username)
@@ -38,7 +34,7 @@ export const usePosts = (username: string) => {
     onSnapshot(
       postsQuery,
       (snapshots: QuerySnapshot<DocumentData>) => {
-        const unChangedPosts:PostData[] = posts;
+        const unChangedPosts: PostData[] = posts;
         const changedPosts: PostData[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
             const changedPost: PostData = {
@@ -57,7 +53,9 @@ export const usePosts = (username: string) => {
             return changedPost;
           }
         );
-        setPosts(unChangedPosts.concat(changedPosts));
+        if (isMounted === true) {
+          setPosts(unChangedPosts.concat(changedPosts));
+        }
       },
       (error) => {
         console.error(error);
@@ -66,10 +64,9 @@ export const usePosts = (username: string) => {
   };
 
   useEffect(() => {
-    let isMounted = true;
     unsubscribe();
     return () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
       unsubscribe();
     };
@@ -78,4 +75,3 @@ export const usePosts = (username: string) => {
   console.log(posts);
   return posts;
 };
-
