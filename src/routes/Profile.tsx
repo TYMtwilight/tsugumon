@@ -7,29 +7,11 @@ import {
   useNavigate,
   NavigateFunction,
 } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
-import { selectUser } from "../features/userSlice";
 import { useProfile } from "../hooks/useProfile";
 import { usePosts } from "../hooks/usePosts";
+import { addFollower } from "../functions/AddFollower";
 
-interface UserData {
-  avatarURL: string;
-  backgroundURL: string;
-  cropsTags: string[];
-  displayName: string;
-  introduction: string;
-  userType: "business" | "normal" | null;
-}
-
-interface OptionData {
-  address: string;
-  birthdate: string;
-  owner: string;
-  skill: string;
-  typeOfWork: string;
-}
-
-interface PostData {
+interface Post {
   avatarURL: string;
   caption: string;
   displayName: string;
@@ -40,14 +22,27 @@ interface PostData {
   username: string;
 }
 
+interface FollowUser {
+  avatarURL: string;
+  displayName: string;
+  uid: string;
+  username: string;
+  userType: "business" | "normal" | null;
+}
+
 const Profile: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
-  const currentUser = useAppSelector(selectUser);
-  const username = params.username!;
+  const username: string = params.username!;
   const navigate: NavigateFunction = useNavigate();
-  const user: UserData = useProfile(username)!.user;
-  const option: OptionData = useProfile(username)!.option;
-  const posts: PostData[] = usePosts(username);
+  const {
+    user,
+    option,
+    followingsCount,
+    followersCount,
+    isFollowing,
+    loginUser,
+  } = useProfile(username)!;
+  const posts: Post[] = usePosts(username);
 
   return (
     <div>
@@ -70,10 +65,33 @@ const Profile: React.VFC = memo(() => {
           }
           alt="アバター画像"
         />
-        {currentUser.username === username && (
+        {loginUser.uid === user.uid ? (
           <Link to="/setting">
             <p>プロフィールを編集する</p>
           </Link>
+        ) : (
+          <button
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              const following: FollowUser = {
+                avatarURL: user.avatarURL,
+                displayName: user.displayName,
+                uid: user.uid,
+                username: user.username,
+                userType: user.userType,
+              };
+              const follower: FollowUser = {
+                avatarURL: loginUser.avatarURL,
+                displayName: loginUser.displayName,
+                uid: loginUser.uid,
+                username: loginUser.username,
+                userType: loginUser.userType,
+              };
+              addFollower(following, follower);
+            }}
+          >
+            {isFollowing ? "フォロー解除" : "フォローする"}
+          </button>
         )}
         <p id="displayName">{user.displayName}</p>
       </div>
@@ -85,13 +103,25 @@ const Profile: React.VFC = memo(() => {
             return <p key={cropsTag}>{cropsTag}</p>;
           })}
         </div>
-        <div id="followerCount">
+        <div id="followerCounts">
           <p>フォロワー</p>
-          <p>０人</p>
+          {followersCount > 0 ? (
+            <Link to={`/users/${username}/followers`}>
+              <p>{followersCount}</p>
+            </Link>
+          ) : (
+            <p>{followersCount}</p>
+          )}
         </div>
-        <div id="followeeCount">
+        <div id="followingCounts">
           <p>フォロー中</p>
-          <p>０人</p>
+          {followingsCount > 0 ? (
+            <Link to={`/users/${username}/followings`}>
+              <p>{followingsCount}</p>
+            </Link>
+          ) : (
+            <p>{followingsCount}</p>
+          )}
         </div>
         {user.userType === "business" ? (
           <div id="business">
@@ -121,7 +151,7 @@ const Profile: React.VFC = memo(() => {
         )}
       </div>
       <div>
-        {posts.map((post: PostData) => {
+        {posts.map((post: Post) => {
           return (
             <div key={post.id}>
               <img src={post.avatarURL} alt={post.username} />

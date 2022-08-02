@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
-import { selectUser, User } from "../features/userSlice";
+import { selectUser, LoginUser } from "../features/userSlice";
 import { db } from "../firebase";
 import {
   collection,
@@ -29,7 +29,7 @@ export const useFeeds: () => PostData[] = () => {
   if (process.env.NODE_ENV === "development") {
     console.log("useFeeds.tsがレンダリングされました");
   }
-  const user: User = useAppSelector(selectUser);
+  const user: LoginUser = useAppSelector(selectUser);
   const [feeds, setFeeds] = useState<PostData[]>([]);
   let updatedFeeds: PostData[] = [];
   let sortedFeeds: PostData[] = [];

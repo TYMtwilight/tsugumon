@@ -24,11 +24,8 @@ interface PostData {
 
 export const usePosts = (username: string) => {
   const [posts, setPosts] = useState<PostData[]>([]);
-
-  const unsubscribe: (isMounted: boolean) => void = async (isMounted) => {
-    if (isMounted === false) {
-      return;
-    }
+  let isMounted = true;
+  const unsubscribe: () => void = async () => {
     const postsQuery: Query<DocumentData> = query(
       collection(db, "posts"),
       where("username", "==", username)
@@ -37,7 +34,7 @@ export const usePosts = (username: string) => {
     onSnapshot(
       postsQuery,
       (snapshots: QuerySnapshot<DocumentData>) => {
-        const unChangedPosts:PostData[] = posts;
+        const unChangedPosts: PostData[] = posts;
         const changedPosts: PostData[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
             const changedPost: PostData = {
@@ -56,7 +53,9 @@ export const usePosts = (username: string) => {
             return changedPost;
           }
         );
-        setPosts(unChangedPosts.concat(changedPosts));
+        if (isMounted === true) {
+          setPosts(unChangedPosts.concat(changedPosts));
+        }
       },
       (error) => {
         console.error(error);
@@ -65,15 +64,14 @@ export const usePosts = (username: string) => {
   };
 
   useEffect(() => {
-    let isMounted = true;
-    unsubscribe(isMounted);
+    unsubscribe();
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
-      unsubscribe(isMounted);
+      unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   console.log(posts);
   return posts;
 };
-
