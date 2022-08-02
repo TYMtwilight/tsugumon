@@ -2,33 +2,36 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
 export interface LoginUser {
-  uid: string;
-  username: string;
-  displayName: string;
-  userType: "business" | "normal" | null;
   avatarURL: string;
+  displayName: string;
+  introduction: string;
   isNewUser: boolean;
+  uid: string;
+  userType: "business" | "normal" | null;
+  username: string;
 }
 export interface UserProfile {
+  avatarURL: string;
   displayName: string;
   username: string;
-  avatarURL: string;
 }
 export interface UserLogin {
-  uid: string;
-  username: string;
-  displayName: string;
-  userType: "business" | "normal" | null;
   avatarURL: string;
+  displayName: string;
+  introduction: string;
+  uid: string;
+  userType: "business" | "normal" | null;
+  username: string;
 }
 
 const initialState: LoginUser = {
   avatarURL: "",
   displayName: "",
-  uid: "",
-  username: "",
-  userType: null,
+  introduction:"",
   isNewUser: false,
+  uid: "",
+  userType: null,
+  username: "",
 };
 
 export const userSlice = createSlice({
@@ -36,18 +39,20 @@ export const userSlice = createSlice({
   initialState: initialState,
   reducers: {
     login: (state, action: PayloadAction<UserLogin>) => {
+      state.avatarURL = action.payload.avatarURL;
+      state.displayName = action.payload.displayName;
+      state.introduction = action.payload.introduction;
       state.uid = action.payload.uid;
       state.username = action.payload.username;
-      state.displayName = action.payload.displayName;
       state.userType = action.payload.userType;
-      state.avatarURL = action.payload.avatarURL;
     },
     logout: (state: UserLogin) => {
+      state.avatarURL = "";
+      state.displayName = "";
+      state.introduction ="";
       state.uid = "";
       state.username = "";
-      state.displayName = "";
       state.userType = null;
-      state.avatarURL = "";
     },
     setUserProfile: (state, action: PayloadAction<UserProfile>) => {
       state.displayName = action.payload.displayName;
