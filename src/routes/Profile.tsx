@@ -25,6 +25,7 @@ interface Post {
 interface FollowUser {
   avatarURL: string;
   displayName: string;
+  introduction: string;
   uid: string;
   username: string;
   userType: "business" | "normal" | null;
@@ -76,6 +77,7 @@ const Profile: React.VFC = memo(() => {
               const following: FollowUser = {
                 avatarURL: user.avatarURL,
                 displayName: user.displayName,
+                introduction: user.introduction,
                 uid: user.uid,
                 username: user.username,
                 userType: user.userType,
@@ -83,6 +85,7 @@ const Profile: React.VFC = memo(() => {
               const follower: FollowUser = {
                 avatarURL: loginUser.avatarURL,
                 displayName: loginUser.displayName,
+                introduction: loginUser.introduction,
                 uid: loginUser.uid,
                 username: loginUser.username,
                 userType: loginUser.userType,
@@ -104,19 +107,22 @@ const Profile: React.VFC = memo(() => {
           })}
         </div>
         <div id="followerCounts">
-          <p>フォロワー</p>
           {followersCount > 0 ? (
-            <Link to={`/users/${username}/followers`}>
+            <Link to={`/${username}/followers`}>
+              <p>フォロワー</p>
               <p>{followersCount}</p>
             </Link>
           ) : (
-            <p>{followersCount}</p>
+            <>
+              <p>フォロワー</p>
+              <p>{followersCount}</p>
+            </>
           )}
         </div>
         <div id="followingCounts">
           <p>フォロー中</p>
           {followingsCount > 0 ? (
-            <Link to={`/users/${username}/followings`}>
+            <Link to={`/${username}/followings`}>
               <p>{followingsCount}</p>
             </Link>
           ) : (

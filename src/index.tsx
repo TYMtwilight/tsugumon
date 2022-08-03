@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import Followers from "./routes/Followers";
 import Home from "./routes/Home";
 import Search from "./routes/Search";
 import Post from "./routes/Post";
@@ -31,6 +32,7 @@ ReactDOM.render(
             <Route path=":username" element={<Profile />} />
             <Route path=":username/:docId" element={<Post />} />
             <Route path=":username/:docId/likeUsers" element={<LikeUsers />} />
+            <Route path=":username/followers" element={<Followers />} />
           </Route>
         </Routes>
       </BrowserRouter>

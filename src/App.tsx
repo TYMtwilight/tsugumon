@@ -25,6 +25,7 @@ const App: React.FC = () => {
       auth,
       async (authUser: User | null) => {
         if (authUser) {
+          let introduction: string = "";
           let userType: "business" | "normal" | null = null;
           let username: string = "";
           const userRef: DocumentReference<DocumentData> = doc(
@@ -36,6 +37,7 @@ const App: React.FC = () => {
             userRef
           );
           if (userSnap.exists()) {
+            introduction = userSnap.data().introduction;
             userType = userSnap.data().userType;
             username = userSnap.data().username;
           } else {
@@ -44,10 +46,11 @@ const App: React.FC = () => {
 
           dispatch(
             login({
+              avatarURL: authUser.photoURL ? authUser.photoURL : "",
+              displayName: authUser.displayName ? authUser.displayName : "",
+              introduction: introduction,
               uid: authUser.uid,
               username: username,
-              displayName: authUser.displayName ? authUser.displayName : "",
-              avatarURL: authUser.photoURL ? authUser.photoURL : "",
               userType: userType,
             })
           );

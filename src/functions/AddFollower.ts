@@ -11,6 +11,7 @@ import {
 interface FollowUser {
   avatarURL: string;
   displayName: string;
+  introduction: string;
   uid: string;
   username: string;
   userType: "business" | "normal" | null;
