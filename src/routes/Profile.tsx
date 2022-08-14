@@ -162,7 +162,7 @@ const Profile: React.VFC = memo(() => {
             <div key={post.id}>
               <img src={post.avatarURL} alt={post.username} />
               <p>{post.username}</p>
-              {/* <p>{post.timestamp.getDate}</p> */}
+              <p>{post.timestamp.getDate()}</p>
               <Link to={`/${username}/${post.id}`}>
                 <img src={post.imageURL} alt={post.id} />
                 <p>{post.caption}</p>

@@ -50,7 +50,9 @@ const Search: React.VFC = () => {
             <div key={post.id}>
               <div>
                 <p id="displayName">{post.displayName}</p>
-                {/* <p id="timestamp">{post.timestamp}</p> */}
+                <p id="timestamp">{`${post.timestamp.getFullYear()}年${
+                  post.timestamp.getMonth() + 1
+                }月${post.timestamp.getDate()}日`}</p>
                 <Link to={`/${post.username}`}>
                   <img id="avatarURL" src={post.avatarURL} alt="アバター画像" />
                 </Link>

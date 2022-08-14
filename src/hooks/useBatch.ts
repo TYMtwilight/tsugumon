@@ -19,14 +19,14 @@ import {
   DocumentData,
 } from "firebase/firestore";
 
-interface PostData {
+interface Post {
   uid: string;
   username: string;
   displayName: string;
   avatarURL: string;
   imageURL: string;
   caption: string;
-  updatedAt: FieldValue;
+  timestamp: FieldValue;
 }
 
 const getRandomString: () => string = () => {
@@ -75,14 +75,14 @@ export const useBatch: (
               `posts/${postId}`
             );
             // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
-            const postData: PostData = {
+            const postData: Post = {
               uid: uid,
               username: username,
               displayName: displayName,
               avatarURL: avatarURL,
               imageURL: downloadURL,
               caption: caption,
-              updatedAt: serverTimestamp(),
+              timestamp: serverTimestamp(),
             };
             const batch: WriteBatch = writeBatch(db);
             batch.set(postRef, postData);

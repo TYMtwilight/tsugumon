@@ -25,7 +25,7 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 
-interface UserData {
+interface User {
   avatarURL: string;
   displayName: string;
   uid: string;
@@ -33,13 +33,13 @@ interface UserData {
   userType: "business" | "normal" | null;
 }
 
-interface PostData {
+interface PostDoc {
   avatarURL: string;
   caption: string;
   displayName: string;
   id: string;
   imageURL: string;
-  timestamp: number;
+  timestamp: Date | null;
   uid: string;
   username: string;
 }
@@ -47,7 +47,7 @@ interface PostData {
 const Post: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
   const user: LoginUser = useAppSelector(selectUser);
-  const userData: UserData = {
+  const userData: User = {
     avatarURL: user.avatarURL,
     displayName: user.displayName,
     uid: user.uid,
@@ -56,18 +56,19 @@ const Post: React.VFC = memo(() => {
   };
   const [counts, setCounts] = useState<number | null>(null);
   const [like, setLike] = useState<boolean>(false);
-  const [post, setPost] = useState<PostData>({
+  const [post, setPost] = useState<PostDoc>({
     avatarURL: "",
     caption: "",
     displayName: "",
     id: "",
     imageURL: "",
-    timestamp: 0,
+    timestamp: null,
     uid: "",
     username: "",
   });
   const postId: string = params.docId!;
   const navigate: NavigateFunction = useNavigate();
+
   const getPost = async (isMounted: boolean) => {
     if (isMounted === false) {
       return;
@@ -81,7 +82,7 @@ const Post: React.VFC = memo(() => {
         displayName: postSnap.data().displayName,
         id: postSnap.id,
         imageURL: postSnap.data().imageURL,
-        timestamp: postSnap.data().timestamp,
+        timestamp: postSnap.data().timestamp.toDate(),
         uid: postSnap.data().uid,
         username: postSnap.data().username,
       });
@@ -127,7 +128,13 @@ const Post: React.VFC = memo(() => {
           戻る
         </button>
         <p id="displayName">{post.displayName}</p>
-        {/* <p id="timestamp">{post.timestamp}</p> */}
+        <p id="timestamp">
+          {post.timestamp
+            ? `${post.timestamp.getFullYear()}年${
+                post.timestamp!.getMonth() + 1
+              }月${post.timestamp!.getDate()}日`
+            : ""}
+        </p>
         <Link to={`/${post.username}`}>
           <img id="avatarURL" src={post.avatarURL} alt="アバター画像" />
         </Link>

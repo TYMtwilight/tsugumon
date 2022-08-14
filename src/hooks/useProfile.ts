@@ -72,7 +72,7 @@ export const useProfile: (username: string) => {
 
   const getUser: () => Promise<void> = async () => {
     // NOTE >> ユーザーの基本プロフィールを取得します
-    const userSnap = await getDocs(userQuery);
+    const userSnap: QuerySnapshot<DocumentData> = await getDocs(userQuery);
     if (isMounted === false) {
       return;
     }
@@ -91,7 +91,7 @@ export const useProfile: (username: string) => {
       collection(db, "option"),
       where("username", "==", username)
     );
-    const optionSnap = await getDocs(optionQuery);
+    const optionSnap: QuerySnapshot<DocumentData> = await getDocs(optionQuery);
     setOption({
       address: optionSnap.docs[0].data().address,
       birthdate: optionSnap.docs[0].data().birthdate,
@@ -101,8 +101,8 @@ export const useProfile: (username: string) => {
     });
   };
 
-  const unsubscribe = async () => {
-    const userSnap = await getDocs(userQuery);
+  const unsubscribe: () => Promise<void> = async () => {
+    const userSnap: QuerySnapshot<DocumentData> = await getDocs(userQuery);
     // NOTE >> フォロー・フォロワー数を取得します
     const followingsRef: CollectionReference<DocumentData> = collection(
       db,

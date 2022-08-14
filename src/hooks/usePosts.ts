@@ -11,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 
-interface PostData {
+interface Post {
   avatarURL: string;
   caption: string;
   displayName: string;
@@ -23,8 +23,8 @@ interface PostData {
 }
 
 export const usePosts = (username: string) => {
-  const [posts, setPosts] = useState<PostData[]>([]);
-  let isMounted = true;
+  const [posts, setPosts] = useState<Post[]>([]);
+  let isMounted: boolean = true;
   const unsubscribe: () => void = async () => {
     const postsQuery: Query<DocumentData> = query(
       collection(db, "posts"),
@@ -34,16 +34,16 @@ export const usePosts = (username: string) => {
     onSnapshot(
       postsQuery,
       (snapshots: QuerySnapshot<DocumentData>) => {
-        const unChangedPosts: PostData[] = posts;
-        const changedPosts: PostData[] = snapshots.docs.map(
+        const unChangedPosts: Post[] = posts;
+        const changedPosts: Post[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-            const changedPost: PostData = {
+            const changedPost: Post = {
               avatarURL: snapshot.data().avatarURL,
               caption: snapshot.data().caption,
               displayName: snapshot.data().displayName,
               id: snapshot.id,
               imageURL: snapshot.data().imageURL,
-              timestamp: snapshot.data().timestamp,
+              timestamp: snapshot.data().timestamp.toDate(),
               uid: snapshot.data().uid,
               username: snapshot.data().username,
             };

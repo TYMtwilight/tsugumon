@@ -13,7 +13,7 @@ import {
   Query,
 } from "firebase/firestore";
 
-interface PostData {
+interface Post {
   id: string;
   uid: string;
   username: string;
@@ -21,20 +21,21 @@ interface PostData {
   avatarURL: string;
   imageURL: string;
   caption: string;
-  updatedAt: string;
-  updatedTime: number;
+  timestamp: Date;
 }
 
-export const useFeeds: () => PostData[] = () => {
+export const useFeeds: () => Post[] = () => {
   if (process.env.NODE_ENV === "development") {
     console.log("useFeeds.tsがレンダリングされました");
   }
   const user: LoginUser = useAppSelector(selectUser);
-  const [feeds, setFeeds] = useState<PostData[]>([]);
-  let updatedFeeds: PostData[] = [];
-  let sortedFeeds: PostData[] = [];
+  const [feeds, setFeeds] = useState<Post[]>([]);
+  let updatedFeeds: Post[] = [];
+  let sortedFeeds: Post[] = [];
 
-  const unsubscribe = async (isMounted: boolean) => {
+  const unsubscribe: (isMounted: boolean) => Promise<void> = async (
+    isMounted: boolean
+  ) => {
     const followeesQuery: Query<DocumentData> = query(
       collection(db, `users/${user.uid}/followees`)
     );
@@ -55,14 +56,9 @@ export const useFeeds: () => PostData[] = () => {
         onSnapshot(
           feedsQuery,
           (snapshots: QuerySnapshot<DocumentData>) => {
-            if (process.env.NODE_ENV === "development") {
-              console.log("onSnapshotが実行されました");
-            }
-            const followeeFeeds: PostData[] = snapshots.docs.map(
+            const followeeFeeds: Post[] = snapshots.docs.map(
               (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-                const updatedTime: number = snapshot.data().updatedAt.seconds;
-                const updatedDate: Date = snapshot.data().updatedAt.toDate();
-                const feedData: PostData = {
+                const feedData: Post = {
                   id: snapshot.id,
                   uid: snapshot.data().uid,
                   username: snapshot.data().username,
@@ -70,18 +66,7 @@ export const useFeeds: () => PostData[] = () => {
                   avatarURL: snapshot.data().avatarURL,
                   imageURL: snapshot.data().imageURL,
                   caption: snapshot.data().caption,
-                  updatedAt:
-                    updatedDate.getFullYear() +
-                    "年" +
-                    ("0" + updatedDate.getMonth()).slice(-2) +
-                    "月" +
-                    ("0" + updatedDate.getDate()).slice(-2) +
-                    "日" +
-                    " " +
-                    ("0" + updatedDate.getHours()).slice(-2) +
-                    ":" +
-                    ("0" + updatedDate.getMinutes()).slice(-2),
-                  updatedTime: updatedTime,
+                  timestamp: snapshot.data().timestamp.toDate(),
                 };
                 updatedFeeds.filter((updateFeed) => {
                   return updateFeed.id !== feedData.id;
@@ -91,8 +76,10 @@ export const useFeeds: () => PostData[] = () => {
             );
             sortedFeeds = updatedFeeds
               .concat(followeeFeeds)
-              .sort((firstEl: PostData, secondEl: PostData) => {
-                return secondEl.updatedTime - firstEl.updatedTime;
+              .sort((firstEl: Post, secondEl: Post) => {
+                return (
+                  secondEl.timestamp.getTime() - firstEl.timestamp.getTime()
+                );
               });
             if (isMounted) {
               setFeeds(sortedFeeds);
