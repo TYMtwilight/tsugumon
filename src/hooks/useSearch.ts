@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
-interface PostData {
+interface Post {
   avatarURL: string;
   caption: string;
   displayName: string;
@@ -21,19 +21,19 @@ interface PostData {
   username: string;
 }
 
-export const useSearch: (filter: string | null) => PostData[] = (filter) => {
-  const [posts, setPosts] = useState<PostData[]>([]);
-  let isMounted = filter !== null;
+export const useSearch: (searchTag: string | null) => Post[] = (searchTag) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  let isMounted:boolean = searchTag !== null;
 
   const getPosts: () => void = () => {
     setPosts([]);
-    if(isMounted === false){
+    if (isMounted === false) {
       return;
     }
     getDocs(
       query(
         collection(db, "users"),
-        where("cropsTags", "array-contains", filter)
+        where("cropsTags", "array-contains", searchTag)
       )
     ).then((userSnaps: QuerySnapshot<DocumentData>) => {
       let usernames: string[] = userSnaps.docs.map(
@@ -50,15 +50,15 @@ export const useSearch: (filter: string | null) => PostData[] = (filter) => {
           )
         ).then((postSnaps: QuerySnapshot<DocumentData>) => {
           // eslint-disable-next-line array-callback-return
-          const postsArray: PostData[] = postSnaps.docs.map(
+          const postsArray: Post[] = postSnaps.docs.map(
             (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-              const postSnap: PostData = {
+              const postSnap: Post = {
                 avatarURL: snapshot.data().avatarURL,
                 caption: snapshot.data().caption,
                 displayName: snapshot.data().displayName,
                 id: snapshot.id,
                 imageURL: snapshot.data().imageURL,
-                timestamp: snapshot.data().timestamp,
+                timestamp: snapshot.data().timestamp.toDate(),
                 uid: snapshot.data().uid,
                 username: snapshot.data().username,
               };
@@ -80,6 +80,6 @@ export const useSearch: (filter: string | null) => PostData[] = (filter) => {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [searchTag]);
   return posts;
 };

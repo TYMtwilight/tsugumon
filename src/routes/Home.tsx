@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Link, Outlet,useNavigate,NavigateFunction } from "react-router-dom";
+import { Link, Outlet, useNavigate, NavigateFunction } from "react-router-dom";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
@@ -10,37 +10,36 @@ import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import AddCircle from "@mui/icons-material/AddCircle";
 
-interface PostData {
+interface PostDoc {
+  avatarURL: string;
+  caption: string;
+  displayName: string;
   id: string;
+  imageURL: string;
+  timestamp: Date;
   uid: string;
   username: string;
-  displayName: string;
-  avatarURL: string;
-  imageURL: string;
-  caption: string;
-  updatedAt: string;
-  updatedTime: number;
 }
 
 const Feed = memo(() => {
   const dispatch = useAppDispatch();
-  const navigate:NavigateFunction = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
   const user = useAppSelector(selectUser);
-  const feeds: PostData[] = useFeeds();
+  const feeds: PostDoc[] = useFeeds();
   if (user.userType) {
     return (
       <div>
-        {feeds.map((feed: PostData) => {
+        {feeds.map((feed: PostDoc) => {
           return (
             <Post
-            // // avatarURL={feed.avatarURL}
-            // caption={feed.caption}
-            // displayName={feed.displayName}
-            // imageURL={feed.imageURL}
-            // key={feed.id}
-            // uid={feed.uid}
-            // username={feed.username}
-            // updatedAt={feed.updatedAt}
+              // avatarURL={feed.avatarURL}
+              // caption={feed.caption}
+              // displayName={feed.displayName}
+              // imageURL={feed.imageURL}
+              // key={feed.id}
+              // timestamp={feed.timestamp}
+              // uid={feed.uid}
+              // username={feed.username}
             />
           );
         })}
