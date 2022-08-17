@@ -26,6 +26,9 @@ export const usePosts = (username: string) => {
   const [posts, setPosts] = useState<Post[]>([]);
   let isMounted: boolean = true;
   const unsubscribe: () => void = async () => {
+    if (isMounted === false) {
+      return;
+    }
     const postsQuery: Query<DocumentData> = query(
       collection(db, "posts"),
       where("username", "==", username)
@@ -53,9 +56,7 @@ export const usePosts = (username: string) => {
             return changedPost;
           }
         );
-        if (isMounted === true) {
-          setPosts(unChangedPosts.concat(changedPosts));
-        }
+        setPosts(unChangedPosts.concat(changedPosts));
       },
       (error) => {
         console.error(error);

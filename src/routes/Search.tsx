@@ -1,24 +1,19 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useSearch } from "../hooks/useSearch";
-import { Favorite } from "@mui/icons-material";
+import PostComponent from "../components/PostComponent";
+import { useEffect } from "react";
 
-interface PostData {
-  avatarURL: string;
-  caption: string;
-  displayName: string;
-  id: string;
-  imageURL: string;
-  timestamp: Date;
-  uid: string;
+interface Doc {
   username: string;
+  id: string;
+  timestamp: number;
 }
 
 const Search: React.VFC = () => {
   const tags: string[] = ["トマト", "米"];
   const [searchParams, setSearchParams] = useSearchParams();
-  const filter = searchParams.get("tag");
-  const posts: PostData[] = useSearch(filter);
-
+  const searchTag = searchParams.get("tag");
+  const docsArray: Doc[] = useSearch(searchTag);
   return (
     <div>
       {tags.map((tag: string) => {
@@ -44,34 +39,15 @@ const Search: React.VFC = () => {
           </button>
         );
       })}
-      {posts.length > 0 &&
-        posts.map((post: PostData) => {
-          return (
-            <div key={post.id}>
-              <div>
-                <p id="displayName">{post.displayName}</p>
-                <p id="timestamp">{`${post.timestamp.getFullYear()}年${
-                  post.timestamp.getMonth() + 1
-                }月${post.timestamp.getDate()}日`}</p>
-                <Link to={`/${post.username}`}>
-                  <img id="avatarURL" src={post.avatarURL} alt="アバター画像" />
-                </Link>
-              </div>
-              <div>
-                <Link to={`/${post.username}/${post.id}`}>
-                  <img src={post.imageURL} alt={post.caption} />
-                </Link>
-                <div>
-                  <Favorite />
-                  <p id="likeCounts">0</p>
-                </div>
-              </div>
-              <div>
-                <p id="caption">{post.caption}</p>
-              </div>
-            </div>
-          );
-        })}
+      {docsArray.map((document: Doc) => {
+        return (
+          <PostComponent
+            postId={document.id}
+            detail={false}
+            key={document.id}
+          />
+        );
+      })}
     </div>
   );
 };

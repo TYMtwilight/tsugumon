@@ -9,41 +9,39 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-interface UserData {
-  avatarURL: string;
-  displayName: string;
-  uid: string;
-  username: string;
-  userType: "business" | "normal" | null;
-}
-
-export const addLikes: (postId: string, userData: UserData) => void = async (
+export const addLikes: (postId: string, loginUid: string) => void = async (
   postId,
-  userData
+  loginUid
 ) => {
+  const loginUserRef: DocumentReference<DocumentData> = doc(
+    db,
+    `users/${loginUid}`
+  );
   const likePostRef: DocumentReference<DocumentData> = doc(
     db,
-    `users/${userData.uid}/likePosts/${postId}`
+    `users/${loginUid}/likePosts/${postId}`
   );
   const likeUserRef: DocumentReference<DocumentData> = doc(
     db,
-    `posts/${postId}/likeUsers/${userData.uid}`
+    `posts/${postId}/likeUsers/${loginUid}`
   );
-  const likePostSnap: DocumentSnapshot<DocumentData> = await getDoc(
-    likePostRef
+  const loginUserSnap: DocumentSnapshot<DocumentData> = await getDoc(
+    loginUserRef
   );
   const likeUserSnap: DocumentSnapshot<DocumentData> = await getDoc(
     likeUserRef
   );
   if (!likeUserSnap.exists()) {
-    setDoc(likeUserRef, userData);
-    if (!likePostSnap.exists()) {
-      setDoc(likePostRef, { timestamp: new Date() });
-    }
-  } else if (likeUserSnap.exists()) {
+    setDoc(likeUserRef, {
+      avatarURL: loginUserSnap.data()!.avatarURL,
+      displayName: loginUserSnap.data()!.displayName,
+      uid: loginUid,
+      username: loginUserSnap.data()!.username,
+      userType: loginUserSnap.data()!.userType,
+    });
+    setDoc(likePostRef, { timestamp: new Date() });
+  } else {
     deleteDoc(likeUserRef);
-    if (likePostSnap.exists()) {
-      deleteDoc(likePostRef);
-    }
+    deleteDoc(likePostRef);
   }
 };
