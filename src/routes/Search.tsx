@@ -1,19 +1,23 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useSearch } from "../hooks/useSearch";
 import PostComponent from "../components/PostComponent";
-import { useEffect } from "react";
 
-interface Doc {
-  username: string;
+interface Post {
+  avatarURL: string;
+  caption: string;
+  displayName: string;
   id: string;
-  timestamp: number;
+  imageURL: string;
+  timestamp: Date;
+  uid: string;
+  username: string;
 }
 
 const Search: React.VFC = () => {
   const tags: string[] = ["トマト", "米"];
   const [searchParams, setSearchParams] = useSearchParams();
   const searchTag = searchParams.get("tag");
-  const docsArray: Doc[] = useSearch(searchTag);
+  const posts: Post[] = useSearch(searchTag);
   return (
     <div>
       {tags.map((tag: string) => {
@@ -39,12 +43,18 @@ const Search: React.VFC = () => {
           </button>
         );
       })}
-      {docsArray.map((document: Doc) => {
+      {posts.map((post: Post) => {
         return (
-          <PostComponent
-            postId={document.id}
-            detail={false}
-            key={document.id}
+          <PostComponent key={post.id}
+            avatarURL={post.avatarURL}
+            caption={post.caption}
+            displayName={post.displayName}
+            id={post.id}
+            imageURL={post.imageURL}
+            timestamp={post.timestamp}
+            uid={post.uid}
+            username={post.username}
+            detail = {false}
           />
         );
       })}

@@ -12,18 +12,22 @@ import {
   where,
 } from "firebase/firestore";
 
-interface Doc {
-  username: string;
+interface Post {
+  avatarURL: string;
+  caption: string;
+  displayName: string;
   id: string;
-  timestamp: number;
+  imageURL: string;
+  timestamp: Date;
+  uid: string;
+  username: string;
 }
-
-export const useSearch: (searchTag: string | null) => Doc[] = (searchTag) => {
-  const [docsArray, setDocsArray] = useState<Doc[]>([]);
+export const useSearch: (searchTag: string | null) => Post[] = (searchTag) => {
+  const [posts, setPosts] = useState<Post[]>([]);
   let isMounted: boolean = searchTag !== null;
 
-  const getUserDocs: (uid: string) => Promise<Doc[]> = async (uid) => {
-    const docsSnap: QuerySnapshot<DocumentData> = await getDocs(
+  const getUserPosts: (uid: string) => Promise<Post[]> = async (uid) => {
+    const postsSnap: QuerySnapshot<DocumentData> = await getDocs(
       query(
         collection(db, "posts"),
         where("uid", "==", uid),
@@ -31,20 +35,25 @@ export const useSearch: (searchTag: string | null) => Doc[] = (searchTag) => {
         limit(20)
       )
     );
-    const documents: Doc[] = docsSnap.docs.map(
-      (document: QueryDocumentSnapshot<DocumentData>) => {
+    const userPosts: Post[] = postsSnap.docs.map(
+      (post: QueryDocumentSnapshot<DocumentData>) => {
         return {
-          username: document.data().username,
-          id: document.id,
-          timestamp: document.data().timestamp.toDate().getTime(),
+          avatarURL: post.data().avatarURL,
+          caption: post.data().caption,
+          displayName: post.data().displayName,
+          id: post.id,
+          imageURL: post.data().imageURL,
+          timestamp: post.data().timestamp.toDate(),
+          uid: post.data().uid,
+          username: post.data().username,
         };
       }
     );
-    return documents;
+    return userPosts;
   };
 
-  const getDocsArray: () => Promise<void> = async () => {
-    setDocsArray([]);
+  const getPosts: () => Promise<void> = async () => {
+    setPosts([]);
     // NOTE >> 検索タグに合致するユーザーUIDを取得し、配列に格納します。
     const usersSnap: QuerySnapshot<DocumentData> = await getDocs(
       query(
@@ -52,33 +61,34 @@ export const useSearch: (searchTag: string | null) => Doc[] = (searchTag) => {
         where("cropsTags", "array-contains", searchTag)
       )
     );
-    if (usersSnap.size === 0) return;
-    const uidArray: string[] = usersSnap.docs!.map(
-      (userSnap: QueryDocumentSnapshot<DocumentData>) => {
-        return userSnap.id;
-      }
-    );
-    // NOTE >> ユーザーUIDをキーとして、投稿のドキュメントIDを取得し、配列に格納します。
-    uidArray.map(async (uid: string) => {
-      const userDocs: Doc[] = await getUserDocs(uid);
-      setDocsArray((prev: Doc[]) => {
-        return prev.concat(userDocs).sort((firstDoc, secondDoc) => {
-          return firstDoc.timestamp - secondDoc.timestamp;
+    if (usersSnap.size > 0) {
+      const uidArray: string[] = usersSnap.docs!.map(
+        (userSnap: QueryDocumentSnapshot<DocumentData>) => {
+          return userSnap.id;
+        }
+      );
+      // NOTE >> ユーザーUIDをキーとして、投稿のドキュメントIDを取得し、配列に格納します。
+      uidArray.map(async (uid: string) => {
+        const userPosts: Post[] = await getUserPosts(uid);
+        setPosts((prev: Post[]) => {
+          return prev.concat(userPosts).sort((first: Post, second: Post) => {
+            return first.timestamp.getTime() - second.timestamp.getTime();
+          });
         });
       });
-    });
+    }
   };
 
   useEffect(() => {
     if (isMounted === false) {
       return;
     }
-    getDocsArray();
+    getPosts();
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
   }, [searchTag]);
 
-  return docsArray;
+  return posts;
 };
