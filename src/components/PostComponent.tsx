@@ -45,6 +45,26 @@ const PostComponent: React.VFC<{ postId: string; detail: boolean }> = memo(
     const [counts, setCounts] = useState<number>(0);
     const [like, setLike] = useState<boolean>(false);
     let isMounted: boolean = true;
+
+    const unsubscribe: () => void = () => {
+      const likeUsersRef: CollectionReference<DocumentData> = collection(
+        db,
+        `posts/${props.postId}/likeUsers`
+      );
+      onSnapshot(likeUsersRef, (likeUsersSnap: QuerySnapshot<DocumentData>) => {
+        if (isMounted === true) {
+          setCounts(likeUsersSnap.size);
+          setLike(
+            likeUsersSnap.docs.find(
+              (likeUserSnap: QueryDocumentSnapshot<DocumentData>) => {
+                return likeUserSnap.data().uid === loginUid;
+              }
+            ) !== undefined
+          );
+        }
+      });
+    };
+
     const getPost: () => Promise<void> = async () => {
       const postRef: DocumentReference<DocumentData> = doc(
         db,
@@ -65,22 +85,7 @@ const PostComponent: React.VFC<{ postId: string; detail: boolean }> = memo(
           });
         }
       });
-      const likeUsersRef: CollectionReference<DocumentData> = collection(
-        db,
-        `posts/${props.postId}/likeUsers`
-      );
-      onSnapshot(likeUsersRef, (likeUsersSnap: QuerySnapshot<DocumentData>) => {
-        if (isMounted === true) {
-          setCounts(likeUsersSnap.size);
-          setLike(
-            likeUsersSnap.docs.find(
-              (likeUserSnap: QueryDocumentSnapshot<DocumentData>) => {
-                return likeUserSnap.data().uid === loginUid;
-              }
-            ) !== undefined
-          );
-        }
-      });
+      unsubscribe();
     };
 
     useEffect(() => {
@@ -91,6 +96,7 @@ const PostComponent: React.VFC<{ postId: string; detail: boolean }> = memo(
       return () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         isMounted = false;
+        unsubscribe();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
