@@ -7,7 +7,7 @@ import Followers from "./routes/Followers";
 import Followings from "./routes/Followings";
 import Home from "./routes/Home";
 import Search from "./routes/Search";
-import Post from "./routes/Post";
+import Post from "./routes/PostDetail";
 import LikeUsers from "./routes/LikeUsers";
 import Profile from "./routes/Profile";
 import Setting from "./routes/Setting";

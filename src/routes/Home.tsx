@@ -3,7 +3,7 @@ import { Link, Outlet, useNavigate, NavigateFunction } from "react-router-dom";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
-import Post from "./Post";
+import Post from "./PostDetail";
 import SelectUserType from "../components/SelectUserType/SelectUserType";
 import { useFeeds } from "../hooks/useFeeds";
 import { auth } from "../firebase";
