@@ -11,22 +11,20 @@ import {
   FirestoreError,
 } from "firebase/firestore";
 
-interface UserData {
+interface User {
   avatarURL: string;
-  caption:string;
+  caption: string;
   displayName: string;
   uid: string;
   username: string;
   userType: "business" | "normal" | null;
 }
 
-export const useLikeUsers: (postId: string) => UserData[] = (
-  postId: string
-) => {
-  const [likeUsers, setLikeUsers] = useState<UserData[]>([]);
-
+export const useLikeUsers: (postId: string) => User[] = (postId: string) => {
+  const [likeUsers, setLikeUsers] = useState<User[]>([]);
+  let isMounted: boolean = postId !== undefined;
   const unsubscribe: (isMounted: boolean) => void = async (isMounted) => {
-    if (isMounted === false || postId === "") {
+    if (isMounted === false) {
       return;
     }
     const likeUsersRef: CollectionReference<DocumentData> = collection(
@@ -40,7 +38,7 @@ export const useLikeUsers: (postId: string) => UserData[] = (
         setLikeUsers(
           snapshots.docs.map(
             (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-              const likeUser: UserData = {
+              const likeUser: User = {
                 avatarURL: snapshot.data().avatarURL,
                 caption: snapshot.data().caption,
                 displayName: snapshot.data().displayName,
@@ -62,9 +60,9 @@ export const useLikeUsers: (postId: string) => UserData[] = (
   };
 
   useEffect(() => {
-    let isMounted: boolean = true;
     unsubscribe(isMounted);
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
       unsubscribe(isMounted);
     };

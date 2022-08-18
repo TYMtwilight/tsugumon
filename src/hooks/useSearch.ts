@@ -1,85 +1,84 @@
 import { useState, useEffect } from "react";
+import { db } from "../firebase";
 import {
   collection,
   DocumentData,
   getDocs,
   limit,
+  orderBy,
   query,
   QueryDocumentSnapshot,
   QuerySnapshot,
   where,
 } from "firebase/firestore";
-import { db } from "../firebase";
-interface Post {
-  avatarURL: string;
-  caption: string;
-  displayName: string;
-  id: string;
-  imageURL: string;
-  timestamp: Date;
-  uid: string;
+
+interface Doc {
   username: string;
+  id: string;
+  timestamp: number;
 }
 
-export const useSearch: (searchTag: string | null) => Post[] = (searchTag) => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  let isMounted:boolean = searchTag !== null;
+export const useSearch: (searchTag: string | null) => Doc[] = (searchTag) => {
+  const [docsArray, setDocsArray] = useState<Doc[]>([]);
+  let isMounted: boolean = searchTag !== null;
 
-  const getPosts: () => void = () => {
-    setPosts([]);
-    if (isMounted === false) {
-      return;
-    }
-    getDocs(
+  const getUserDocs: (uid: string) => Promise<Doc[]> = async (uid) => {
+    const docsSnap: QuerySnapshot<DocumentData> = await getDocs(
+      query(
+        collection(db, "posts"),
+        where("uid", "==", uid),
+        orderBy("timestamp", "desc"),
+        limit(20)
+      )
+    );
+    const documents: Doc[] = docsSnap.docs.map(
+      (document: QueryDocumentSnapshot<DocumentData>) => {
+        return {
+          username: document.data().username,
+          id: document.id,
+          timestamp: document.data().timestamp.toDate().getTime(),
+        };
+      }
+    );
+    return documents;
+  };
+
+  const getDocsArray: () => Promise<void> = async () => {
+    setDocsArray([]);
+    // NOTE >> 検索タグに合致するユーザーUIDを取得し、配列に格納します。
+    const usersSnap: QuerySnapshot<DocumentData> = await getDocs(
       query(
         collection(db, "users"),
         where("cropsTags", "array-contains", searchTag)
       )
-    ).then((userSnaps: QuerySnapshot<DocumentData>) => {
-      let usernames: string[] = userSnaps.docs.map(
-        (userSnap: QueryDocumentSnapshot<DocumentData>) => {
-          return userSnap.data().username;
-        }
-      );
-      if (usernames.length > 0) {
-        getDocs(
-          query(
-            collection(db, "posts"),
-            where("username", "in", usernames),
-            limit(50)
-          )
-        ).then((postSnaps: QuerySnapshot<DocumentData>) => {
-          // eslint-disable-next-line array-callback-return
-          const postsArray: Post[] = postSnaps.docs.map(
-            (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-              const postSnap: Post = {
-                avatarURL: snapshot.data().avatarURL,
-                caption: snapshot.data().caption,
-                displayName: snapshot.data().displayName,
-                id: snapshot.id,
-                imageURL: snapshot.data().imageURL,
-                timestamp: snapshot.data().timestamp.toDate(),
-                uid: snapshot.data().uid,
-                username: snapshot.data().username,
-              };
-              return postSnap;
-            }
-          );
-          if (postsArray.length === postSnaps.docs.length) {
-            setPosts(postsArray);
-          }
-        });
+    );
+    if (usersSnap.size === 0) return;
+    const uidArray: string[] = usersSnap.docs!.map(
+      (userSnap: QueryDocumentSnapshot<DocumentData>) => {
+        return userSnap.id;
       }
+    );
+    // NOTE >> ユーザーUIDをキーとして、投稿のドキュメントIDを取得し、配列に格納します。
+    uidArray.map(async (uid: string) => {
+      const userDocs: Doc[] = await getUserDocs(uid);
+      setDocsArray((prev: Doc[]) => {
+        return prev.concat(userDocs).sort((firstDoc, secondDoc) => {
+          return firstDoc.timestamp - secondDoc.timestamp;
+        });
+      });
     });
   };
 
   useEffect(() => {
-    getPosts();
+    if (isMounted === false) {
+      return;
+    }
+    getDocsArray();
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTag]);
-  return posts;
+
+  return docsArray;
 };
