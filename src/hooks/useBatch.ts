@@ -79,20 +79,16 @@ export const useBatch: (
     const followersSnap: QuerySnapshot<DocumentData> = await getDocs(
       followersRef
     );
-    const followersArray: { uid: string; username: string }[] =
-      followersSnap.docs.map(
-        (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
-          return {
-            uid: followerSnap.id,
-            username: followerSnap.data().username,
-          };
-        }
-      );
+    const followersUidArray: string[] = followersSnap.docs.map(
+      (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
+        return followerSnap.id;
+      }
+    );
 
-    followersArray.forEach((follower: { uid: string; username: string }) => {
+    followersUidArray.forEach((followerUid: string) => {
       const feedRef: DocumentReference<DocumentData> = doc(
         db,
-        `users/${follower.uid}/feeds/${postId}`
+        `users/${followerUid}/feeds/${postId}`
       );
       batch.set(feedRef, postData);
     });
