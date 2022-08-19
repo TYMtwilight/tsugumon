@@ -22,7 +22,7 @@ interface Post {
   username: string;
 }
 
-export const usePosts = (username: string) => {
+export const usePosts:(username:string)=>Post[] = (username) => {
   const [posts, setPosts] = useState<Post[]>([]);
   let isMounted: boolean = true;
   const unsubscribe: () => void = async () => {
@@ -73,6 +73,5 @@ export const usePosts = (username: string) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(posts);
   return posts;
 };

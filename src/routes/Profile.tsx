@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { useProfile } from "../hooks/useProfile";
 import { usePosts } from "../hooks/usePosts";
+import PostComponent from "../components/PostComponent";
 import { addFollower } from "../functions/AddFollower";
 
 interface Post {
@@ -159,15 +160,18 @@ const Profile: React.VFC = memo(() => {
       <div>
         {posts.map((post: Post) => {
           return (
-            <div key={post.id}>
-              <img src={post.avatarURL} alt={post.username} />
-              <p>{post.username}</p>
-              <p>{post.timestamp.getDate()}</p>
-              <Link to={`/${username}/${post.id}`}>
-                <img src={post.imageURL} alt={post.id} />
-                <p>{post.caption}</p>
-              </Link>
-            </div>
+            <PostComponent
+              key={post.id}
+              avatarURL={post.avatarURL}
+              caption={post.caption}
+              displayName={post.displayName}
+              id={post.id}
+              imageURL={post.imageURL}
+              timestamp={post.timestamp}
+              uid={post.uid}
+              username={post.username}
+              detail={false}
+            />
           );
         })}
       </div>
