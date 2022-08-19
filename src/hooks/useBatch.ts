@@ -17,6 +17,11 @@ import {
   WriteBatch,
   FieldValue,
   DocumentData,
+  collection,
+  CollectionReference,
+  getDocs,
+  QuerySnapshot,
+  QueryDocumentSnapshot,
 } from "firebase/firestore";
 
 interface Post {
@@ -47,19 +52,55 @@ export const useBatch: (
   postImage: string,
   caption: string
 ) => "wait" | "run" | "done" = (upload, postImage, caption) => {
-  const user: LoginUser = useAppSelector(selectUser);
-  const uid: string = user.uid;
-  const username: string = user.username;
-  const displayName: string = user.displayName;
-  const avatarURL: string = user.avatarURL;
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
+  const loginUser: LoginUser = useAppSelector(selectUser);
+  const batch: WriteBatch = writeBatch(db);
+
+  const setBatch: (downloadURL: string) => Promise<void> = async (
+    downloadURL
+  ) => {
+    const postId: string = getRandomString();
+    const postRef: DocumentReference<DocumentData> = doc(db, `posts/${postId}`);
+    // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
+    const postData: Post = {
+      uid: loginUser.uid,
+      username: loginUser.username,
+      displayName: loginUser.displayName,
+      avatarURL: loginUser.avatarURL,
+      imageURL: downloadURL,
+      caption: caption,
+      timestamp: serverTimestamp(),
+    };
+    batch.set(postRef, postData);
+    const followersRef: CollectionReference<DocumentData> = collection(
+      db,
+      `users/${loginUser.uid}/followers`
+    );
+    const followersSnap: QuerySnapshot<DocumentData> = await getDocs(
+      followersRef
+    );
+    const followersUidArray: string[] = followersSnap.docs.map(
+      (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
+        return followerSnap.id;
+      }
+    );
+
+    followersUidArray.forEach((followerUid: string) => {
+      const feedRef: DocumentReference<DocumentData> = doc(
+        db,
+        `users/${followerUid}/feeds/${postId}`
+      );
+      batch.set(feedRef, postData);
+    });
+  };
+
   useEffect(() => {
     if (upload) {
       setProgress("run");
       const filename: string = getRandomString();
       const imageRef: StorageReference = ref(
         storage,
-        `posts/${uid}/${filename}`
+        `posts/${loginUser.uid}/${filename}`
       );
       const uploadPromise: Promise<UploadResult> = uploadString(
         imageRef,
@@ -69,26 +110,11 @@ export const useBatch: (
       uploadPromise
         .then(async () => {
           await getDownloadURL(imageRef).then(async (downloadURL: string) => {
-            const postId: string = getRandomString();
-            const postRef: DocumentReference<DocumentData> = doc(
-              db,
-              `posts/${postId}`
-            );
-            // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
-            const postData: Post = {
-              uid: uid,
-              username: username,
-              displayName: displayName,
-              avatarURL: avatarURL,
-              imageURL: downloadURL,
-              caption: caption,
-              timestamp: serverTimestamp(),
-            };
-            const batch: WriteBatch = writeBatch(db);
-            batch.set(postRef, postData);
             // TODO >> フォローしているユーザーのFeedドキュメントにpostDataを書き込む処理を実装する
-            await batch.commit().then(() => {
-              setProgress("done");
+            setBatch(downloadURL).then(() => {
+              batch.commit().then(() => {
+                setProgress("done");
+              });
             });
           });
         })
