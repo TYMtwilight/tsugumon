@@ -1,16 +1,16 @@
+import React from "react";
 import { memo } from "react";
 import { Link, Outlet, useNavigate, NavigateFunction } from "react-router-dom";
-import React from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
-import Post from "./PostDetail";
-import SelectUserType from "../components/SelectUserType/SelectUserType";
+import PostComponent from "../components/PostComponent";
+import SelectUserType from "../components/SelectUserType";
 import { useFeeds } from "../hooks/useFeeds";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import AddCircle from "@mui/icons-material/AddCircle";
 
-interface PostDoc {
+interface Post {
   avatarURL: string;
   caption: string;
   displayName: string;
@@ -21,29 +21,31 @@ interface PostDoc {
   username: string;
 }
 
-const Feed = memo(() => {
+const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
   const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
-  const user = useAppSelector(selectUser);
-  const feeds: PostDoc[] = useFeeds();
-  if (user.userType) {
+  const loginUser = useAppSelector(selectUser);
+  const feeds: Post[] = useFeeds();
+  if (loginUser.userType) {
     return (
       <div>
-        {feeds.map((feed: PostDoc) => {
+        {feeds.map((feed: Post) => {
           return (
-            <Post
-              // avatarURL={feed.avatarURL}
-              // caption={feed.caption}
-              // displayName={feed.displayName}
-              // imageURL={feed.imageURL}
-              // key={feed.id}
-              // timestamp={feed.timestamp}
-              // uid={feed.uid}
-              // username={feed.username}
+            <PostComponent
+              detail={false}
+              avatarURL={feed.avatarURL}
+              caption={feed.caption}
+              displayName={feed.displayName}
+              id={feed.id}
+              imageURL={feed.imageURL}
+              key={feed.id}
+              timestamp={feed.timestamp}
+              uid={feed.uid}
+              username={feed.username}
             />
           );
         })}
-        <Link to={`/${user.username}`}>
+        <Link to={`/${loginUser.username}`}>
           <p>プロフィールを表示する</p>
         </Link>
         <Link to="/upload">

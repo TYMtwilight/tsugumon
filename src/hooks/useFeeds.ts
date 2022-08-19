@@ -9,8 +9,8 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
   query,
-  getDocs,
   Query,
+  FirestoreError,
 } from "firebase/firestore";
 
 interface Post {
@@ -25,83 +25,57 @@ interface Post {
 }
 
 export const useFeeds: () => Post[] = () => {
-  if (process.env.NODE_ENV === "development") {
-    console.log("useFeeds.tsがレンダリングされました");
-  }
-  const user: LoginUser = useAppSelector(selectUser);
+  let isMounted: boolean = true;
+  const loginUser: LoginUser = useAppSelector(selectUser);
   const [feeds, setFeeds] = useState<Post[]>([]);
-  let updatedFeeds: Post[] = [];
-  let sortedFeeds: Post[] = [];
+  const previousFeeds: Post[] = [];
 
-  const unsubscribe: (isMounted: boolean) => Promise<void> = async (
-    isMounted: boolean
-  ) => {
-    const followeesQuery: Query<DocumentData> = query(
-      collection(db, `users/${user.uid}/followees`)
+  const unsubscribe: () => Promise<void> = async () => {
+    const feedsQuery: Query<DocumentData> = query(
+      collection(db, `users/${loginUser.uid}/feeds`)
     );
-    const followeesSnapshot: QuerySnapshot<DocumentData> = await getDocs(
-      followeesQuery
-    );
-    const followees: string[] = followeesSnapshot.docs.map((snapshot) => {
-      return snapshot.data().uid;
-    });
-    if (followees.length > 0) {
-      followees.forEach((followeeUID: string) => {
-        const feedsQuery: Query<DocumentData> = query(
-          collection(
-            db,
-            `users/${followeeUID}/businessUser/${followeeUID}/posts`
-          )
-        );
-        onSnapshot(
-          feedsQuery,
-          (snapshots: QuerySnapshot<DocumentData>) => {
-            const followeeFeeds: Post[] = snapshots.docs.map(
-              (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-                const feedData: Post = {
-                  id: snapshot.id,
-                  uid: snapshot.data().uid,
-                  username: snapshot.data().username,
-                  displayName: snapshot.data().displayName,
-                  avatarURL: snapshot.data().avatarURL,
-                  imageURL: snapshot.data().imageURL,
-                  caption: snapshot.data().caption,
-                  timestamp: snapshot.data().timestamp.toDate(),
-                };
-                updatedFeeds.filter((updateFeed) => {
-                  return updateFeed.id !== feedData.id;
-                });
-                return feedData;
-              }
+    onSnapshot(feedsQuery, (feedsSnap: QuerySnapshot<DocumentData>) => {
+      const newFeeds: Post[] = feedsSnap.docs.map(
+        (feedSnap: QueryDocumentSnapshot<DocumentData>) => {
+          const newFeed: Post = {
+            id: feedSnap.id,
+            uid: feedSnap.data().uid,
+            username: feedSnap.data().username,
+            displayName: feedSnap.data().displayName,
+            avatarURL: feedSnap.data().avatarURL,
+            imageURL: feedSnap.data().imageURL,
+            caption: feedSnap.data().caption,
+            timestamp: feedSnap.data().timestamp.toDate(),
+          };
+          previousFeeds.filter((previousFeed: Post) => {
+            return previousFeed.id !== newFeed.id;
+          });
+          return newFeed;
+        },
+        (error: FirestoreError) => {
+          if (process.env.NODE_ENV === "development") {
+            console.log(
+              `onSnapshot()の処理で以下のエラーが発生しました\n${error}`
             );
-            sortedFeeds = updatedFeeds
-              .concat(followeeFeeds)
-              .sort((firstEl: Post, secondEl: Post) => {
-                return (
-                  secondEl.timestamp.getTime() - firstEl.timestamp.getTime()
-                );
-              });
-            if (isMounted) {
-              setFeeds(sortedFeeds);
-            }
-          },
-          (error) => {
-            console.error(error);
           }
+        }
+      );
+      if (isMounted) {
+        setFeeds(
+          previousFeeds.concat(newFeeds).sort((first: Post, second: Post) => {
+            return second.timestamp.getTime() - first.timestamp.getTime();
+          })
         );
-      });
-    }
+      }
+    });
   };
 
   useEffect(() => {
-    let isMounted = true;
-    unsubscribe(isMounted);
+    unsubscribe();
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
-      unsubscribe(isMounted);
-      if (process.env.NODE_ENV === "development") {
-        console.log("useFeedsのクリーンアップ関数が実行されました。");
-      }
+      unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
