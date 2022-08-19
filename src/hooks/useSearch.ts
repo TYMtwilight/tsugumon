@@ -62,20 +62,16 @@ export const useSearch: (searchTag: string | null) => Post[] = (searchTag) => {
       )
     );
     if (usersSnap.size > 0) {
-      const uidArray: string[] = usersSnap.docs!.map(
-        (userSnap: QueryDocumentSnapshot<DocumentData>) => {
-          return userSnap.id;
+      usersSnap.docs!.map(
+        async (userSnap: QueryDocumentSnapshot<DocumentData>) => {
+          const userPosts: Post[] = await getUserPosts(userSnap.id);
+          setPosts((prev: Post[]) => {
+            return prev.concat(userPosts).sort((first: Post, second: Post) => {
+              return first.timestamp.getTime() - second.timestamp.getTime();
+            });
+          });
         }
       );
-      // NOTE >> ユーザーUIDをキーとして、投稿のドキュメントIDを取得し、配列に格納します。
-      uidArray.map(async (uid: string) => {
-        const userPosts: Post[] = await getUserPosts(uid);
-        setPosts((prev: Post[]) => {
-          return prev.concat(userPosts).sort((first: Post, second: Post) => {
-            return first.timestamp.getTime() - second.timestamp.getTime();
-          });
-        });
-      });
     }
   };
 
