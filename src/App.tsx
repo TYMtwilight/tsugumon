@@ -68,7 +68,7 @@ const App: React.FC = () => {
 
   if (user.uid) {
     return (
-      <>
+      <div className="w-full max-h-screen bg-slate-100">
         <nav>
           <Link to="/home">
             <HomeIcon />
@@ -87,7 +87,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
-      </>
+      </div>
     );
   } else {
     return <Auth />;
