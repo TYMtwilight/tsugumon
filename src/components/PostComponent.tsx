@@ -103,24 +103,28 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
           )}
         </div>
         <div className="flex ml-2 mt-2">
-          <div className={like ? "flex  text-red-500" : "flex  text-slate-400"}>
+          <div className={`flex ${like ? "text-red-500" : "text-slate-400"}`}>
             <FavoriteRounded
               onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
                 event.preventDefault();
                 addLikes(props.id, loginUid);
               }}
             />
-            {counts === null || counts === 0 ? (
-              <p id="likeCounts">{counts}</p>
-            ) : (
-              <Link to={`/${props.username}/${props.id}/likeUsers`}>
+            <div className="w-12">
+              {counts === null || counts === 0 ? (
                 <p className="ml-2" id="likeCounts">
                   {counts}
                 </p>
-              </Link>
-            )}
+              ) : (
+                <Link to={`/${props.username}/${props.id}/likeUsers`}>
+                  <p className="ml-2" id="likeCounts">
+                    {counts}
+                  </p>
+                </Link>
+              )}
+            </div>
           </div>
-          <div className="flex ml-8 text-slate-400">
+          <div className="flex ml-4 text-slate-400">
             <ChatBubbleRounded></ChatBubbleRounded>
           </div>
         </div>

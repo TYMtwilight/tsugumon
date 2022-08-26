@@ -44,7 +44,7 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
             />
           );
         })}
-        <div className="mb-16">
+        <div className="mb-32">
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import {
-  Link,
   NavLink,
   Navigate,
   Outlet,
@@ -24,7 +23,6 @@ import HomeRounded from "@mui/icons-material/HomeRounded";
 import SearchRounded from "@mui/icons-material/SearchRounded";
 import AddCircle from "@mui/icons-material/AddCircle";
 import NotificationsRounded from "@mui/icons-material/NotificationsRounded";
-import EmailRounded from "@mui/icons-material/EmailRounded";
 const App: React.FC = () => {
   const loginUser = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
