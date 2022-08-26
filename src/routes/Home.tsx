@@ -1,6 +1,6 @@
 import React from "react";
 import { memo } from "react";
-import { Link, Outlet, useNavigate, NavigateFunction } from "react-router-dom";
+import { Outlet, useNavigate, NavigateFunction } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
 import PostComponent from "../components/PostComponent";
@@ -8,7 +8,6 @@ import SelectUserType from "../components/SelectUserType";
 import { useFeeds } from "../hooks/useFeeds";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
-import AddCircle from "@mui/icons-material/AddCircle";
 
 interface Post {
   avatarURL: string;
@@ -45,25 +44,21 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
             />
           );
         })}
-        <Link to={`/${loginUser.username}`}>
-          <p>プロフィールを表示する</p>
-        </Link>
-        <Link to="/upload">
-          <AddCircle />
-        </Link>
-        <button
-          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-            event.preventDefault();
-            navigate("/");
-            signOut(auth).catch((error: any) => {
-              console.log(`エラーが発生しました\n${error.message}`);
-            });
-            dispatch(logout());
-            dispatch(toggleIsNewUser(false));
-          }}
-        >
-          logout
-        </button>
+        <div className="mb-16">
+          <button
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              navigate("/");
+              signOut(auth).catch((error: any) => {
+                console.log(`エラーが発生しました\n${error.message}`);
+              });
+              dispatch(logout());
+              dispatch(toggleIsNewUser(false));
+            }}
+          >
+            logout
+          </button>
+        </div>
         <Outlet />
       </div>
     );
