@@ -3,7 +3,8 @@ import { Link, Outlet } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectUser } from "../features/userSlice";
 import { addLikes } from "../functions/AddLikes";
-import { Favorite } from "@mui/icons-material";
+import FavoriteRounded from "@mui/icons-material/FavoriteRounded";
+import ChatBubbleRounded from "@mui/icons-material/ChatBubbleRounded";
 import { db } from "../firebase";
 import {
   collection,
@@ -65,46 +66,76 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   }, []);
 
   return (
-    <div>
-      <div>
-        <p id="displayName">{props.displayName}</p>
-        <p id="timestamp">
-          {props.timestamp
-            ? `${props.timestamp.getFullYear()}年${
-                props.timestamp!.getMonth() + 1
-              }月${props.timestamp!.getDate()}日`
-            : ""}
-        </p>
+    <div className="mb-12">
+      <div className="flex p-2 font-semibold">
         <Link to={`/${props.username}`}>
-          <img id="avatarURL" src={props.avatarURL} alt="アバター画像" />
-        </Link>
-      </div>
-      <div>
-        {props.detail ? (
-          <img id="image" src={props.imageURL} alt="投稿画像" />
-        ) : (
-          <Link to={`/${props.username}/${props.id}`}>
-            <img id="image" src={props.imageURL} alt="投稿画像" />
-          </Link>
-        )}
-
-        <div color={like ? "red" : "white"}>
-          <Favorite
-            onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-              event.preventDefault();
-              addLikes(props.id, loginUid);
-            }}
+          <img
+            id="avatarURL"
+            className="block w-12 h-12 rounded-full"
+            src={props.avatarURL}
+            alt="アバター画像"
           />
-          {counts === null || counts === 0 ? (
-            <p id="likeCounts">{counts}</p>
+        </Link>
+        <p className="px-2 py-4 leading-4" id="displayName">
+          {props.displayName}
+        </p>
+      </div>
+      <p className="-mt-4 mr-4 text-right" id="timestamp">
+        {props.timestamp
+          ? `${props.timestamp.getFullYear()}年${
+              props.timestamp!.getMonth() + 1
+            }月${props.timestamp!.getDate()}日`
+          : ""}
+      </p>
+      <div>
+        <div className="w-auto h-auto">
+          {props.detail ? (
+            <img id="image" src={props.imageURL} alt="投稿画像" />
           ) : (
-            <Link to={`/${props.username}/${props.id}/likeUsers`}>
-              <p id="likeCounts">{counts}</p>
+            <Link to={`/${props.username}/${props.id}`}>
+              <img
+                className="object-cover w-screen h-96 "
+                id="image"
+                src={props.imageURL}
+                alt="投稿画像"
+              />
             </Link>
           )}
         </div>
+        <div className="flex ml-2 mt-2">
+          <div className={`flex ${like ? "text-red-500" : "text-slate-400"}`}>
+            <FavoriteRounded
+              onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+                event.preventDefault();
+                addLikes(props.id, loginUid);
+              }}
+            />
+            <div className="w-12">
+              {counts === null || counts === 0 ? (
+                <p className="ml-2" id="likeCounts">
+                  {counts}
+                </p>
+              ) : (
+                <Link to={`/${props.username}/${props.id}/likeUsers`}>
+                  <p className="ml-2" id="likeCounts">
+                    {counts}
+                  </p>
+                </Link>
+              )}
+            </div>
+          </div>
+          <div className="flex ml-4 text-slate-400">
+            <ChatBubbleRounded></ChatBubbleRounded>
+          </div>
+        </div>
       </div>
-      <div>{props.detail && <p id="caption">{props.caption}</p>}</div>
+      <div className={props.detail ? "h-full p-2 " : "h-8 p-2 overflow-hidden"}>
+        <Link to={`/${props.username}/${props.id}`}>
+          <p className="overflow-elipsis" id="caption">
+            {props.caption}
+          </p>
+        </Link>
+      </div>
       <Outlet />
     </div>
   );
