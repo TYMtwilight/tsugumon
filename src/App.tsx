@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import {
-  NavLink,
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { NavLink, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
 import Auth from "./routes/Auth";
 import { auth, db } from "./firebase";
@@ -89,11 +83,9 @@ const App: React.FC = () => {
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
         <nav
-          className={
-            scroll > 50
-              ? "flex justify-around w-full h-20 fixed bottom-0 pb-4 bg-slate-100 border-t border-slate-200"
-              : "flex justify-around w-full h-16 fixed bottom-0 bg-slate-100 border-t border-slate-200"
-          }
+          className={`flex justify-around w-full h-20 fixed bottom-0 bg-slate-100 border-t border-slate-200 ${
+            scroll > 50 && "pd-4"
+          }`}
         >
           <button className="w-32">
             <NavLink
