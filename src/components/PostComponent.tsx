@@ -67,18 +67,18 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
 
   return (
     <div className="mb-12">
-      <div className="flex p-2 font-semibold">
-        <Link to={`/${props.username}`}>
+      <div className="p-2">
+        <Link className="flex" to={`/${props.username}`}>
           <img
             id="avatarURL"
             className="block w-12 h-12 rounded-full"
             src={props.avatarURL}
             alt="アバター画像"
           />
+          <p className="px-2 py-4 leading-4 font-semibold" id="displayName">
+            {props.displayName}
+          </p>
         </Link>
-        <p className="px-2 py-4 leading-4" id="displayName">
-          {props.displayName}
-        </p>
       </div>
       <p className="-mt-4 mr-4 text-right" id="timestamp">
         {props.timestamp

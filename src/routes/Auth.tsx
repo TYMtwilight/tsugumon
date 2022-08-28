@@ -65,7 +65,7 @@ const UserAuthentication = () => {
               メールアドレス
             </label>
             <input
-              className="block w-80 h-8 px-4 rounded-md outline-none bg-slate-200"
+              className="block w-10/12 h-8 px-4 rounded-md outline-none bg-slate-200"
               name="textbox"
               type="email"
               id="email"
@@ -84,7 +84,7 @@ const UserAuthentication = () => {
             </label>
             <div className="flex">
               <input
-                className="block w-80 h-8 px-4 rounded-md outline-none bg-slate-200"
+                className="block w-10/12 h-8 px-4 rounded-md outline-none bg-slate-200"
                 type={showPassword ? "text" : "password"}
                 id="password"
                 data-testid="password"
