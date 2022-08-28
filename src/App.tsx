@@ -83,8 +83,8 @@ const App: React.FC = () => {
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
         <nav
-          className={`flex justify-around w-full h-20 fixed bottom-0 bg-slate-100 border-t border-slate-200 ${
-            scroll > 50 && "pd-4"
+          className={`flex justify-around w-full fixed bottom-0 bg-slate-100 border-t border-slate-200 ${
+            scroll > 50 ? "h-20" : "h-16"
           }`}
         >
           <button className="w-32">
