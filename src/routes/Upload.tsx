@@ -37,7 +37,7 @@ const Upload: React.FC = memo(() => {
   };
 
   const cancel = () => {
-    if (postImage === "" && caption === "") {
+    if (postImage === "" && caption === "" && tag === "") {
       navigate(-1);
     } else {
       setModal(true);
@@ -69,8 +69,8 @@ const Upload: React.FC = memo(() => {
   }, [progress]);
 
   return (
-    <div>
-      <div className="flex relative w-screen h-12 justify-center items-center bg-slate-100">
+    <div className="w-screen  bg-slate-100">
+      <div className="flex relative  h-12 justify-center items-center">
         <button
           className="absolute left-4"
           id="cancel"
@@ -78,7 +78,6 @@ const Upload: React.FC = memo(() => {
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             cancel();
-            console.log(modal);
           }}
         >
           <CloseRounded />
@@ -133,8 +132,7 @@ const Upload: React.FC = memo(() => {
           <div className="mb-4">
             <p className="ml-2 text-sm">タグ</p>
             <textarea
-              className="w-full h-32
-               p-2 border-none rounded-md resize-none"
+              className="w-full h-32 p-2 border-none rounded-md resize-none"
               placeholder="タップして入力する"
               value={tag}
               onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -145,11 +143,11 @@ const Upload: React.FC = memo(() => {
         </div>
         <div>
           <input
-            className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100"
+            className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
             id="submit"
             type="submit"
             value="投稿する"
-            disabled={!postImage}
+            disabled={!postImage || modal}
           />
         </div>
       </form>
@@ -164,25 +162,32 @@ const Upload: React.FC = memo(() => {
           <p>アップロードが完了しました!</p>
         </div>
       )}
+
       {modal === true && (
-        <div className="absolute top-0 left-0 w-full h-full  bg-slate-800">
-          <p className="text-slate-100 font-bold">投稿をキャンセルしますか？</p>
-          <button
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              navigate(-1);
-            }}
-          >
-            キャンセルする
-          </button>
-          <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
-              setModal(false);
-            }}
-          >
-            続ける
-          </button>
+        <div className="flex flex-col">
+          <div className="flex flex-col fixed w-screen h-screen top-0 left-0   bg-slate-900/90">
+            <p className="my-16 text-center text-slate-100 font-bold">
+              投稿をキャンセルしますか？
+            </p>
+            <button
+              className="w-36 mx-auto h-8 mb-8 border rounded-full font-bold border-red-500 text-red-500"
+              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                event.preventDefault();
+                navigate(-1);
+              }}
+            >
+              キャンセルする
+            </button>
+            <button
+              className="block w-36 h-8 mb-8 mx-auto border rounded-full font-bold border-slate-100 text-slate-100"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setModal(false);
+              }}
+            >
+              続ける
+            </button>
+          </div>
         </div>
       )}
     </div>
