@@ -1,19 +1,16 @@
 import React, { useEffect, useState, memo } from "react";
 import { useNavigate, NavigateFunction } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
-import { selectUser, LoginUser } from "../features/userSlice";
 import { useBatch } from "../hooks/useBatch";
-import { AddPhotoAlternate, Cancel } from "@mui/icons-material";
+import CloseRounded from "@mui/icons-material/CloseRounded";
 import { resizeImage } from "../functions/ResizeImage";
+import AddToPhotosRounded from "@mui/icons-material/AddToPhotosRounded";
 
 const Upload: React.FC = memo(() => {
-  const user: LoginUser = useAppSelector(selectUser);
-  const displayName: string = user.displayName;
-  const avatarURL: string = user.avatarURL;
+  const [modal, setModal] = useState<boolean>(false);
   const [postImage, setPostImage] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
+  const [tag, setTag] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(false);
-  const [cancelModal, setCancelModal] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
   const progress: "wait" | "run" | "done" = useBatch(
     upload,
@@ -39,11 +36,12 @@ const Upload: React.FC = memo(() => {
     event.target.value = "";
   };
 
-  const resetImage: (event: React.MouseEvent<HTMLButtonElement>) => void = (
-    event
-  ) => {
-    event.preventDefault();
-    setPostImage("");
+  const cancel = () => {
+    if (postImage === "" && caption === "") {
+      navigate(-1);
+    } else {
+      setModal(true);
+    }
   };
 
   useEffect(() => {
@@ -67,27 +65,27 @@ const Upload: React.FC = memo(() => {
           navigate(-1);
         }, 2000);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress]);
 
   return (
     <div>
-      <header>
+      <div className="flex relative w-screen h-12 justify-center items-center bg-slate-100">
         <button
+          className="absolute left-4"
           id="cancel"
           type="button"
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            setCancelModal(true);
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            cancel();
+            console.log(modal);
           }}
         >
-          キャンセルする
+          <CloseRounded />
         </button>
-        <p id="title">新規登録</p>
-      </header>
-      <div>
-        <img id="avatar" src={avatarURL} alt="ユーザーのアバター画像" />
-        <p id="displayName">{displayName}</p>
+        <p className="w-16 mx-auto font-bold" id="title">
+          新規登録
+        </p>
       </div>
       <form
         onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
@@ -95,22 +93,23 @@ const Upload: React.FC = memo(() => {
           setUpload(true);
         }}
       >
-        <div id="imageSection">
+        <div className="relative w-auto h-auto">
           <img
+            className="object-cover w-screen h-96"
             id="postPreview"
             src={
               postImage ? postImage : `${process.env.PUBLIC_URL}/noPhoto.png`
             }
             alt="投稿画像のプレビュー"
           />
-          <button onClick={resetImage} disabled={!postImage}>
-            <Cancel />
-          </button>
-          <label htmlFor="selectImage">
-            <AddPhotoAlternate />
+          <label
+            className="flex absolute justify-center items-center w-16 h-16 right-4 bottom-4 rounded-full text-slate-100 drop-shadow-md  bg-emerald-500 hover:bg-emerald-400"
+            htmlFor="selectImage"
+          >
+            <AddToPhotosRounded fontSize="large" />
           </label>
-          <label htmlFor="selectImage">画像を選択する</label>
           <input
+            className="hidden"
             type="file"
             id="selectImage"
             accept="image/jpeg,image/png"
@@ -119,33 +118,42 @@ const Upload: React.FC = memo(() => {
             }}
           />
         </div>
-        <div id="captionSection">
-          <p>キャプション</p>
-          <textarea
-            placeholder="タップして入力する"
-            value={caption}
-            onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-              setCaption(event.target.value);
-            }}
+        <div className="w-screen p-4">
+          <div className="mb-4">
+            <p className="ml-2 text-sm">キャプション</p>
+            <textarea
+              className="w-full h-40 p-2 border-none rounded-md resize-none"
+              placeholder="タップして入力する"
+              value={caption}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                setCaption(event.target.value);
+              }}
+            />
+          </div>
+          <div className="mb-4">
+            <p className="ml-2 text-sm">タグ</p>
+            <textarea
+              className="w-full h-32
+               p-2 border-none rounded-md resize-none"
+              placeholder="タップして入力する"
+              value={tag}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                setTag(event.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div>
+          <input
+            className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100"
+            id="submit"
+            type="submit"
+            value="投稿する"
+            disabled={!postImage}
           />
         </div>
-        <input
-          id="submit"
-          type="submit"
-          value="投稿する"
-          disabled={!postImage}
-        />
-        <button
-          id="cancel"
-          type="button"
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            setCancelModal(true);
-          }}
-        >
-          キャンセルする
-        </button>
       </form>
+      <footer className="h-48" />
       {progress === "run" && (
         <div id="modal">
           <p>画像をアップロード...</p>
@@ -156,24 +164,24 @@ const Upload: React.FC = memo(() => {
           <p>アップロードが完了しました!</p>
         </div>
       )}
-      {cancelModal && (
-        <div id="cancelModal">
-          <p>画像の登録をキャンセルします。よろしいですか？</p>
+      {modal === true && (
+        <div className="absolute top-0 left-0 w-full h-full  bg-slate-800">
+          <p className="text-slate-100 font-bold">投稿をキャンセルしますか？</p>
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
               navigate(-1);
             }}
           >
-            はい
+            キャンセルする
           </button>
           <button
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
-              setCancelModal(false);
+              setModal(false);
             }}
           >
-            いいえ
+            続ける
           </button>
         </div>
       )}
