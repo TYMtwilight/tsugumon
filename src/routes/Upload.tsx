@@ -1,9 +1,10 @@
 import React, { useEffect, useState, memo } from "react";
 import { useNavigate, NavigateFunction } from "react-router-dom";
 import { useBatch } from "../hooks/useBatch";
-import CloseRounded from "@mui/icons-material/CloseRounded";
 import { resizeImage } from "../functions/ResizeImage";
+import CloseRounded from "@mui/icons-material/CloseRounded";
 import AddToPhotosRounded from "@mui/icons-material/AddToPhotosRounded";
+
 
 const Upload: React.FC = memo(() => {
   const [modal, setModal] = useState<boolean>(false);
@@ -72,7 +73,7 @@ const Upload: React.FC = memo(() => {
     <div className="w-screen  bg-slate-100">
       <div className="flex relative  h-12 justify-center items-center">
         <button
-          className="absolute left-4"
+          className="absolute left-2"
           id="cancel"
           type="button"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {

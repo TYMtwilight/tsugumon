@@ -1,0 +1,4 @@
+.comment:empty::before {
+  content: "コメントを書く";
+  color: rgb(100 116 139);
+}
