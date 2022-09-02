@@ -9,6 +9,7 @@ import Home from "./routes/Home";
 import Search from "./routes/Search";
 import Post from "./routes/PostDetail";
 import LikeUsers from "./routes/LikeUsers";
+import Comments from "./routes/Comments";
 import Profile from "./routes/Profile";
 import Setting from "./routes/Setting";
 import SignUp from "./routes/SignUp";
@@ -33,6 +34,7 @@ ReactDOM.render(
             <Route path=":username" element={<Profile />} />
             <Route path=":username/:docId" element={<Post />} />
             <Route path=":username/:docId/likeUsers" element={<LikeUsers />} />
+            <Route path=":username/:docId/comments" element={<Comments />} />s
             <Route path=":username/followers" element={<Followers />} />
             <Route path=":username/followings" element={<Followings />} />
           </Route>

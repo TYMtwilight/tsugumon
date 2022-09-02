@@ -51,13 +51,19 @@ const Profile: React.VFC = memo(() => {
   const posts: Post[] = usePosts(username);
   const [scroll, setScroll] = useState<number>(0);
   const [tab, setTab] = useState<"album" | "wanted">("album");
+  let isMounted: boolean = true;
 
   useEffect(() => {
     window.addEventListener("scroll", () => {
+      if (isMounted === false) {
+        return;
+      }
       setScroll(window.scrollY);
       console.log(scroll);
     });
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      isMounted = false;
       window.removeEventListener("scroll", () => {
         if (process.env.NODE_ENV === "development") {
           console.log("イベントリスナーをリセットしました。");

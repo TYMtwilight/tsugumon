@@ -22,7 +22,7 @@ interface Post {
   username: string;
 }
 
-export const usePosts:(username:string)=>Post[] = (username) => {
+export const usePosts: (username: string) => Post[] = (username) => {
   const [posts, setPosts] = useState<Post[]>([]);
   let isMounted: boolean = true;
   const unsubscribe: () => void = async () => {
@@ -40,15 +40,16 @@ export const usePosts:(username:string)=>Post[] = (username) => {
         const unChangedPosts: Post[] = posts;
         const changedPosts: Post[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
+            const value: DocumentData = snapshot.data();
             const changedPost: Post = {
-              avatarURL: snapshot.data().avatarURL,
-              caption: snapshot.data().caption,
-              displayName: snapshot.data().displayName,
+              avatarURL: value.avatarURL,
+              caption: value.caption,
+              displayName: value.displayName,
               id: snapshot.id,
-              imageURL: snapshot.data().imageURL,
-              timestamp: snapshot.data().timestamp.toDate(),
-              uid: snapshot.data().uid,
-              username: snapshot.data().username,
+              imageURL: value.imageURL,
+              timestamp: value.timestamp && value.timestamp.toDate(),
+              uid: value.uid,
+              username: value.username,
             };
             unChangedPosts.filter((unChangedPost) => {
               return unChangedPost.id !== changedPost.id;
@@ -56,6 +57,9 @@ export const usePosts:(username:string)=>Post[] = (username) => {
             return changedPost;
           }
         );
+        if (isMounted === false) {
+          return;
+        }
         setPosts(unChangedPosts.concat(changedPosts));
       },
       (error) => {
