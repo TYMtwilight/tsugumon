@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { useDemo } from "../hooks/useDemo";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -21,13 +21,16 @@ const UserAuthentication = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [upload, setUpload] = useState<boolean>(false);
   const progress: "wait" | "run" | "done" = useDemo(upload);
+  const navigate = useNavigate();
 
   const login: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => Promise<void> = async (event) => {
     event.preventDefault();
     if (email && password) {
-      signInWithEmailAndPassword(auth, email, password.input);
+      signInWithEmailAndPassword(auth, email, password.input).then(() => {
+        navigate("/", { replace:true });
+      });
     }
   };
 
