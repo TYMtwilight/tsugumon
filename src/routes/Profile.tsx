@@ -59,7 +59,6 @@ const Profile: React.VFC = memo(() => {
         return;
       }
       setScroll(window.scrollY);
-      console.log(scroll);
     });
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps

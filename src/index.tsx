@@ -17,27 +17,29 @@ import Upload from "./routes/Upload";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
+import Login from "./routes/Login";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="*" element={<App />}>
+          <Route path="/*" element={<App />}>
             <Route path="home" element={<Home />} />
             <Route path="search" element={<Search />} />
             <Route path="notifications" element={<p>Notifications</p>} />
             <Route path="email" element={<p>Email</p>} />
-            <Route path="upload" element={<Upload />} />
-            <Route path="signup" element={<SignUp />} />
-            <Route path="setting" element={<Setting />} />
-            <Route path=":username" element={<Profile />} />
-            <Route path=":username/:docId" element={<Post />} />
-            <Route path=":username/:docId/likeUsers" element={<LikeUsers />} />
-            <Route path=":username/:docId/comments" element={<Comments />} />s
-            <Route path=":username/followers" element={<Followers />} />
-            <Route path=":username/followings" element={<Followings />} />
           </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/upload" element={<Upload />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/setting" element={<Setting />} />
+          <Route path="/:username" element={<Profile />} />
+          <Route path="/:username/:docId" element={<Post />} />
+          <Route path="/:username/:docId/likeUsers" element={<LikeUsers />} />
+          <Route path="/:username/:docId/comments" element={<Comments />} />s
+          <Route path="/:username/followers" element={<Followers />} />
+          <Route path="/:username/followings" element={<Followings />} />
         </Routes>
       </BrowserRouter>
     </Provider>

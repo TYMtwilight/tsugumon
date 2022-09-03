@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { NavLink, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, NavLink, Outlet, Route, Routes } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
-import Auth from "./routes/Auth";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
 import {
@@ -17,6 +16,7 @@ import HomeRounded from "@mui/icons-material/HomeRounded";
 import SearchRounded from "@mui/icons-material/SearchRounded";
 import AddCircle from "@mui/icons-material/AddCircle";
 import NotificationsRounded from "@mui/icons-material/NotificationsRounded";
+
 const App: React.FC = () => {
   const loginUser = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
@@ -27,9 +27,6 @@ const App: React.FC = () => {
       auth,
       async (authUser: User | null) => {
         if (authUser) {
-          let introduction: string = "";
-          let userType: "business" | "normal" | null = null;
-          let username: string = "";
           const userRef: DocumentReference<DocumentData> = doc(
             db,
             "users",
@@ -39,52 +36,47 @@ const App: React.FC = () => {
             userRef
           );
           if (userSnap.exists()) {
-            introduction = userSnap.data().introduction;
-            userType = userSnap.data().userType;
-            username = userSnap.data().username;
+            dispatch(
+              login({
+                avatarURL: authUser.photoURL ? authUser.photoURL : "",
+                displayName: authUser.displayName ? authUser.displayName : "",
+                introduction: userSnap.data().introduction,
+                uid: authUser.uid,
+                username: userSnap.data().username,
+                userType: userSnap.data().userType,
+              })
+            );
           } else {
-            console.log("対象のドキュメントは見つかりませんでした。");
+            if (process.env.NODE_ENV === "development") {
+              console.log("対象のドキュメントは見つかりませんでした。");
+            }
+            dispatch(logout());
           }
-
-          dispatch(
-            login({
-              avatarURL: authUser.photoURL ? authUser.photoURL : "",
-              displayName: authUser.displayName ? authUser.displayName : "",
-              introduction: introduction,
-              uid: authUser.uid,
-              username: username,
-              userType: userType,
-            })
-          );
         } else {
           dispatch(logout());
         }
       }
     );
-
-    window.addEventListener("scroll", () => {
-      setScroll(window.scrollY);
-    });
     return () => {
       unsubscribe();
-      window.removeEventListener("scroll", () => {
-        if (process.env.NODE_ENV === "development") {
-          console.log("イベントリスナーをリセットしました。");
-        }
-      });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   if (loginUser.uid) {
     return (
-      <div className="w-full bg-slate-100">
+      <div
+        className="w-full min-h-screen h-100 bg-slate-100"
+        onScroll={(event: React.UIEvent<HTMLDivElement>) => {
+          event.preventDefault();
+          setScroll(window.scrollY);
+        }}
+      >
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
         <nav
-          className={`flex justify-around w-full fixed bottom-0 bg-slate-100 border-t border-slate-200 z-50 ${
-            scroll > 50 ? "h-20" : "h-16"
+          className={`flex justify-around w-full h-16 fixed bottom-0 bg-slate-100 border-t border-slate-200 ${
+            scroll > 50 && "pb-4"
           }`}
         >
           <button className="w-32">
@@ -161,7 +153,11 @@ const App: React.FC = () => {
       </div>
     );
   } else {
-    return <Auth />;
+    return (
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
+    );
   }
 };
 export default App;

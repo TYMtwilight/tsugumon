@@ -1,12 +1,14 @@
 import React, { useEffect, useState, memo } from "react";
-import { useNavigate, NavigateFunction } from "react-router-dom";
+import { useAppSelector } from "../app/hooks";
+import { selectUser, LoginUser } from "../features/userSlice";
+import { useNavigate, NavigateFunction, Navigate } from "react-router-dom";
 import { useBatch } from "../hooks/useBatch";
 import { resizeImage } from "../functions/ResizeImage";
 import CloseRounded from "@mui/icons-material/CloseRounded";
 import AddToPhotosRounded from "@mui/icons-material/AddToPhotosRounded";
 
-
 const Upload: React.FC = memo(() => {
+  const loginUser: LoginUser = useAppSelector(selectUser);
   const [modal, setModal] = useState<boolean>(false);
   const [postImage, setPostImage] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
@@ -71,6 +73,7 @@ const Upload: React.FC = memo(() => {
 
   return (
     <div className="w-screen  bg-slate-100">
+      {loginUser.uid === "" && <Navigate to="/login" replace={true} />}
       <div className="flex relative  h-12 justify-center items-center">
         <button
           className="absolute left-2"
