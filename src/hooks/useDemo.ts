@@ -18,7 +18,9 @@ import {
   User,
   UserCredential,
 } from "firebase/auth";
+import { getRandomString } from "../functions/GetRandomString";
 import { resizeImage } from "../functions/ResizeImage";
+import { splitByHash } from "../functions/SplitByHash";
 
 interface FetchedUser {
   email: string;
@@ -29,27 +31,25 @@ interface FetchedUser {
   userType: string;
   introduction: string;
   background: string;
-  cropsTags: string[];
   posts: [
     {
-      uid: string;
       username: string;
       displayName: string;
-      avatarURL: string;
       image: string;
       caption: string;
       timestamp: string;
     }
   ];
-  option: "business" | "normal";
-  business?: {
+  option: {
+    achademicHistory: string;
     address: string;
-    owner: string;
-    typeOfWork: string;
-  };
-  normal?: {
     birthdate: string;
-    skill: string;
+    owner: string;
+    skill1: string;
+    skill2: string;
+    skill3: string;
+    tags: string;
+    typeOfWork: string;
   };
 }
 
@@ -62,20 +62,6 @@ interface Post {
   caption: string;
   timestamp: Date;
 }
-
-const getUniqueName: () => string = () => {
-  const S: string =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const N: number = 16;
-  const randomValues: number[] = Array.from(
-    crypto.getRandomValues(new Uint32Array(N))
-  );
-  const randomString: string = randomValues
-    .map((n) => S[n % S.length])
-    .join("");
-  const uniqueName: string = randomString;
-  return uniqueName;
-};
 
 const arrayBufferToDataURL: (buffer: ArrayBuffer) => string = (buffer) => {
   let binaryString: string = "";
@@ -96,18 +82,18 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
     setProgress("run");
     const response: Response = await fetch("data.json");
     const object: any = await response.json();
-    const usersData: FetchedUser[] = await object.users;
-    for (let userData of usersData) {
+    const fetchedUsers: FetchedUser[] = await object.users;
+    for (let fetchedUser of fetchedUsers) {
       createUserWithEmailAndPassword(
         auth,
-        userData.email,
-        userData.password
+        fetchedUser.email,
+        fetchedUser.password
       ).then(async (userCredential: UserCredential) => {
         const user: User = userCredential.user;
         const uid: string = user.uid;
         const avatarRef: StorageReference = ref(storage, `avatars/${uid}`);
         const avatarBuffer: ArrayBuffer = await (
-          await fetch(`${process.env.PUBLIC_URL}/${userData.avatar}`)
+          await fetch(`${process.env.PUBLIC_URL}/${fetchedUser.avatar}`)
         ).arrayBuffer();
         const avatarOrigin: string = arrayBufferToDataURL(avatarBuffer);
         const avatarImage: string = await resizeImage(avatarOrigin);
@@ -116,20 +102,20 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
           `backgrounds/${uid}`
         );
         const backgroundBuffer: ArrayBuffer = await (
-          await fetch(`${process.env.PUBLIC_URL}/${userData.background}`)
+          await fetch(`${process.env.PUBLIC_URL}/${fetchedUser.background}`)
         ).arrayBuffer();
         const backgroundOrigin: string = arrayBufferToDataURL(backgroundBuffer);
         const backgroundImage: string = await resizeImage(backgroundOrigin);
         await uploadString(avatarRef, avatarImage, "data_url")
-          .then(async () => {
-            await uploadString(backgroundRef, backgroundImage, "data_url");
+          .then(() => {
+            uploadString(backgroundRef, backgroundImage, "data_url");
           })
           .then(async () => {
             const avatarURL: string = await getDownloadURL(avatarRef);
-            const backgroundURL: string = await getDownloadURL(backgroundRef);
+            // const backgroundURL: string = await getDownloadURL(backgroundRef);
             // NOTE >> ユーザーアカウントのプロフィール情報をアップデートします
             await updateProfile(user, {
-              displayName: userData.displayName,
+              displayName: fetchedUser.displayName,
               photoURL: avatarURL,
             });
             const userRef: DocumentReference<DocumentData> = doc(
@@ -138,67 +124,60 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
             );
             await setDoc(userRef, {
               avatarURL: avatarURL,
-              backgroundURL: backgroundURL,
-              cropsTags:userData.cropsTags,
+              backgroundURL: "backgroundURL",
               displayName: user.displayName,
-              introduction: userData.introduction,
-              userType: userData.userType,
-              username: userData.username,
+              introduction: fetchedUser.introduction,
+              userType: fetchedUser.userType,
+              username: fetchedUser.username,
             });
             const optionRef: DocumentReference<DocumentData> = doc(
               db,
               `option/${uid}/`
             );
-            if (userData.userType === "business") {
-              await setDoc(optionRef, {
-                address: userData.business!.address,
-                birthdate: "",
-                owner: userData.business!.owner,
-                skill: "",
-                typeOfWork: userData.business!.typeOfWork,
-                username: userData.username,
-                userType: userData.userType,
-              });
-            } else {
-              await setDoc(optionRef, {
-                address: "",
-                birthdate: userData.normal!.birthdate,
-                owner: "",
-                skill: userData.normal!.skill,
-                typeOfWork: "",
-                username: userData.username,
-                userType: userData.userType,
-              });
-            }
-            const postsData = userData.posts;
-            for (let postData of postsData) {
-              const imageRef: StorageReference = ref(
-                storage,
-                `posts/${uid}/${getUniqueName()}`
-              );
-              const postBuffer: ArrayBuffer = await (
-                await fetch(`${process.env.PUBLIC_URL}/${postData.image}`)
-              ).arrayBuffer();
-              const postOrigin: string = arrayBufferToDataURL(postBuffer);
-              const postImage: string = await resizeImage(postOrigin);
-              uploadString(imageRef, postImage, "data_url").then(async () => {
-                const url: string = await getDownloadURL(imageRef);
-                const postRef: DocumentReference<DocumentData> = doc(
-                  db,
-                  `posts/${getUniqueName()}`
+            await setDoc(optionRef, {
+              achademicHistory: fetchedUser.option.achademicHistory,
+              address: fetchedUser.option.address,
+              birthdate: fetchedUser.option.birthdate,
+              owner: fetchedUser.option.owner,
+              skill1: fetchedUser.option.skill1,
+              skill2: fetchedUser.option.skill2,
+              skill3: fetchedUser.option.skill3,
+              tags: splitByHash(fetchedUser.option.tags),
+              typeOfWork: fetchedUser.option.typeOfWork,
+              username: fetchedUser.username,
+              userType: fetchedUser.userType,
+            });
+            if (fetchedUser.userType === "business") {
+              const postsData = fetchedUser.posts;
+              for (let postData of postsData) {
+                const imageRef: StorageReference = ref(
+                  storage,
+                  `posts/${uid}/${getRandomString()}`
                 );
-                const post: Post = {
-                  uid: uid,
-                  username: postData.username,
-                  displayName: postData.displayName,
-                  avatarURL: avatarURL,
-                  imageURL: url,
-                  caption: postData.caption,
-                  timestamp: new Date(postData.timestamp),
-                };
-                await setDoc(postRef, post);
-                setProgress("done");
-              });
+                const postBuffer: ArrayBuffer = await (
+                  await fetch(`${process.env.PUBLIC_URL}/${postData.image}`)
+                ).arrayBuffer();
+                const postOrigin: string = arrayBufferToDataURL(postBuffer);
+                const postImage: string = await resizeImage(postOrigin);
+                uploadString(imageRef, postImage, "data_url").then(async () => {
+                  const url: string = await getDownloadURL(imageRef);
+                  const postRef: DocumentReference<DocumentData> = doc(
+                    db,
+                    `posts/${getRandomString()}`
+                  );
+                  const post: Post = {
+                    uid: uid,
+                    username: postData.username,
+                    displayName: postData.displayName,
+                    avatarURL: avatarURL,
+                    imageURL: url,
+                    caption: postData.caption,
+                    timestamp: new Date(postData.timestamp),
+                  };
+                  await setDoc(postRef, post);
+                  setProgress("done");
+                });
+              }
             }
           });
       });
