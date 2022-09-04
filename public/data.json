@@ -4,11 +4,10 @@
       "email": "tsugumon@gmail.com",
       "username": "@tsugumon",
       "password": "tsugumon",
-      "cropsTags": ["トマト"],
       "displayName": "株式会社つぐもん",
       "avatar": "avatars/@tsugumon.jpg",
       "userType": "business",
-      "introduction": "八代平野でトマトのハウス栽培を営んでいます。家族経営で、まだまだ小さい規模ですが、甘くてフルーティーなトマトが自慢です！",
+      "introduction": "定年に到達した2008年末、畑と田んぼを作り、半田舎暮らしとほとんど経験がなかった農業を始めました❗️2011年末に40年続けたサラリーマンを辞め、専業農家になりました🧑🏻‍🌾",
       "background": "backgrounds/@tsugumonBackground.jpg",
       "posts": [
         {
@@ -82,21 +81,27 @@
           "timestamp": "2022,4,20, 11:00"
         }
       ],
-      "business": {
-        "address": "熊本県八代市本町○○番地",
+      "option": {
+        "achademicHistory": "",
+        "address": "熊本県八代市本町119番地",
+        "birthdate": "",
         "owner": "継田 譲司",
-        "typeOfWork": "農家"
+        "skill1": "",
+        "skill2": "",
+        "skill3": "",
+        "tags": "#米 #稲作 #定年後 #専業農家 #熊本",
+        "typeOfWork": "農家",
+        "workHistory": ""
       }
     },
     {
       "email": "hiiragi_farm@gmail.com",
       "username": "@hiiragi_farm",
       "password": "hiiragi_farm",
-      "cropsTags":["米"],
-      "displayName": "ひいらぎ農園",
+      "displayName": "株式会社ひいらぎ農園",
       "avatar": "avatars/@hiiragi_farm.jpg",
       "userType": "business",
-      "introduction": "ひいらぎ農園は熊本県のほぼ中央に広がる八代平野に位置します。「農業の自立」を目指し、1994年(平成6年）にそれまでの家族経営から脱し、法人化しました。以来、水稲を中心に規模拡大を進め、現在米・小麦・ミニトマト・ブロッコリーの生産を行っています。併せてライスセンターを運営し、地域の皆さんの委託を受けて田畑の管理、耕作から収穫までの諸作業を個々のニーズに応じて行っております。！",
+      "introduction": "ひいらぎ農園は熊本県のほぼ中央に広がる八代平野に位置します。「農業の自立」を目指し、平成6年にそれまでの家族経営から脱し、法人化しました。地域の皆さんの委託を受けて田畑の管理、耕作から収穫までの諸作業を個々のニーズに応じて行っております。❗️",
       "background": "backgrounds/@hiiragi_farmBackground.jpg",
       "posts": [
         {
@@ -114,10 +119,113 @@
           "timestamp": "2022,6,25, 9:00"
         }
       ],
-      "business": {
-        "address": "熊本県八代市新浜町○○番地",
+      "option": {
+        "achademicHistory": "",
+        "address": "熊本県八代市新浜町2022番地",
+        "birthdate": "",
         "owner": "柊 道夫",
-        "typeOfWork": "農家"
+        "skill1": "",
+        "skill2": "",
+        "skill3": "",
+        "tags": "#米 #稲作 #法人化 #熊本",
+        "typeOfWork": "農家",
+        "workHistory": ""
+      }
+    },
+    {
+      "email": "moelgakusei@yahoo.co.jp",
+      "username": "@moelgakusei",
+      "password": "moelgakusei",
+      "displayName": "桜井 三郎",
+      "avatar": "avatars/@moelgakusei.jpg",
+      "userType": "normal",
+      "introduction": "大学に進学してから将来や物事を深く考えるようになりました。これから自分は何がしたいのだろうと考えた時に、農学部での経験を活かし、農業に挑戦しようと決意しました🔥卒業後は地方に移住し、技術的な農業スキルだけでなく、周囲の農家の方との人間関係も学んでいきたいと考えています❗️",
+      "background": "backgrounds/@moelgakuseiBackground.jpg",
+      "option": {
+        "achademicHistory": "福岡大学 経済学部",
+        "address": "福岡市城南区西片江2-17-6",
+        "birthdate": "2011-11-10",
+        "owner": "",
+        "skill1": "日本農業検定3級",
+        "skill2": "普通自動車運転免許",
+        "skill3": "簿記3級",
+        "tags": "",
+        "typeOfWork": "",
+        "workHistory": ""
+      }
+    },
+    {
+      "email": "sour_candy@yahoo.co.jp",
+      "username": "@sour_candy",
+      "password": "sour_candy",
+      "displayName": "岸なみ",
+      "avatar": "avatars/@sour_candy.jpg",
+      "userType": "normal",
+      "introduction": "子供が中学に進学し、手が掛からなくなったため、正社員として貴社で働きたいと考えております。結婚前に勤めていた会社では経理部で働き、最後の1年間は経理主任として働きました。離職期間が長いものの、子育てをしながら簿記3級の資格を取得し、経理担当者としてのスキルを一層高める努力をしておりました。",
+      "background": "backgrounds/@sour_candyBackground.jpg",
+      "option": {
+        "achademicHistory": "熊本大学 経済学部",
+        "address": "熊本県熊本市西区春日３丁目",
+        "birthdate": "1978-6-23",
+        "owner": "",
+        "skill1": "普通自動車運転免許",
+        "skill2": "簿記3級",
+        "skill3": "",
+        "tags": "",
+        "typeOfWork": "",
+        "workHistory": "株式会社インサイド"
+      }
+    },
+    {
+      "email": "machida_glass@gmail.com",
+      "username": "@machida_glass",
+      "password": "machida_glass",
+      "displayName": "有限会社 町田ガラス",
+      "avatar": "avatars/@machida_glass.jpg",
+      "userType": "business",
+      "introduction": "ガラスは様々な分野での研究・開発に使用され、技術発展になくてはならない存在です。町田ガラスは、実験用のガラス加工の優れた技術を持ち、設計から販売にいたるまで幅広いサポート体制を築いています。すべての研究者のイメージを形にし、その先にある技術革新に貢献するために、私たちは努力し続けます。",
+      "background": "backgrounds/@machida_glassBackground.jpg",
+      "posts": [
+        {
+          "username": "@machida_glass",
+          "displayName": "有限会社 町田ガラス",
+          "image": "posts/@machida_glass/01_machida_glass.jpg",
+          "caption": "ガラスの主原料は珪砂（けいしゃ）と呼ばれる砂です。公園などでよく見かける砂場の砂も珪砂です。珪砂を溶かすには1,700℃の高温が必要で、通常はこの温度で熱するのは困難です。そこで溶解までの温度を下げるためにソーダ灰という材料を加えた後、石灰を入れます。石灰を入れると水に溶けないガラスになります。",
+          "timestamp": "2021,4,11,10:20"
+        },
+        {
+          "username": "@machida_glass",
+          "displayName": "有限会社 町田ガラス",
+          "image": "posts/@machida_glass/02_machida_glass.jpg",
+          "caption": "およそ1,600℃まで加熱・溶解されたガラスを溶解金属が敷かれたフロートバスに流し込みます。流し込んだガラスは溶解金属の上に浮かびながら広がっていきます。平らになって流れながら少しずつ冷却されたガラスを切断して成形します。",
+          "timestamp": "2021,5,25,15:12"
+        },
+        {
+          "username": "@machida_glass",
+          "displayName": "有限会社 町田ガラス",
+          "image": "posts/@machida_glass/03_machida_glass.jpg",
+          "caption": "強い衝撃や急な温度変化によって欠けや割れが生じます。特に板ガラスのエッジ部分は衝撃に弱いため、欠けたり割れたりしやすいです。",
+          "timestamp": "2022,6,1, 12:30"
+        },
+        {
+          "username": "@machida_glass",
+          "displayName": "有限会社 町田ガラス",
+          "image": "posts/@machida_glass/04_machida_glass.jpg",
+          "caption": "けい砂・石灰石・ソーダ灰に、あきびんを細かく砕いたカレットを混ぜて、溶解窯で溶かし、製びん機で成形して、ガラスびんができあがります。ガラスびん工場では、清潔で安心して使えるガラスびんを得意先へ納入するために、すべての工程を24時間体制で、徹底した品質管理を行っています。",
+          "timestamp": "2022,6,15, 15:30"
+        }
+      ],
+      "option": {
+        "achademicHistory": "",
+        "address": "熊本県八代市本町119番地",
+        "birthdate": "",
+        "owner": "継田 譲司",
+        "skill1": "",
+        "skill2": "",
+        "skill3": "",
+        "tags": "#米 #稲作 #定年後 #専業農家 #熊本",
+        "typeOfWork": "農家",
+        "workHistory": ""
       }
     }
   ]
