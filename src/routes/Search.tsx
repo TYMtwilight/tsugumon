@@ -74,6 +74,7 @@ const Search: React.VFC = () => {
       <div>
         <input
           type="text"
+          value={searchParams.get("tag") || ""}
           onChange={(event) => {
             event.preventDefault();
             let tag = event.target.value;
