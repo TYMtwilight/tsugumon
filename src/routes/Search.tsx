@@ -36,8 +36,6 @@ const Search: React.VFC = () => {
     const tagsArray: string[] = tags.split(/\s+/).map((tag: string) => {
       return `${tag}`;
     });
-    console.log(tagsArray);
-
     const postSnapArray: QuerySnapshot<DocumentData> = await getDocs(
       query(
         collection(db, "posts"),
