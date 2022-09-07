@@ -22,6 +22,7 @@ interface Post {
   displayName: string;
   id: string;
   imageURL: string;
+  tags: string[];
   timestamp: Date;
   uid: string;
   username: string;
@@ -258,6 +259,7 @@ const Profile: React.VFC = memo(() => {
                 id={post.id}
                 imageURL={post.imageURL}
                 timestamp={post.timestamp}
+                tags={post.tags}
                 uid={post.uid}
                 username={post.username}
                 detail={false}

@@ -14,11 +14,11 @@ const ContentEditable: React.VFC<{
     onChange(event.target.innerHTML);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-    }
-  };
+  // const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  //   if (event.key === "Enter") {
+  //     event.preventDefault();
+  //   }
+  // };
 
   return (
     <div
@@ -28,7 +28,7 @@ const ContentEditable: React.VFC<{
       } w-full h-max max-h-32 px-2 overflow-y-auto border-none outline-none resize-none`}
       contentEditable
       onInput={handleInput}
-      onKeyDown={handleKeyDown}
+      // onKeyDown={handleKeyDown}
       onBlur={onBlur}
       dangerouslySetInnerHTML={{ __html: defaultValue.current }}
     />

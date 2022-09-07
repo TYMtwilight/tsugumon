@@ -15,6 +15,7 @@ interface Post {
   displayName: string;
   id: string;
   imageURL: string;
+  tags: string[];
   timestamp: Date;
   uid: string;
   username: string;
@@ -41,6 +42,7 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
               timestamp={feed.timestamp}
               uid={feed.uid}
               username={feed.username}
+              tags={feed.tags}
             />
           );
         })}

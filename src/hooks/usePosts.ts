@@ -18,6 +18,7 @@ interface Post {
   id: string;
   imageURL: string;
   timestamp: Date;
+  tags: string[];
   uid: string;
   username: string;
 }
@@ -47,6 +48,7 @@ export const usePosts: (username: string) => Post[] = (username) => {
               displayName: value.displayName,
               id: snapshot.id,
               imageURL: value.imageURL,
+              tags: value.tags,
               timestamp: value.timestamp && value.timestamp.toDate(),
               uid: value.uid,
               username: value.username,

@@ -22,6 +22,7 @@ interface PostSummary {
   displayName: string;
   id: string;
   imageURL: string;
+  tags: string[];
   timestamp: Date | null;
   uid: string;
   username: string;
