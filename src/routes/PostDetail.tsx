@@ -21,6 +21,7 @@ interface Post {
   id: string;
   imageURL: string;
   timestamp: Date | null;
+  tags:string[];
   uid: string;
   username: string;
 }
@@ -33,6 +34,7 @@ const PostDetail: React.VFC = memo(() => {
     id: "",
     imageURL: "",
     timestamp: null,
+    tags:[],
     uid: "",
     username: "",
   });
@@ -51,6 +53,7 @@ const PostDetail: React.VFC = memo(() => {
         id: postId,
         imageURL: postSnap.data()!.imageURL,
         timestamp: postSnap.data()!.timestamp.toDate(),
+        tags:postSnap.data()!.tags,
         uid: postSnap.data()!.uid,
         username: postSnap.data()!.username,
       });
@@ -86,6 +89,7 @@ const PostDetail: React.VFC = memo(() => {
           id={post.id}
           imageURL={post.imageURL}
           timestamp={post.timestamp}
+          tags={post.tags}
           uid={post.uid}
           username={post.username}
           detail={true}

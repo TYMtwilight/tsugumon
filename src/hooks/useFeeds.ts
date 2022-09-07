@@ -22,6 +22,7 @@ interface Post {
   imageURL: string;
   caption: string;
   timestamp: Date;
+  tags: string[];
 }
 
 export const useFeeds: () => Post[] = () => {
@@ -46,6 +47,7 @@ export const useFeeds: () => Post[] = () => {
             imageURL: feedSnap.data().imageURL,
             caption: feedSnap.data().caption,
             timestamp: feedSnap.data().timestamp.toDate(),
+            tags: feedSnap.data().tags,
           };
           previousFeeds.filter((previousFeed: Post) => {
             return previousFeed.id !== newFeed.id;
