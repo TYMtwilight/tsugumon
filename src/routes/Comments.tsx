@@ -17,7 +17,6 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useComments } from "../hooks/useComments";
-import ContentEditable from "../components/ContentEditable";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
 
 interface Comment {
@@ -52,15 +51,11 @@ const Comments: React.VFC = () => {
   const commentId: string = getRandomString();
   const comments: Comment[] = useComments(postId);
 
-  const handleBlur: () => void = () => {
-    console.log(comment);
-  };
   const uploadComment = () => {
     const commentRef: DocumentReference<DocumentData> = doc(
       db,
       `posts/${postId}/comments/${commentId}`
     );
- 
 
     setDoc(commentRef, {
       avatarURL: loginUser.avatarURL,
@@ -70,7 +65,7 @@ const Comments: React.VFC = () => {
       username: loginUser.username,
     }).then(() => {
       setComment("");
-      document.getElementById("content_editable")!.innerHTML = "";
+      window.scrollTo(0, 0);
     });
   };
 
@@ -116,18 +111,20 @@ const Comments: React.VFC = () => {
         })}
       </div>
       <div className="relative">
-        <div className="fixed w-screen bottom-0 z-20 p-4 mb-16 border-t border-slate-300 bg-slate-100">
+        <div className="fixed w-screen bottom-0 z-20 p-4 border-t border-slate-300 bg-slate-100">
           <div>
             <p className="h-8 text-sm">返信先：{postUsername}さん</p>
           </div>
           <div>
-            <ContentEditable
-              id="content_editable"
-              inputFor="comment"
-              value={comment}
-              onChange={setComment}
-              onBlur={handleBlur}
-            />
+            <textarea
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                event.preventDefault();
+                setComment(event.target.value);
+              }}
+              className="w-full h-24 mb-4"
+            >
+              {comment}
+            </textarea>
           </div>
           <div className="flex justify-end">
             <button
