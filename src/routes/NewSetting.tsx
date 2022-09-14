@@ -36,10 +36,17 @@ const NewSetting = () => {
   const [backgroundURL, setBackgroundURL] = useState<string>("");
   const birthdayYear = useRef<HTMLSelectElement>(null);
   const birthdayMonth = useRef<HTMLSelectElement>(null);
+  const birthday = useRef<HTMLSelectElement>(null);
   const [dates, setDates] = useState<number[]>([]);
+  const displayName = useRef<HTMLInputElement>(null);
   const introduction = useRef<HTMLTextAreaElement>(null);
   const loginUser: LoginUser = useAppSelector(selectUser);
+  const skill1 = useRef<HTMLInputElement>(null);
+  const skill2 = useRef<HTMLInputElement>(null);
+  const skill3 = useRef<HTMLInputElement>(null);
+
   const navigate: NavigateFunction = useNavigate();
+
   let isMounted: boolean = true;
 
   let years: number[] = [];
@@ -184,6 +191,11 @@ const NewSetting = () => {
         >
           <CloseRounded />
         </button>
+        <input
+          type="text"
+          ref={displayName}
+          defaultValue={loginUser.displayName}
+        />
         <textarea ref={introduction} defaultValue={loginUser.introduction} />
         <input type="submit" value="登録する" />
         {loginUser.userType === "normal" && (
@@ -206,12 +218,13 @@ const NewSetting = () => {
               })}
             </select>
             <label>月</label>
-            <select>
+            <select ref={birthday}>
               {dates.map((date: number) => {
                 return <option key={date}>{date}</option>;
               })}
             </select>
             <label>日</label>
+            <input type="text" ref={skill1} />
           </div>
         )}
       </form>
