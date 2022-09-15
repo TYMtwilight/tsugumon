@@ -117,7 +117,13 @@ const Profile: React.VFC = memo(() => {
               <MailOutlined />
             </button>
             {loginUser.uid === user.uid ? (
-              <Link to="/setting">
+              <Link
+                to={
+                  loginUser.userType === "business"
+                    ? "/setting/business"
+                    : "/setting/normal"
+                }
+              >
                 <div className="flex justify-center">
                   <button className="w-24 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500 ">
                     編集する

@@ -26,14 +26,17 @@ import {
   StorageReference,
   uploadString,
 } from "firebase/storage";
-import Modal from "../components/Modal";
 import { resizeImage } from "../functions/ResizeImage";
 import { checkUsername } from "../functions/CheckUsername";
 import CloseRounded from "@mui/icons-material/CloseRounded";
 
-const NewSetting = () => {
-  const [avatarImage, setAvatarImage] = useState<string>("");
-  const [backgroundImage, setBackgroundImage] = useState<string>("");
+const SettingNormal = () => {
+  const [avatarImage, setAvatarImage] = useState<string>(
+    `${process.env.PUBLIC_URL}/noAvatar.png}`
+  );
+  const [backgroundImage, setBackgroundImage] = useState<string>(
+    `${process.env.PUBLIC_URL}/noPhoto.png`
+  );
   const [backgroundURL, setBackgroundURL] = useState<string>("");
   const birthdayYear = useRef<HTMLSelectElement>(null);
   const birthdayMonth = useRef<HTMLSelectElement>(null);
@@ -126,6 +129,7 @@ const NewSetting = () => {
       return;
     }
     getDates();
+    setAvatarImage(loginUser.avatarURL);
     getDoc(loginUserRef).then(
       (userSnapshot: DocumentSnapshot<DocumentData>) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -159,16 +163,18 @@ const NewSetting = () => {
             onChangeImageHandler(event, "avatar");
           }}
         />
-        <img
-          src={
-            loginUser.avatarURL
-              ? avatarImage
-                ? avatarImage
-                : loginUser.avatarURL
-              : `${process.env.PUBLIC_URL}/noAvatar.png}`
-          }
-          alt="アバター画像"
-        />
+        <img src={avatarImage} alt="アバター画像" />
+        <button
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            event.preventDefault();
+            avatarImage === loginUser.avatarURL
+              ? setAvatarImage(`${process.env.PUBLIC_URL}/noAvatar.png`)
+              : setAvatarImage(loginUser.avatarURL);
+          }}
+          disabled={avatarImage === `${process.env.PUBLIC_URL}/noAvatar.png`}
+        >
+          <CloseRounded />
+        </button>
         <input
           type="file"
           accept="image/*"
@@ -177,22 +183,15 @@ const NewSetting = () => {
             onChangeImageHandler(event, "background");
           }}
         />
-        <img
-          src={
-            backgroundImage !== ""
-              ? backgroundImage
-              : `${process.env.PUBLIC_URL}/noPhoto.png`
-          }
-          alt="背景画像"
-        />
+        <img src={backgroundImage} alt="背景画像" />
         <button
           onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             event.preventDefault();
             backgroundImage === backgroundURL
-              ? setBackgroundImage("")
+              ? setBackgroundImage(`${process.env.PUBLIC_URL}/noPhoto.png`)
               : setBackgroundImage(backgroundURL);
           }}
-          disabled={backgroundImage === ""}
+          disabled={backgroundImage === `${process.env.PUBLIC_URL}/noPhoto.png`}
         >
           <CloseRounded />
         </button>
@@ -203,44 +202,42 @@ const NewSetting = () => {
         />
         <textarea ref={introduction} defaultValue={loginUser.introduction} />
         <input type="submit" value="登録する" />
-        {loginUser.userType === "normal" && (
-          <div>
-            <select
-              ref={birthdayYear}
-              onChange={(event) => {
-                event.preventDefault();
-                getDates();
-              }}
-            >
-              {years.map((year: number) => {
-                return <option key={year}>{year}</option>;
-              })}
-            </select>
-            <label>年</label>
-            <select
-              ref={birthdayMonth}
-              onChange={(event) => {
-                event.preventDefault();
-                getDates();
-              }}
-            >
-              {months.map((month: number) => {
-                return <option key={month}>{month}</option>;
-              })}
-            </select>
-            <label>月</label>
-            <select ref={birthday}>
-              {dates.map((date: number) => {
-                return <option key={date}>{date}</option>;
-              })}
-            </select>
-            <label>日</label>
-            <input type="text" ref={skill1} />
-          </div>
-        )}
+        <div>
+          <select
+            ref={birthdayYear}
+            onChange={(event) => {
+              event.preventDefault();
+              getDates();
+            }}
+          >
+            {years.map((year: number) => {
+              return <option key={year}>{year}</option>;
+            })}
+          </select>
+          <label>年</label>
+          <select
+            ref={birthdayMonth}
+            onChange={(event) => {
+              event.preventDefault();
+              getDates();
+            }}
+          >
+            {months.map((month: number) => {
+              return <option key={month}>{month}</option>;
+            })}
+          </select>
+          <label>月</label>
+          <select ref={birthday}>
+            {dates.map((date: number) => {
+              return <option key={date}>{date}</option>;
+            })}
+          </select>
+          <label>日</label>
+          <input type="text" ref={skill1} />
+        </div>
       </form>
     </div>
   );
 };
 
-export default NewSetting;
+export default SettingNormal;

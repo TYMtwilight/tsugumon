@@ -11,7 +11,8 @@ import Post from "./routes/PostDetail";
 import LikeUsers from "./routes/LikeUsers";
 import Comments from "./routes/Comments";
 import Profile from "./routes/Profile";
-import NewSetting from "./routes/NewSetting";
+import SettingBusiness from "./routes/SettingBusiness";
+import SettingNormal from "./routes/SettingNormal";
 import SignUp from "./routes/SignUp";
 import Upload from "./routes/Upload";
 import { store } from "./app/store";
@@ -33,7 +34,8 @@ ReactDOM.render(
           <Route path="/login" element={<Login />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/setting" element={<NewSetting />} />
+          <Route path="/setting/business" element={<SettingBusiness />} />
+          <Route path="/setting/normal" element={<SettingNormal />} />
           <Route path="/:username" element={<Profile />} />
           <Route path="/:username/:docId" element={<Post />} />
           <Route path="/:username/:docId/likeUsers" element={<LikeUsers />} />
