@@ -26,6 +26,7 @@ import {
   StorageReference,
   uploadString,
 } from "firebase/storage";
+import Modal from "../components/Modal";
 import { resizeImage } from "../functions/ResizeImage";
 import { checkUsername } from "../functions/CheckUsername";
 import CloseRounded from "@mui/icons-material/CloseRounded";
@@ -110,6 +111,9 @@ const NewSetting = () => {
   const handleSubmit = () => {
     console.log(`紹介文:${introduction.current?.value}\nアバター画像`);
   };
+  const eraseImage: (image: "avatar" | "background") => void = (image) => {
+    console.log(`${image}を削除しました。`);
+  };
 
   const loginUserRef: DocumentReference<DocumentData> = doc(
     db,
@@ -188,6 +192,7 @@ const NewSetting = () => {
               ? setBackgroundImage("")
               : setBackgroundImage(backgroundURL);
           }}
+          disabled={backgroundImage === ""}
         >
           <CloseRounded />
         </button>
@@ -200,7 +205,13 @@ const NewSetting = () => {
         <input type="submit" value="登録する" />
         {loginUser.userType === "normal" && (
           <div>
-            <select ref={birthdayYear}>
+            <select
+              ref={birthdayYear}
+              onChange={(event) => {
+                event.preventDefault();
+                getDates();
+              }}
+            >
               {years.map((year: number) => {
                 return <option key={year}>{year}</option>;
               })}
