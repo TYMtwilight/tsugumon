@@ -39,6 +39,7 @@ const App: React.FC = () => {
             dispatch(
               login({
                 avatarURL: authUser.photoURL ? authUser.photoURL : "",
+                backgroundURL: userSnap.data().backgroundURL,
                 displayName: authUser.displayName ? authUser.displayName : "",
                 introduction: userSnap.data().introduction,
                 uid: authUser.uid,

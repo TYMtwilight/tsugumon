@@ -106,9 +106,10 @@ const SignUp: React.VFC = () => {
         });
         dispatch(
           setUserProfile({
+            avatarURL: url,
+            backgroundURL: "",
             displayName: displayName,
             username: `@${username.input}`,
-            avatarURL: url,
           })
         );
         dispatch(toggleIsNewUser(true));
