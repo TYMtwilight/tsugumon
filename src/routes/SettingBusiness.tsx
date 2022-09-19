@@ -168,7 +168,7 @@ const SettingBusiness = () => {
     });
     updateDoc(optionRef, {
       address: address.current!.value,
-      owner: address.current!.value,
+      owner: owner.current!.value,
       typeOfWork: typeOfWork.current!.value,
       username: `@${username.input}`,
     });
