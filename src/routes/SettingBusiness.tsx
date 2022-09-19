@@ -81,17 +81,16 @@ const SettingBusiness = () => {
     setUsername({
       patternCheck: true,
       uniqueCheck: true,
-      input: loginUser.username,
+      input: loginUser.username.slice(1),
     });
-    getDoc(loginUserRef).then((userSnap: DocumentSnapshot<DocumentData>) => {
-      displayName.current!.value = userSnap.data()!.displayName;
-      introduction.current!.value = userSnap.data()!.introduction;
-      setIsFetched(true);
-    });
+    displayName.current!.value = loginUser.displayName;
+    introduction.current!.value = loginUser.introduction;
+
     getDoc(optionRef).then((optionSnap: DocumentSnapshot<DocumentData>) => {
       address.current!.value = optionSnap.data()!.address;
       owner.current!.value = optionSnap.data()!.owner;
       typeOfWork.current!.value = optionSnap.data()!.typeOfWork;
+      setIsFetched(true);
     });
   };
 
@@ -120,10 +119,11 @@ const SettingBusiness = () => {
   };
 
   const handleSubmit = async () => {
-    // NOTE >> getDownloadURL()を使ってStorageから画像のURLを取得することも検討しましたが、
-    //         画像を削除する処理を行なった後、ふたたびプロフィール編集画面を開いた際に、useEffect内の
-    //         処理（ステートに既存の画像URLを読み込む処理）で、必ずエラーが起きてしまうため、Reduxに
-    //         保存している情報を読み込む形に変更しました。
+    // NOTE >> getDownloadURL()を使ってStorageから画像のURLを取得することも
+    //         検討しましたが、画像を削除する処理を行なった後、ふたたび
+    //         プロフィール編集画面を開いた際に、useEffect内の処理（ステートに
+    //         既存の画像URLを読み込む処理）で、必ずエラーが起きてしまうため、
+    //         Reduxに保存している情報を読み込む形に変更しました。
     let avatarURL: string = "";
     if (avatarImage !== loginUser.avatarURL) {
       if (avatarImage) {
@@ -131,11 +131,11 @@ const SettingBusiness = () => {
         avatarURL = await getDownloadURL(avatarRef);
       } else {
         deleteObject(avatarRef);
-        avatarURL = "";
       }
     } else {
-      avatarURL = loginUser.avatarURL;
+      avatarURL = loginUser.avatarURL!;
     }
+
     let backgroundURL: string = "";
     if (backgroundImage !== loginUser.backgroundURL) {
       if (backgroundImage) {
@@ -143,48 +143,54 @@ const SettingBusiness = () => {
         backgroundURL = await getDownloadURL(backgroundRef);
       } else {
         deleteObject(backgroundRef);
-        backgroundURL = "";
       }
-    }else{
+    } else {
       backgroundURL = loginUser.backgroundURL;
     }
-
     updateProfile(auth.currentUser!, {
       displayName: displayName.current!.value,
       photoURL: avatarURL,
-    });
-    updateDoc(loginUserRef, {
-      avatarURL: avatarURL,
-      backgroundURL: backgroundURL,
-      displayName: displayName.current!.value,
-      introduction: introduction.current!.value,
-      username: username.input,
     });
     dispatch(
       setUserProfile({
         avatarURL: avatarURL,
         backgroundURL: backgroundURL,
         displayName: displayName.current!.value,
-        username: username.input,
+        username: `@${username.input}`,
       })
     );
+    updateDoc(loginUserRef, {
+      avatarURL: avatarURL,
+      backgroundURL: backgroundURL,
+      displayName: displayName.current!.value,
+      introduction: introduction.current!.value,
+      username: `@${username.input}`,
+    });
     updateDoc(optionRef, {
       address: address.current!.value,
       owner: address.current!.value,
       typeOfWork: typeOfWork.current!.value,
+      username: `@${username.input}`,
     });
-    const posts: QuerySnapshot<DocumentData> = await getDocs(postsQuery);
-    posts.forEach((post) => {
-      const postRef = doc(db, "posts", post.id);
-      updateDoc(postRef, {
-        username: username.input,
-        displayName: displayName.current!.value,
-        avatarURL: avatarURL,
+    getDocs(postsQuery)
+      .then((posts: QuerySnapshot<DocumentData>) => {
+        posts.forEach((post) => {
+          const postRef = doc(db, "posts", post.id);
+          updateDoc(postRef, {
+            username: `@${username.input}`,
+            displayName: displayName.current!.value,
+            avatarURL: avatarURL,
+          });
+        });
+      })
+      .then(() => {
+        getDoc(optionRef).then((userSnap: DocumentSnapshot<DocumentData>) => {
+          setTimeout(() => {
+            navigate(`/${userSnap.data()!.username}`);
+          }, 300);
+        });
       });
-    });
-    navigate(-1);
   };
-
   useEffect(() => {
     if (isMounted === false) {
       return;
@@ -276,9 +282,32 @@ const SettingBusiness = () => {
           value={username.input}
           onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
             event.preventDefault();
-            setUsername(await checkUsername(event.target.value));
+            const currentUsername: {
+              patternCheck: boolean;
+              uniqueCheck: boolean;
+              input: string;
+            } = await checkUsername(event.target.value);
+            if (currentUsername.input === loginUser.username.slice(1)) {
+              setUsername((prev) => {
+                return {
+                  input: currentUsername.input,
+                  uniqueCheck: true,
+                  patternCheck: currentUsername.patternCheck,
+                };
+              });
+            } else {
+              setUsername(currentUsername);
+            }
           }}
         />
+        <p>
+          {username.uniqueCheck === false &&
+            "既に使用されているユーザー名です。"}
+        </p>
+        <p>
+          {username.patternCheck === false &&
+            "入力できない文字が含まれいます。"}
+        </p>
         <p>氏名</p>
         <input
           type="text"
@@ -293,7 +322,16 @@ const SettingBusiness = () => {
         <input type="text" ref={typeOfWork} />
         <p>住所</p>
         <input type="text" ref={address} />
-        <input type="submit" value="登録する" />
+        <input
+          type="submit"
+          value="登録する"
+          disabled={
+            !displayName ||
+            !username.patternCheck ||
+            !username.uniqueCheck ||
+            !username.input
+          }
+        />
       </form>
     </div>
   );
