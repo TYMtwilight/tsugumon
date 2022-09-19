@@ -3,6 +3,7 @@ import { RootState } from "../app/store";
 
 export interface LoginUser {
   avatarURL: string;
+  backgroundURL: string;
   displayName: string;
   introduction: string;
   isNewUser: boolean;
@@ -12,11 +13,13 @@ export interface LoginUser {
 }
 export interface UserProfile {
   avatarURL: string;
+  backgroundURL: string;
   displayName: string;
   username: string;
 }
 export interface UserLogin {
   avatarURL: string;
+  backgroundURL:string;
   displayName: string;
   introduction: string;
   uid: string;
@@ -26,6 +29,7 @@ export interface UserLogin {
 
 const initialState: LoginUser = {
   avatarURL: "",
+  backgroundURL: "",
   displayName: "",
   introduction:"",
   isNewUser: false,
@@ -40,6 +44,7 @@ export const userSlice = createSlice({
   reducers: {
     login: (state, action: PayloadAction<UserLogin>) => {
       state.avatarURL = action.payload.avatarURL;
+      state.backgroundURL = action.payload.backgroundURL;
       state.displayName = action.payload.displayName;
       state.introduction = action.payload.introduction;
       state.uid = action.payload.uid;
@@ -48,6 +53,7 @@ export const userSlice = createSlice({
     },
     logout: (state: UserLogin) => {
       state.avatarURL = "";
+      state.backgroundURL = "";
       state.displayName = "";
       state.introduction ="";
       state.uid = "";
@@ -55,9 +61,10 @@ export const userSlice = createSlice({
       state.userType = null;
     },
     setUserProfile: (state, action: PayloadAction<UserProfile>) => {
+      state.avatarURL = action.payload.avatarURL;
+      state.backgroundURL = action.payload.backgroundURL;
       state.displayName = action.payload.displayName;
       state.username = action.payload.username;
-      state.avatarURL = action.payload.avatarURL;
     },
     updateUserType: (
       state,

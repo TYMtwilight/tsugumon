@@ -87,7 +87,7 @@ const Profile: React.VFC = memo(() => {
             }`}
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              navigate(-1);
+              navigate("/home");
             }}
           >
             <ArrowBackRounded />
