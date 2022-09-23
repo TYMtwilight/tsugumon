@@ -73,7 +73,7 @@ const Profile: React.VFC = memo(() => {
   });
 
   return (
-    <div>
+    <div className="bg-slate-100">
       <div>
         <div
           className="flex fixed top-0 w-screen h-12"
