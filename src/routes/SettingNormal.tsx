@@ -13,9 +13,7 @@ import {
   getDoc,
   getDocs,
   query,
-  Query,
   QuerySnapshot,
-  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -28,29 +26,40 @@ import {
 } from "firebase/storage";
 import { resizeImage } from "../functions/ResizeImage";
 import { checkUsername } from "../functions/CheckUsername";
+import { checkIsUnique } from "../functions/useCheckIsUnique";
+import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
+import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
+import PersonOutline from "@mui/icons-material/PersonOutline";
 import CloseRounded from "@mui/icons-material/CloseRounded";
 
 const SettingNormal = () => {
-  const [avatarImage, setAvatarImage] = useState<string>(
-    `${process.env.PUBLIC_URL}/noAvatar.png}`
-  );
-  const [backgroundImage, setBackgroundImage] = useState<string>(
-    `${process.env.PUBLIC_URL}/noPhoto.png`
-  );
-  const [backgroundURL, setBackgroundURL] = useState<string>("");
+  const [isFetched, setIsFetched] = useState<boolean>(false);
+  const [avatarImage, setAvatarImage] = useState<string>("");
+  const [backgroundImage, setBackgroundImage] = useState<string>("");
+  const [username, setUsername] = useState<{
+    patternCheck: boolean;
+    uniqueCheck: boolean;
+    input: string;
+  }>({
+    patternCheck: true,
+    uniqueCheck: true,
+    input: "",
+  });
+  const [displayName, setDisplayName] = useState<string>("");
+  const [isUnique, setIsUnique] = useState<boolean>(true);
+  const [dates, setDates] = useState<number[]>([]);
+  const address = useRef<HTMLInputElement>(null);
   const birthdayYear = useRef<HTMLSelectElement>(null);
   const birthdayMonth = useRef<HTMLSelectElement>(null);
   const birthday = useRef<HTMLSelectElement>(null);
-  const [dates, setDates] = useState<number[]>([]);
-  const displayName = useRef<HTMLInputElement>(null);
   const introduction = useRef<HTMLTextAreaElement>(null);
-  const loginUser: LoginUser = useAppSelector(selectUser);
   const skill1 = useRef<HTMLInputElement>(null);
   const skill2 = useRef<HTMLInputElement>(null);
   const skill3 = useRef<HTMLInputElement>(null);
 
   const navigate: NavigateFunction = useNavigate();
-
+  const loginUser: LoginUser = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
   let isMounted: boolean = true;
 
   let years: number[] = [];
@@ -59,6 +68,48 @@ const SettingNormal = () => {
     years.push(i);
   }
   const months: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+  const loginUserRef: DocumentReference<DocumentData> = doc(
+    db,
+    "users",
+    `${loginUser.uid}`
+  );
+
+  const optionRef: DocumentReference<DocumentData> = doc(
+    db,
+    "option",
+    `${loginUser.uid}`
+  );
+
+  const postsQuery = query(
+    collection(db, "posts"),
+    where("uid", "==", loginUser.uid)
+  );
+
+  const avatarRef: StorageReference = ref(storage, `avatars/${loginUser.uid}`);
+  const backgroundRef: StorageReference = ref(
+    storage,
+    `backgrounds/${loginUser.backgroundURL}`
+  );
+
+  const getUser = async () => {
+    setAvatarImage(loginUser.avatarURL);
+    setBackgroundImage(loginUser.backgroundURL);
+    setDisplayName(loginUser.displayName);
+    setUsername({
+      patternCheck: true,
+      uniqueCheck: true,
+      input: loginUser.username.slice(1),
+    });
+    introduction.current!.value = loginUser.introduction;
+    getDoc(optionRef).then((optionSnap: DocumentSnapshot<DocumentData>) => {
+      address.current!.value = optionSnap.data()!.address;
+      skill1.current!.value = optionSnap.data()!.skill1;
+      skill2.current!.value = optionSnap.data()!.skill2;
+      skill3.current!.value = optionSnap.data()!.skill3;
+    });
+    setIsFetched(true);
+  };
 
   const getDates: () => void = () => {
     const year = Number(birthdayYear.current!.value);
@@ -111,131 +162,271 @@ const SettingNormal = () => {
       }
     };
   };
-  const handleSubmit = () => {
-    console.log(`紹介文:${introduction.current?.value}\nアバター画像`);
-  };
-  const eraseImage: (image: "avatar" | "background") => void = (image) => {
-    console.log(`${image}を削除しました。`);
-  };
+  const handleSubmit = async () => {
+    let avatarURL: string = "";
+    if (avatarImage !== loginUser.avatarURL) {
+      if (avatarImage) {
+        await uploadString(avatarRef, avatarImage, "data_url");
+        avatarURL = await getDownloadURL(avatarRef);
+      } else {
+        deleteObject(avatarRef);
+      }
+    } else {
+      avatarURL = loginUser.avatarURL!;
+    }
 
-  const loginUserRef: DocumentReference<DocumentData> = doc(
-    db,
-    "users",
-    `${loginUser.uid}`
-  );
+    let backgroundURL: string = "";
+    if (backgroundImage !== loginUser.backgroundURL) {
+      if (backgroundImage) {
+        await uploadString(backgroundRef, backgroundImage, "data_url");
+        backgroundURL = await getDownloadURL(backgroundRef);
+      } else {
+        deleteObject(backgroundRef);
+      }
+    } else {
+      backgroundURL = loginUser.backgroundURL;
+    }
+    dispatch(
+      setUserProfile({
+        avatarURL: avatarURL,
+        backgroundURL: backgroundURL,
+        displayName: displayName,
+        username: `@${username.input}`,
+      })
+    );
+    updateDoc(loginUserRef, {
+      avatarURL: avatarURL,
+      backgroundURL: backgroundURL,
+      displayName: displayName,
+      introduction: introduction.current!.value,
+      username: `@${username.input}`,
+    });
+    updateDoc(optionRef, {
+      address: address.current!.value,
+    });
+    updateProfile(auth.currentUser!, {
+      displayName: displayName,
+      photoURL: avatarURL,
+    });
+    getDocs(postsQuery)
+      .then((posts: QuerySnapshot<DocumentData>) => {
+        posts.forEach((post) => {
+          const postRef = doc(db, "posts", post.id);
+          updateDoc(postRef, {
+            username: `@${username.input}`,
+            displayName: displayName,
+            avatarURL: avatarURL,
+          });
+        });
+      })
+      .then(() => {
+        getDoc(optionRef).then((userSnap: DocumentSnapshot<DocumentData>) => {
+          setTimeout(() => {
+            navigate(`/${userSnap.data()!.username}`);
+          }, 300);
+        });
+      });
+  };
 
   useEffect(() => {
     if (isMounted === false) {
       return;
     }
+    getUser();
     getDates();
-    setAvatarImage(loginUser.avatarURL);
-    getDoc(loginUserRef).then(
-      (userSnapshot: DocumentSnapshot<DocumentData>) => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        setBackgroundURL(userSnapshot.data()!.backgroundURL);
-        setBackgroundImage(userSnapshot.data()!.backgroundURL);
-      }
-    );
-  }, []);
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      isMounted = false;
+    };
+  }, [isFetched]);
 
   return (
     <div>
-      <button
-        onClick={(event) => {
-          event.preventDefault();
-          navigate(-1);
-        }}
-      >
-        戻る
-      </button>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          handleSubmit();
-        }}
-      >
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            event.preventDefault();
-            onChangeImageHandler(event, "avatar");
-          }}
-        />
-        <img src={avatarImage} alt="アバター画像" />
+      <div>
         <button
-          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+          onClick={(event) => {
             event.preventDefault();
-            avatarImage === loginUser.avatarURL
-              ? setAvatarImage(`${process.env.PUBLIC_URL}/noAvatar.png`)
-              : setAvatarImage(loginUser.avatarURL);
+            navigate(-1);
           }}
-          disabled={avatarImage === `${process.env.PUBLIC_URL}/noAvatar.png`}
         >
-          <CloseRounded />
+          <ArrowBackRounded />
         </button>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            event.preventDefault();
-            onChangeImageHandler(event, "background");
-          }}
-        />
-        <img src={backgroundImage} alt="背景画像" />
-        <button
-          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            event.preventDefault();
-            backgroundImage === backgroundURL
-              ? setBackgroundImage(`${process.env.PUBLIC_URL}/noPhoto.png`)
-              : setBackgroundImage(backgroundURL);
-          }}
-          disabled={backgroundImage === `${process.env.PUBLIC_URL}/noPhoto.png`}
-        >
-          <CloseRounded />
-        </button>
-        <input
-          type="text"
-          ref={displayName}
-          defaultValue={loginUser.displayName}
-        />
-        <textarea ref={introduction} defaultValue={loginUser.introduction} />
-        <input type="submit" value="登録する" />
+        <p>プロフィールの編集</p>
+      </div>
+      <div>
         <div>
-          <select
-            ref={birthdayYear}
-            onChange={(event) => {
+          <img
+            src={
+              backgroundImage
+                ? backgroundImage
+                : `${process.env.PUBLIC_URL}/noPhoto.png`
+            }
+            alt="背景画像"
+          />
+          <input
+            id="backgroundInput"
+            type="file"
+            accept="image/*"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               event.preventDefault();
-              getDates();
+              onChangeImageHandler(event, "background");
             }}
-          >
-            {years.map((year: number) => {
-              return <option key={year}>{year}</option>;
-            })}
-          </select>
-          <label>年</label>
-          <select
-            ref={birthdayMonth}
-            onChange={(event) => {
+            hidden
+          />
+          <label htmlFor="backgroundInput">
+            <PhotoLibraryOutlined />
+            <p>背景を選択</p>
+          </label>
+          <button
+            onClick={(
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+            ) => {
               event.preventDefault();
-              getDates();
+              setBackgroundImage("");
             }}
+            disabled={!backgroundImage}
           >
-            {months.map((month: number) => {
-              return <option key={month}>{month}</option>;
-            })}
-          </select>
-          <label>月</label>
-          <select ref={birthday}>
-            {dates.map((date: number) => {
-              return <option key={date}>{date}</option>;
-            })}
-          </select>
-          <label>日</label>
-          <input type="text" ref={skill1} />
+            <CloseRounded />
+          </button>
         </div>
-      </form>
+        <div>
+          <input
+            id="avatarInput"
+            type="file"
+            accept="image/*"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              event.preventDefault();
+              onChangeImageHandler(event, "avatar");
+            }}
+            hidden
+          />
+          {avatarImage ? <img src={avatarImage} alt="アバター画像" /> : <div />}
+          <label htmlFor="avatarInput">
+            <div>
+              <PersonOutline />
+            </div>
+          </label>
+          <button
+            onClick={(
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+            ) => {
+              event.preventDefault();
+              setAvatarImage("");
+            }}
+            disabled={!avatarImage}
+          >
+            <CloseRounded />
+          </button>
+        </div>
+        <div>
+          <div>
+            <p>ユーザー名</p>
+            <input
+              type="text"
+              value={username.input}
+              onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                event.preventDefault();
+                setUsername(await checkUsername(event.target.value));
+              }}
+            />
+            <p className="text-sm text-slate-500">
+              {username.uniqueCheck === false &&
+                "既に使用されているユーザー名です。"}
+            </p>
+            <p className="text-sm text-slate-500">
+              {username.patternCheck === false &&
+                "入力できない文字が含まれいます。"}
+            </p>
+          </div>
+          <div>
+            <p>氏名</p>
+            <input
+              type="text"
+              value={displayName}
+              onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                setDisplayName(event.target.value);
+              }}
+              onBlur={async (
+                event: React.FocusEvent<HTMLInputElement, Element>
+              ) => {
+                event.preventDefault();
+                setIsUnique(
+                  await checkIsUnique(displayName, loginUser.displayName)
+                );
+              }}
+            />
+          </div>
+          <p className="text-sm text-slate-500">
+            {isUnique === false && "その氏名は既に使用されています。"}
+          </p>
+          <div>
+            <p>紹介文</p>
+            <textarea
+              ref={introduction}
+              defaultValue={loginUser.introduction}
+            />
+          </div>
+          <div>
+            <p>資格・技能</p>
+            <label htmlFor="skill1">その１</label>
+            <input id="skill1" type="text" ref={skill1} />
+            <label htmlFor="skill2">その２</label>
+            <input id="skill2" type="text" ref={skill2} />
+            <label htmlFor="skill3">その３</label>
+            <input id="skill3" type="text" ref={skill3} />
+          </div>
+          <div>
+            <select
+              ref={birthdayYear}
+              onChange={(event) => {
+                event.preventDefault();
+                getDates();
+              }}
+            >
+              {years.map((year: number) => {
+                return <option key={year}>{year}</option>;
+              })}
+            </select>
+            <label>年</label>
+            <select
+              ref={birthdayMonth}
+              onChange={(event) => {
+                event.preventDefault();
+                getDates();
+              }}
+            >
+              {months.map((month: number) => {
+                return <option key={month}>{month}</option>;
+              })}
+            </select>
+            <label>月</label>
+            <select ref={birthday}>
+              {dates.map((date: number) => {
+                return <option key={date}>{date}</option>;
+              })}
+            </select>
+            <label>日</label>
+          </div>
+          <div>
+            <p>住所</p>
+            <input ref={address} />
+          </div>
+        </div>
+        <button
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            event.preventDefault();
+            handleSubmit();
+          }}
+          disabled={
+            !isUnique ||
+            !username.patternCheck ||
+            !username.uniqueCheck ||
+            username.input === ""
+          }
+        >
+          登録する
+        </button>
+      </div>
     </div>
   );
 };

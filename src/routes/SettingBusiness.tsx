@@ -83,14 +83,13 @@ const SettingBusiness = () => {
   const getUser = async () => {
     setAvatarImage(loginUser.avatarURL);
     setBackgroundImage(loginUser.backgroundURL);
+    setDisplayName(loginUser.displayName);
     setUsername({
       patternCheck: true,
       uniqueCheck: true,
       input: loginUser.username.slice(1),
     });
-    setDisplayName(loginUser.displayName);
     introduction.current!.value = loginUser.introduction;
-
     getDoc(optionRef).then((optionSnap: DocumentSnapshot<DocumentData>) => {
       address.current!.value = optionSnap.data()!.address;
       owner.current!.value = optionSnap.data()!.owner;
@@ -205,7 +204,6 @@ const SettingBusiness = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetched]);
 
   return (
@@ -277,11 +275,7 @@ const SettingBusiness = () => {
           {avatarImage ? (
             <img
               className="-mt-8 ml-4 w-20 h-20 border-4 border-slate-100 rounded-full object-cover brightness-75"
-              src={
-                avatarImage
-                  ? avatarImage
-                  : `${process.env.PUBLIC_URL}/noAvatar.png`
-              }
+              src={avatarImage}
               alt="アバター画像"
             />
           ) : (
@@ -317,22 +311,7 @@ const SettingBusiness = () => {
               value={username.input}
               onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                 event.preventDefault();
-                const currentUsername: {
-                  patternCheck: boolean;
-                  uniqueCheck: boolean;
-                  input: string;
-                } = await checkUsername(event.target.value);
-                if (currentUsername.input === loginUser.username.slice(1)) {
-                  setUsername((prev) => {
-                    return {
-                      input: currentUsername.input,
-                      uniqueCheck: true,
-                      patternCheck: currentUsername.patternCheck,
-                    };
-                  });
-                } else {
-                  setUsername(currentUsername);
-                }
+                setUsername(await checkUsername(event.target.value));
               }}
             />
             <p className="text-sm text-slate-500">
@@ -361,7 +340,6 @@ const SettingBusiness = () => {
                   await checkIsUnique(displayName, loginUser.displayName)
                 );
               }}
-              required
             />
             <p className="text-sm text-slate-500">
               {isUnique === false && "その氏名は既に使用されています。"}
@@ -403,7 +381,9 @@ const SettingBusiness = () => {
         <div className="mb-8">
           <button
             className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
-            onClick={(event) => {
+            onClick={(
+              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+            ) => {
               event.preventDefault();
               handleSubmit();
             }}
