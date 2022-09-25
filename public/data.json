@@ -144,7 +144,7 @@
       "option": {
         "achademicHistory": "福岡大学 経済学部",
         "address": "福岡市城南区西片江2-17-6",
-        "birthdate": "2011-11-10",
+        "birthdate": "2011,11,10",
         "owner": "",
         "skill1": "日本農業検定3級",
         "skill2": "普通自動車運転免許",
@@ -166,7 +166,7 @@
       "option": {
         "achademicHistory": "熊本大学 経済学部",
         "address": "熊本県熊本市西区春日３丁目",
-        "birthdate": "1978-6-23",
+        "birthdate": "1978,6,23",
         "owner": "",
         "skill1": "普通自動車運転免許",
         "skill2": "簿記3級",
@@ -217,14 +217,14 @@
       ],
       "option": {
         "achademicHistory": "",
-        "address": "熊本県八代市本町119番地",
+        "address": "熊本県八代市本町220番地",
         "birthdate": "",
-        "owner": "継田 譲司",
+        "owner": "町田 圭一",
         "skill1": "",
         "skill2": "",
         "skill3": "",
-        "tags": "#米 #稲作 #定年後 #専業農家 #熊本",
-        "typeOfWork": "農家",
+        "tags": "#ガラス #熊本",
+        "typeOfWork": "製造業",
         "workHistory": ""
       }
     }

@@ -134,10 +134,13 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
               db,
               `option/${uid}/`
             );
+            const birthdate: Date | null = fetchedUser.option.birthdate
+              ? new Date(Date.parse(fetchedUser.option.birthdate))
+              : null;
             await setDoc(optionRef, {
               achademicHistory: fetchedUser.option.achademicHistory,
               address: fetchedUser.option.address,
-              birthdate: fetchedUser.option.birthdate,
+              birthdate: birthdate,
               owner: fetchedUser.option.owner,
               skill1: fetchedUser.option.skill1,
               skill2: fetchedUser.option.skill2,
