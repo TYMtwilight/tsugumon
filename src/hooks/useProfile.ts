@@ -28,7 +28,7 @@ interface User {
 
 interface Option {
   address: string;
-  birthdate: string;
+  birthdate: Date | null;
   owner: string;
   skill: string;
   typeOfWork: string;
@@ -54,7 +54,7 @@ export const useProfile: (username: string) => {
   });
   const [option, setOption] = useState<Option>({
     address: "",
-    birthdate: "",
+    birthdate: null,
     owner: "",
     skill: "",
     typeOfWork: "",
@@ -94,7 +94,7 @@ export const useProfile: (username: string) => {
     const optionSnap: QuerySnapshot<DocumentData> = await getDocs(optionQuery);
     setOption({
       address: optionSnap.docs[0].data().address,
-      birthdate: optionSnap.docs[0].data().birthdate,
+      birthdate: optionSnap.docs[0].data().birthdate.toDate(),
       owner: optionSnap.docs[0].data().owner,
       skill: optionSnap.docs[0].data().skill,
       typeOfWork: optionSnap.docs[0].data().typeOfWork,

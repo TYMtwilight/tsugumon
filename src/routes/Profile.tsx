@@ -215,7 +215,13 @@ const Profile: React.VFC = memo(() => {
           <div id="normal">
             <div id="birthdate">
               <p>生年月日</p>
-              <p>{option.birthdate}</p>
+              <p>
+                {option.birthdate
+                  ? `${option.birthdate.getFullYear()}年${
+                      option.birthdate.getMonth() + 1
+                    }月${option.birthdate.getDate()}日`
+                  : ""}
+              </p>
             </div>
             <div id="skill">
               <p>{option.skill}</p>
