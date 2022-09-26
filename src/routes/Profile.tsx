@@ -73,7 +73,7 @@ const Profile: React.VFC = memo(() => {
   });
 
   return (
-    <div className="bg-slate-100">
+    <div className="bg-slate-100 min-h-screen h-full">
       <div>
         <div
           className="flex fixed top-0 w-screen h-12"
@@ -103,7 +103,7 @@ const Profile: React.VFC = memo(() => {
         </div>
         <div className="flex justify-between">
           <img
-            className="w-20 h-20 ml-4 -mt-8 border-4 border-slate-100 rounded-full"
+            className="w-20 h-20 ml-4 -mt-8 border-4 border-slate-100 object-cover rounded-full"
             id="avatar"
             src={
               user.avatarURL
@@ -125,14 +125,14 @@ const Profile: React.VFC = memo(() => {
                 }
               >
                 <div className="flex justify-center">
-                  <button className="w-24 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500 ">
+                  <button className="w-24 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
                     編集する
                   </button>
                 </div>
               </Link>
-            ) : (
+            ) : user.userType === "business" ? (
               <button
-                className="border text-sm"
+                className="text-sm w-24 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500"
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                   event.preventDefault();
                   const following: FollowUser = {
@@ -156,6 +156,8 @@ const Profile: React.VFC = memo(() => {
               >
                 {isFollowing ? "フォロー中" : "フォローする"}
               </button>
+            ) : (
+              ""
             )}
           </div>
         </div>
@@ -166,19 +168,25 @@ const Profile: React.VFC = memo(() => {
           <p className="width-screen text-sm text-slate-500">{user.username}</p>
         </div>
         <div className="flex px-4">
-          <div>
-            {followersCount > 0 ? (
-              <Link className="flex" to={`/${username}/followers`}>
-                <p className="text-sm">フォロワー</p>
-                <p className="w-12 ml-2 text-sm font-bold">{followersCount}</p>
-              </Link>
-            ) : (
-              <div className="flex">
-                <p className="text-sm">フォロワー</p>
-                <p className="w-12 ml-2 text-sm font-bold">{followersCount}</p>
-              </div>
-            )}
-          </div>
+          {user.userType === "business" && (
+            <div>
+              {followersCount > 0 ? (
+                <Link className="flex" to={`/${username}/followers`}>
+                  <p className="text-sm">フォロワー</p>
+                  <p className="w-12 ml-2 text-sm font-bold">
+                    {followersCount}
+                  </p>
+                </Link>
+              ) : (
+                <div className="flex">
+                  <p className="text-sm">フォロワー</p>
+                  <p className="w-12 ml-2 text-sm font-bold">
+                    {followersCount}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
           <div className="flex">
             {followingsCount > 0 ? (
               <Link className="flex" to={`/${username}/followings`}>
@@ -198,24 +206,24 @@ const Profile: React.VFC = memo(() => {
         <p className="mb-4">{user.introduction}</p>
         {user.userType === "business" ? (
           <div id="business">
-            <div id="owner">
+            <div id="owner" className="mb-2">
               <p className="text-sm text-slate-500">事業主</p>
               <p className="ml-2">{option.owner}</p>
             </div>
-            <div id="typeOfWork">
+            <div id="typeOfWork" className="mb-2">
               <p className="text-sm text-slate-500">職種</p>
               <p className="ml-2">{option.typeOfWork}</p>
             </div>
-            <div id="address">
+            <div id="address" className="mb-2">
               <p className="text-sm text-slate-500">住所</p>
               <p className="ml-2">{option.address}</p>
             </div>
           </div>
         ) : (
           <div id="normal">
-            <div id="birthdate">
-              <p>生年月日</p>
-              <p>
+            <div id="birthdate" className="mb-2">
+              <p className="text-sm text-slate-500">生年月日</p>
+              <p className="ml-2">
                 {option.birthdate
                   ? `${option.birthdate.getFullYear()}年${
                       option.birthdate.getMonth() + 1
@@ -223,64 +231,77 @@ const Profile: React.VFC = memo(() => {
                   : ""}
               </p>
             </div>
-            <div id="skill">
-              <p>{option.skill}</p>
+            <div id="skill" className="mb-2">
+              <p className="text-sm text-slate-500">資格・技能</p>
+              <p className="ml-2">{option.skill1}</p>
+              <p className="ml-2">{option.skill2}</p>
+              <p className="ml-2">{option.skill3}</p>
+            </div>
+            <div id="address" className="mb-2">
+              <p className="text-sm text-slate-500">住所</p>
+              <p className="ml-2">{option.address}</p>
             </div>
           </div>
         )}
       </div>
-      <nav className="flex w-screen h-12">
-        <button
-          className={`flex items-center justify-center w-1/2 ${
-            tab === "album"
-              ? "border-b-4 box-border border-emerald-500 text-emerald-500 "
-              : "border-b-4 box-border border-slate-100 text-slate-500"
-          }`}
-          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-            event.preventDefault();
-            setTab("album");
-          }}
-        >
-          <PhotoLibraryOutlined />
-          <p className="h-4 ml-2 text-sm font-bold">過去の投稿</p>
-        </button>
-        <button
-          className={`flex items-center justify-center w-1/2 ${
-            tab === "wanted"
-              ? "border-b-4 box-border border-emerald-500 text-emerald-500"
-              : "border-b-4 box-border border-slate-100 text-slate-500"
-          }`}
-          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-            event.preventDefault();
-            setTab("wanted");
-          }}
-        >
-          <PersonAddOutlined />
-          <p className="h-4 ml-2 text-sm font-bold">募集中</p>
-        </button>
-      </nav>
-      {tab === "album" ? (
-        <div className="mt-4">
-          {posts.map((post: Post) => {
-            return (
-              <PostComponent
-                key={post.id}
-                avatarURL={post.avatarURL}
-                caption={post.caption}
-                displayName={post.displayName}
-                id={post.id}
-                imageURL={post.imageURL}
-                timestamp={post.timestamp}
-                tags={post.tags}
-                uid={post.uid}
-                username={post.username}
-                detail={false}
-              />
-            );
-          })}
+      {user.userType === "business" && (
+        <nav className="flex w-screen h-12">
+          <button
+            className={`flex items-center justify-center w-1/2 ${
+              tab === "album"
+                ? "border-b-4 box-border border-emerald-500 text-emerald-500 "
+                : "border-b-4 box-border border-slate-100 text-slate-500"
+            }`}
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              setTab("album");
+            }}
+          >
+            <PhotoLibraryOutlined />
+            <p className="h-4 ml-2 text-sm font-bold">過去の投稿</p>
+          </button>
+          <button
+            className={`flex items-center justify-center w-1/2 ${
+              tab === "wanted"
+                ? "border-b-4 box-border border-emerald-500 text-emerald-500"
+                : "border-b-4 box-border border-slate-100 text-slate-500"
+            }`}
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              setTab("wanted");
+            }}
+          >
+            <PersonAddOutlined />
+            <p className="h-4 ml-2 text-sm font-bold">募集中</p>
+          </button>
+        </nav>
+      )}
+      {user.userType === "business" && (
+        <div>
+          {tab === "album" ? (
+            <div className="mt-4">
+              {posts.map((post: Post) => {
+                return (
+                  <PostComponent
+                    key={post.id}
+                    avatarURL={post.avatarURL}
+                    caption={post.caption}
+                    displayName={post.displayName}
+                    id={post.id}
+                    imageURL={post.imageURL}
+                    timestamp={post.timestamp}
+                    tags={post.tags}
+                    uid={post.uid}
+                    username={post.username}
+                    detail={false}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <p>募集中！</p>
+          )}
         </div>
-      ) : (
-        <p>募集中！</p>
       )}
       <Outlet />
     </div>

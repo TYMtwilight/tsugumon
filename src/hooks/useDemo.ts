@@ -37,6 +37,7 @@ interface FetchedUser {
       displayName: string;
       image: string;
       caption: string;
+      tags: string;
       timestamp: string;
     }
   ];
@@ -48,7 +49,6 @@ interface FetchedUser {
     skill1: string;
     skill2: string;
     skill3: string;
-    tags: string;
     typeOfWork: string;
   };
 }
@@ -60,6 +60,7 @@ interface Post {
   avatarURL: string;
   imageURL: string;
   caption: string;
+  tags: string[];
   timestamp: Date;
 }
 
@@ -145,7 +146,6 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
               skill1: fetchedUser.option.skill1,
               skill2: fetchedUser.option.skill2,
               skill3: fetchedUser.option.skill3,
-              tags: splitByHash(fetchedUser.option.tags),
               typeOfWork: fetchedUser.option.typeOfWork,
               username: fetchedUser.username,
               userType: fetchedUser.userType,
@@ -168,6 +168,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                     db,
                     `posts/${getRandomString()}`
                   );
+                  const tags: string[] = splitByHash(postData.tags);
                   const post: Post = {
                     uid: uid,
                     username: postData.username,
@@ -175,6 +176,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
                     avatarURL: avatarURL,
                     imageURL: url,
                     caption: postData.caption,
+                    tags: tags,
                     timestamp: new Date(postData.timestamp),
                   };
                   await setDoc(postRef, post);
