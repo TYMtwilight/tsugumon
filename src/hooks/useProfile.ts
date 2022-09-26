@@ -30,7 +30,9 @@ interface Option {
   address: string;
   birthdate: Date | null;
   owner: string;
-  skill: string;
+  skill1: string;
+  skill2: string;
+  skill3: string;
   typeOfWork: string;
 }
 
@@ -56,7 +58,9 @@ export const useProfile: (username: string) => {
     address: "",
     birthdate: null,
     owner: "",
-    skill: "",
+    skill1: "",
+    skill2: "",
+    skill3: "",
     typeOfWork: "",
   });
   const [followersCount, setFollowersCount] = useState<number>(0);
@@ -94,9 +98,14 @@ export const useProfile: (username: string) => {
     const optionSnap: QuerySnapshot<DocumentData> = await getDocs(optionQuery);
     setOption({
       address: optionSnap.docs[0].data().address,
-      birthdate: optionSnap.docs[0].data().birthdate.toDate(),
+      birthdate:
+        optionSnap.docs[0].data().birthdate !== null
+          ? optionSnap.docs[0].data().birthdate.toDate()
+          : "",
       owner: optionSnap.docs[0].data().owner,
-      skill: optionSnap.docs[0].data().skill,
+      skill1: optionSnap.docs[0].data().skill1,
+      skill2: optionSnap.docs[0].data().skill2,
+      skill3: optionSnap.docs[0].data().skill3,
       typeOfWork: optionSnap.docs[0].data().typeOfWork,
     });
   };
