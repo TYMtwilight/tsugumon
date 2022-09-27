@@ -107,14 +107,14 @@ const SettingNormal = () => {
       skill1.current!.value = optionSnap.data()!.skill1;
       skill2.current!.value = optionSnap.data()!.skill2;
       skill3.current!.value = optionSnap.data()!.skill3;
-      const birthdate: Date | null = optionSnap.data()!.birthdate
+      const fetchedDate: Date | null = optionSnap.data()!.birthdate
         ? optionSnap.data()!.birthdate.toDate()
         : null;
-      if (birthdate) {
-        birthdayYear.current!.value = birthdate.getFullYear().toString();
-        birthdayMonth.current!.value = (birthdate.getMonth() + 1).toString();
+      if (fetchedDate) {
+        birthdayYear.current!.value = fetchedDate.getFullYear().toString();
+        birthdayMonth.current!.value = (fetchedDate.getMonth() + 1).toString();
         getDates();
-        birthday.current!.value = birthdate.getDate().toString();
+        birthday.current!.value = fetchedDate.getDate().toString();
       }
     });
     setIsFetched(true);
@@ -196,7 +196,7 @@ const SettingNormal = () => {
       backgroundURL = loginUser.backgroundURL;
     }
 
-    let birthdate: Date = new Date(
+    const birthdate: Date = new Date(
       parseInt(birthdayYear.current!.value),
       // NOTE >> プルダウンでは1月スタートになっているため、
       //         birthdayMonth.currentの値を-1してあげる必要が
