@@ -107,6 +107,15 @@ const SettingNormal = () => {
       skill1.current!.value = optionSnap.data()!.skill1;
       skill2.current!.value = optionSnap.data()!.skill2;
       skill3.current!.value = optionSnap.data()!.skill3;
+      const fetchedDate: Date | null = optionSnap.data()!.birthdate
+        ? optionSnap.data()!.birthdate.toDate()
+        : null;
+      if (fetchedDate) {
+        birthdayYear.current!.value = fetchedDate.getFullYear().toString();
+        birthdayMonth.current!.value = (fetchedDate.getMonth() + 1).toString();
+        getDates();
+        birthday.current!.value = fetchedDate.getDate().toString();
+      }
     });
     setIsFetched(true);
   };
@@ -186,6 +195,16 @@ const SettingNormal = () => {
     } else {
       backgroundURL = loginUser.backgroundURL;
     }
+
+    const birthdate: Date = new Date(
+      parseInt(birthdayYear.current!.value),
+      // NOTE >> プルダウンでは1月スタートになっているため、
+      //         birthdayMonth.currentの値を-1してあげる必要が
+      //         あります
+      parseInt(birthdayMonth.current!.value) - 1,
+      parseInt(birthday.current!.value)
+    );
+
     dispatch(
       setUserProfile({
         avatarURL: avatarURL,
@@ -203,6 +222,7 @@ const SettingNormal = () => {
     });
     updateDoc(optionRef, {
       address: address.current!.value,
+      birthdate: birthdate,
     });
     updateProfile(auth.currentUser!, {
       displayName: displayName,
