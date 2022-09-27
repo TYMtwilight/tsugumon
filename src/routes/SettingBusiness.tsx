@@ -207,7 +207,7 @@ const SettingBusiness = () => {
   }, [isFetched]);
 
   return (
-    <div className="bg-slage-100">
+    <div className="pb-12 bg-slage-100">
       <div className="flex fixed justify-center items-center top-0 w-screen h-12 z-10 bg-slate-100">
         <button
           className="absolute left-2"
@@ -221,9 +221,9 @@ const SettingBusiness = () => {
         <p className="w-40 mx-auto font-bold">プロフィールの編集</p>
       </div>
       <div className="mt-12">
-        <div className="flex relative jutify-center items-center w-screen h-48">
+        <div className="flex relative jutify-center items-center w-screen h-44 hover:cursor-pointer">
           <img
-            className="w-screen h-48 object-cover brightness-75"
+            className="w-screen h-44 object-cover brightness-75"
             src={
               backgroundImage
                 ? backgroundImage
@@ -282,7 +282,7 @@ const SettingBusiness = () => {
             <div className="-mt-8 ml-4 w-20 h-20 border-4 border-slate-100 bg-slate-500 rounded-full" />
           )}
           <label
-            className="absolute flex justify-center items-center w-20 h-20 border-4 top-0 left-4 border-slate-100 rounded-full text-slate-100"
+            className="absolute flex justify-center items-center w-20 h-20 border-4 top-0 left-4 border-slate-100 rounded-full text-slate-100 hover:cursor-pointer"
             htmlFor="avatarInput"
           >
             <div className="box rounded-full">
