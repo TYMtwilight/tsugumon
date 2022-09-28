@@ -95,7 +95,7 @@ const Profile: React.VFC = memo(() => {
         </div>
         <div className="w-auto h-auto">
           <img
-            className="object-cover w-screen h-48"
+            className="object-cover w-screen h-44"
             id="background"
             src={user.backgroundURL}
             alt="背景画像"
@@ -206,22 +206,22 @@ const Profile: React.VFC = memo(() => {
         <p className="mb-4">{user.introduction}</p>
         {user.userType === "business" ? (
           <div id="business">
-            <div id="owner" className="mb-2">
+            <div id="owner" className="mb-4">
               <p className="text-sm text-slate-500">事業主</p>
               <p className="ml-2">{option.owner}</p>
             </div>
-            <div id="typeOfWork" className="mb-2">
+            <div id="typeOfWork" className="mb-4">
               <p className="text-sm text-slate-500">職種</p>
               <p className="ml-2">{option.typeOfWork}</p>
             </div>
-            <div id="address" className="mb-2">
+            <div id="address">
               <p className="text-sm text-slate-500">住所</p>
               <p className="ml-2">{option.address}</p>
             </div>
           </div>
         ) : (
           <div id="normal">
-            <div id="birthdate" className="mb-2">
+            <div id="birthdate" className="mb-4">
               <p className="text-sm text-slate-500">生年月日</p>
               <p className="ml-2">
                 {option.birthdate
@@ -231,13 +231,13 @@ const Profile: React.VFC = memo(() => {
                   : ""}
               </p>
             </div>
-            <div id="skill" className="mb-2">
+            <div id="skill" className="mb-4">
               <p className="text-sm text-slate-500">資格・技能</p>
               <p className="ml-2">{option.skill1}</p>
               <p className="ml-2">{option.skill2}</p>
               <p className="ml-2">{option.skill3}</p>
             </div>
-            <div id="address" className="mb-2">
+            <div id="address" className="mb-4">
               <p className="text-sm text-slate-500">住所</p>
               <p className="ml-2">{option.address}</p>
             </div>
@@ -279,7 +279,7 @@ const Profile: React.VFC = memo(() => {
       {user.userType === "business" && (
         <div>
           {tab === "album" ? (
-            <div className="mt-4">
+            <div>
               {posts.map((post: Post) => {
                 return (
                   <PostComponent

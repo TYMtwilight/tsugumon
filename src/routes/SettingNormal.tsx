@@ -261,21 +261,23 @@ const SettingNormal = () => {
   }, [isFetched]);
 
   return (
-    <div>
-      <div>
+    <div className="pb-12 bg-slate-100">
+      <div className="flex fixed justify-center items-center top-0 w-screen h-12 z-10 bg-slate-100">
         <button
-          onClick={(event) => {
+          className="absolute left-2"
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             event.preventDefault();
             navigate(-1);
           }}
         >
           <ArrowBackRounded />
         </button>
-        <p>プロフィールの編集</p>
+        <p className="w-40 mx-auto font-bold">プロフィールの編集</p>
       </div>
-      <div>
-        <div>
+      <div className="mt-12">
+        <div className="flex relative justify-center items-center w-screen h-44">
           <img
+            className="w-screen h-44 object-cover brightness-75"
             src={
               backgroundImage
                 ? backgroundImage
@@ -293,11 +295,15 @@ const SettingNormal = () => {
             }}
             hidden
           />
-          <label htmlFor="backgroundInput">
-            <PhotoLibraryOutlined />
-            <p>背景を選択</p>
+          <label
+            className="flex absolute left-4 text-slate-100 hover:cursor-pointer"
+            htmlFor="backgroundInput"
+          >
+            <PhotoLibraryOutlined fontSize="large" />
+            <p className="ml-4 leading-8">背景を選択</p>
           </label>
           <button
+            className="absolute right-4 bottom-4 p-2 rounded-full border border-slate-100 text-slate-100"
             onClick={(
               event: React.MouseEvent<HTMLButtonElement, MouseEvent>
             ) => {
@@ -309,7 +315,7 @@ const SettingNormal = () => {
             <CloseRounded />
           </button>
         </div>
-        <div>
+        <div className="relative">
           <input
             id="avatarInput"
             type="file"
@@ -320,13 +326,25 @@ const SettingNormal = () => {
             }}
             hidden
           />
-          {avatarImage ? <img src={avatarImage} alt="アバター画像" /> : <div />}
-          <label htmlFor="avatarInput">
-            <div>
-              <PersonOutline />
+          {avatarImage ? (
+            <img
+              className="-mt-8 ml-4 w-20 h-20 border-4 border-slate-100 rounded-full object-cover brightness-75"
+              src={avatarImage}
+              alt="アバター画像"
+            />
+          ) : (
+            <div className="-mt-8 ml-4 w-20 h-20 border-4 border-slate-100 bg-slate-500 rounded-full" />
+          )}
+          <label
+            className="absolute flex justify-center items-center w-20 h-20 border-4 top-0 left-4 border-slate-100 rounded-full text-slate-100 hover:cursor-pointer"
+            htmlFor="avatarInput"
+          >
+            <div className="box rounded-full">
+              <PersonOutline fontSize="large" />
             </div>
           </label>
           <button
+            className="absolute bottom-0 left-24 p-1 border border-slate-500 rounded-full text-slate-500"
             onClick={(
               event: React.MouseEvent<HTMLButtonElement, MouseEvent>
             ) => {
@@ -338,10 +356,11 @@ const SettingNormal = () => {
             <CloseRounded />
           </button>
         </div>
-        <div>
-          <div>
-            <p>ユーザー名</p>
+        <div className="p-4">
+          <div className="mb-4">
+            <p className="text-sm text-slate-500">ユーザー名</p>
             <input
+              className="h-8 w-full p-4 bg-slate-200 rounded-md"
               type="text"
               value={username.input}
               onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -358,9 +377,10 @@ const SettingNormal = () => {
                 "入力できない文字が含まれいます。"}
             </p>
           </div>
-          <div>
-            <p>氏名</p>
+          <div className="mb-4">
+            <p className="text-sm text-slate-500">氏名</p>
             <input
+              className="h-8 w-full p-4 bg-slate-200 rounded-md"
               type="text"
               value={displayName}
               onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -379,60 +399,81 @@ const SettingNormal = () => {
           <p className="text-sm text-slate-500">
             {isUnique === false && "その氏名は既に使用されています。"}
           </p>
-          <div>
-            <p>紹介文</p>
+          <div className="mb-4">
+            <p className="text-sm text-slate-500">紹介文</p>
             <textarea
+              className="w-full h-32 p-2 border-none bg-slate-200 rounded-md resize-none"
               ref={introduction}
               defaultValue={loginUser.introduction}
             />
           </div>
-          <div>
-            <p>資格・技能</p>
-            <label htmlFor="skill1">その１</label>
-            <input id="skill1" type="text" ref={skill1} />
-            <label htmlFor="skill2">その２</label>
-            <input id="skill2" type="text" ref={skill2} />
-            <label htmlFor="skill3">その３</label>
-            <input id="skill3" type="text" ref={skill3} />
+          <div className="mb-4">
+            <p className="text-sm text-slate-500">資格・技能</p>
+            <input
+              id="skill1"
+              className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
+              type="text"
+              ref={skill1}
+            />
+            <input
+              className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
+              type="text"
+              ref={skill2}
+            />
+            <input
+              id="skill3"
+              className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
+              type="text"
+              ref={skill3}
+            />
           </div>
-          <div>
-            <select
-              ref={birthdayYear}
-              onChange={(event) => {
-                event.preventDefault();
-                getDates();
-              }}
-            >
-              {years.map((year: number) => {
-                return <option key={year}>{year}</option>;
-              })}
-            </select>
-            <label>年</label>
-            <select
-              ref={birthdayMonth}
-              onChange={(event) => {
-                event.preventDefault();
-                getDates();
-              }}
-            >
-              {months.map((month: number) => {
-                return <option key={month}>{month}</option>;
-              })}
-            </select>
-            <label>月</label>
-            <select ref={birthday}>
-              {dates.map((date: number) => {
-                return <option key={date}>{date}</option>;
-              })}
-            </select>
-            <label>日</label>
+          <div className="mb-4">
+            <p className="text-sm text-slate-500">生年月日</p>
+            <div className="flex items-center h-8 w-full p-4 bg-slate-200 rounded-md">
+              <select
+                className="bg-slate-100"
+                ref={birthdayYear}
+                onChange={(event) => {
+                  event.preventDefault();
+                  getDates();
+                }}
+              >
+                {years.map((year: number) => {
+                  return <option key={year}>{year}</option>;
+                })}
+              </select>
+              <label>年</label>
+              <select
+                className="bg-slate-100"
+                ref={birthdayMonth}
+                onChange={(event) => {
+                  event.preventDefault();
+                  getDates();
+                }}
+              >
+                {months.map((month: number) => {
+                  return <option key={month}>{month}</option>;
+                })}
+              </select>
+              <label>月</label>
+              <select className="bg-slate-100" ref={birthday}>
+                {dates.map((date: number) => {
+                  return <option key={date}>{date}</option>;
+                })}
+              </select>
+              <label>日</label>
+            </div>
           </div>
-          <div>
-            <p>住所</p>
-            <input ref={address} />
+          <div className="mb-4">
+            <p className="text-sm text-slate-500">住所</p>
+            <input
+              className="h-8 w-full p-4 bg-slate-200 rounded-md "
+              ref={address}
+            />
           </div>
         </div>
         <button
+          className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
           onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             event.preventDefault();
             handleSubmit();
