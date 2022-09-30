@@ -27,16 +27,15 @@ const DirectMessage = () => {
   const senderUID: string = loginUser.uid;
   const newMessage: React.RefObject<HTMLInputElement> =
     useRef<HTMLInputElement>(null);
-  const messageId: string = `${senderUID}-${receiverUID}`;
+  const roomId: string = `${senderUID}-${receiverUID}`;
   const [unread, setUnread] = useState<boolean>(true);
 
   const sendMessage = () => {
-    const messageRef = doc(db, `messages/${messageId}`);
+    const messageRef = doc(db, `rooms/${roomId}/messages/${getRandomString()}`);
     setDoc(messageRef, {
       senderUID: senderUID,
       receiverUID: receiverUID,
       timestamp: serverTimestamp(),
-      message: newMessage.current!.value,
     });
   };
 
