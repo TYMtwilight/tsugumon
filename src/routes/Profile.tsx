@@ -113,9 +113,16 @@ const Profile: React.VFC = memo(() => {
             alt="アバター画像"
           />
           <div className="flex justify-between w-40 p-2 mr-4">
-            <button className="flex justify-center items-center w-8 h-8 rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
-              <MailOutlined />
-            </button>
+            {loginUser.uid !== user.uid && (
+              <Link
+                to={`/messages/${loginUser.uid}-${user.uid}`}
+                state={{ receiverUID: user.uid }}
+              >
+                <button className="flex justify-center items-center w-8 h-8 rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                  <MailOutlined />
+                </button>
+              </Link>
+            )}
             {loginUser.uid === user.uid ? (
               <Link
                 to={
