@@ -15,6 +15,7 @@ import SettingBusiness from "./routes/SettingBusiness";
 import SettingNormal from "./routes/SettingNormal";
 import SignUp from "./routes/SignUp";
 import Upload from "./routes/Upload";
+import DirectMessage from "./routes/DirectMessage";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
@@ -39,9 +40,10 @@ ReactDOM.render(
           <Route path="/:username" element={<Profile />} />
           <Route path="/:username/:docId" element={<Post />} />
           <Route path="/:username/:docId/likeUsers" element={<LikeUsers />} />
-          <Route path="/:username/:docId/comments" element={<Comments />} />s
+          <Route path="/:username/:docId/comments" element={<Comments />} />
           <Route path="/:username/followers" element={<Followers />} />
           <Route path="/:username/followings" element={<Followings />} />
+          <Route path="/messages/:messageId" element={<DirectMessage/>} />
         </Routes>
       </BrowserRouter>
     </Provider>
