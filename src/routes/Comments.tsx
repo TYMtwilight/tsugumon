@@ -109,7 +109,7 @@ const Comments: React.VFC = () => {
                 event.preventDefault();
                 setComment(event.target.value);
               }}
-              className="w-full h-24 mb-4"
+              className="w-full h-24 mb-4 p-2 resize-none rounded-lg"
             >
               {comment}
             </textarea>

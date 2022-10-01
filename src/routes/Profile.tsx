@@ -113,7 +113,7 @@ const Profile: React.VFC = memo(() => {
             alt="アバター画像"
           />
           <div className="flex justify-between w-40 p-2 mr-4">
-            {loginUser.uid !== user.uid && (
+            {loginUser && loginUser.uid !== user.uid && (
               <Link
                 to={`/messages/${loginUser.uid}-${user.uid}`}
                 state={{ receiverUID: user.uid }}
@@ -123,7 +123,7 @@ const Profile: React.VFC = memo(() => {
                 </button>
               </Link>
             )}
-            {loginUser.uid === user.uid ? (
+            {loginUser && loginUser.uid === user.uid ? (
               <Link
                 to={
                   loginUser.userType === "business"
