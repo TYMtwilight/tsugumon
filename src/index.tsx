@@ -7,6 +7,8 @@ import Followers from "./routes/Followers";
 import Followings from "./routes/Followings";
 import Home from "./routes/Home";
 import Search from "./routes/Search";
+import Notifications from "./routes/Notifications";
+import Rooms from "./routes/Rooms";
 import Post from "./routes/PostDetail";
 import LikeUsers from "./routes/LikeUsers";
 import Comments from "./routes/Comments";
@@ -29,7 +31,7 @@ ReactDOM.render(
           <Route path="/*" element={<App />}>
             <Route path="home" element={<Home />} />
             <Route path="search" element={<Search />} />
-            <Route path="notifications" element={<p>Notifications</p>} />
+            <Route path="notifications" element={<Notifications />} />
             <Route path="email" element={<p>Email</p>} />
           </Route>
           <Route path="/login" element={<Login />} />
@@ -43,7 +45,8 @@ ReactDOM.render(
           <Route path="/:username/:docId/comments" element={<Comments />} />
           <Route path="/:username/followers" element={<Followers />} />
           <Route path="/:username/followings" element={<Followings />} />
-          <Route path="/messages/:messageId" element={<DirectMessage/>} />
+          <Route path="/messages" element={<Rooms />} />
+          <Route path="/messages/:messageId" element={<DirectMessage />} />
         </Routes>
       </BrowserRouter>
     </Provider>

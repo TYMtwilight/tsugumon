@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
 import { selectUser, LoginUser } from "../features/userSlice";
 import {
@@ -14,6 +14,8 @@ import {
   serverTimestamp,
   DocumentReference,
   DocumentData,
+  getDoc,
+  DocumentSnapshot,
 } from "firebase/firestore";
 import { useMessages } from "../hooks/useMessages";
 import { Message } from "../interfaces/Message";
@@ -25,20 +27,46 @@ const DirectMessage = () => {
   const params: Readonly<Params<string>> = useParams();
   const navigate: NavigateFunction = useNavigate();
   const loginUser: LoginUser = useAppSelector(selectUser);
+  const roomId: string = params.messageId!;
   const partnerUID: string = params.messageId!.split("-")[1];
-  const roomId: string = `${loginUser.uid}-${partnerUID}`;
   const messages: Message[] = useMessages(roomId);
   const [newMessage, setNewMessage] = useState<string>("");
+  const [partner, setPartner] = useState({
+    uid: "",
+    username: "",
+    avatarURL: "",
+  });
   const divElement = useRef<HTMLDivElement>(null);
+
+  const partnerRef: DocumentReference<DocumentData> = doc(
+    db,
+    `users/${partnerUID}`
+  );
+  const getPartner: () => void = () => {
+    getDoc(partnerRef).then((partnerSnap: DocumentSnapshot<DocumentData>) => {
+      setPartner({
+        uid: partnerUID,
+        username: partnerSnap.data()!.username,
+        avatarURL: partnerSnap.data()!.avatarURL
+          ? partnerSnap.data()!.avatarURL
+          : `${process.env.PUBLIC_URL}/noAvatar.png`,
+      });
+    });
+  };
+
+  useEffect(() => {
+    getPartner();
+  });
+
+  const roomRef: DocumentReference<DocumentData> = doc(db, `rooms/${roomId}`);
   const sendMessage = () => {
-    const roomsRef: DocumentReference<DocumentData> = doc(
-      db,
-      `rooms/${roomId}`
-    );
-    setDoc(roomsRef, {
+    setDoc(roomRef, {
       senderUID: loginUser.uid,
-      senderAvatarURL: loginUser.avatarURL,
-      receiverUID: partnerUID,
+      senderAvatar: loginUser.uid,
+      senderName: loginUser.username,
+      receiverUID: partner.uid,
+      receiverAvatar: partner.avatarURL,
+      receiverName: partner.username,
       timestamp: serverTimestamp(),
     });
     const messageRef: DocumentReference<DocumentData> = doc(
@@ -47,8 +75,7 @@ const DirectMessage = () => {
     );
     setDoc(messageRef, {
       senderUID: loginUser.uid,
-      senderAvatarURL: loginUser.avatarURL,
-      receiverUID: partnerUID,
+      receiverUID: partner.uid,
       message: newMessage,
       timestamp: serverTimestamp(),
       unread: true,
@@ -121,10 +148,7 @@ const DirectMessage = () => {
                   </div>
                 ) : (
                   <div>
-                    <img
-                      src={message.senderAvatarURL}
-                      alt="送信者のアバター画像"
-                    />
+                    <img src={partner.avatarURL} alt="ユーザーのアバター画像" />
                     <p>{message.message}</p>
                     <p>{message.timestamp}</p>
                   </div>
