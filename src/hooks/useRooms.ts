@@ -21,14 +21,14 @@ export const useRooms: () => Room[] = () => {
   const loginUser: LoginUser = useAppSelector(selectUser);
   const [rooms, setRooms] = useState<Room[]>([]);
 
-  const unsubscribe = async (communicator: "senderUID" | "receiverUID") => {
-    const roomsQuery: Query<DocumentData> = query(
+  const unsubscribe = async () => {
+    const messagesQuery: Query<DocumentData> = query(
       collection(db, "rooms"),
-      where(communicator, "==", loginUser.uid),
+      where("users", "array-contains", loginUser.uid),
       orderBy("timestamp", "asc")
     );
     onSnapshot(
-      roomsQuery,
+      messagesQuery,
       (roomsSnap: QuerySnapshot<DocumentData>) => {
         const mappedArray: Room[] = roomsSnap.docs.map(
           (roomSnap: QueryDocumentSnapshot<DocumentData>) => {
@@ -36,14 +36,17 @@ export const useRooms: () => Room[] = () => {
               senderUID: roomSnap.data().senderUID,
               senderAvatar: roomSnap.data().senderAvatar,
               senderName: roomSnap.data().senderName,
+              senderDisplayName: roomSnap.data().displayName,
               receiverUID: roomSnap.data().receiverUID,
               receiverAvatar: roomSnap.data().receiverAvatar,
               receiverName: roomSnap.data().receiverName,
+              receiverDisplayName:roomSnap.data().displayName,
               timestamp: roomSnap.data().timestamp,
             };
           }
         );
         if (isMounted) {
+          console.log(mappedArray);
           setRooms(mappedArray);
         }
       },
@@ -56,11 +59,11 @@ export const useRooms: () => Room[] = () => {
   };
 
   useEffect(() => {
-    unsubscribe("senderUID");
-    unsubscribe("receiverUID");
+    unsubscribe();
     return () => {
-      unsubscribe("senderUID");
-      unsubscribe("receiverUID");
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      isMounted = false;
+      unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

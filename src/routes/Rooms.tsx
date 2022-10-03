@@ -11,6 +11,7 @@ interface Partner {
 }
 
 const Rooms = () => {
+  console.log("rooms");
   const loginUser: LoginUser = useAppSelector(selectUser);
   const rooms: Room[] = useRooms();
   return (
