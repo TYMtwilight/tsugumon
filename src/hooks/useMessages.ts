@@ -33,7 +33,6 @@ export const useMessages: (roomId: string) => Message[] = (roomId) => {
             const value: DocumentData = messageSnap.data();
             const message: Message = {
               messageId: messageSnap.id,
-              senderAvatarURL: value.senderavatarURL,
               message: value.message,
               senderUID: value.senderUID,
               receiverUID: value.receiverUID,

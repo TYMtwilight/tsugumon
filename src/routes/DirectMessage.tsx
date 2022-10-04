@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
 import { selectUser, LoginUser } from "../features/userSlice";
 import {
@@ -6,6 +6,7 @@ import {
   useParams,
   useNavigate,
   NavigateFunction,
+  Link,
 } from "react-router-dom";
 import { db } from "../firebase";
 import {
@@ -14,6 +15,8 @@ import {
   serverTimestamp,
   DocumentReference,
   DocumentData,
+  getDoc,
+  DocumentSnapshot,
 } from "firebase/firestore";
 import { useMessages } from "../hooks/useMessages";
 import { Message } from "../interfaces/Message";
@@ -21,24 +24,69 @@ import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewOutlined";
 import SendRounded from "@mui/icons-material/SendRounded";
 import { getRandomString } from "../functions/GetRandomString";
 
+interface Partner {
+  uid:string;
+  username:string;
+  displayName: string;
+  avatarURL: string;
+}
+
 const DirectMessage = () => {
   const params: Readonly<Params<string>> = useParams();
   const navigate: NavigateFunction = useNavigate();
   const loginUser: LoginUser = useAppSelector(selectUser);
-  const partnerUID: string = params.messageId!.split("-")[1];
-  const roomId: string = `${loginUser.uid}-${partnerUID}`;
+  const roomId: string = params.messageId!;
+  const senderUID: string = params.messageId!.split("-")[0];
+  const receiverUID: string = params.messageId!.split("-")[1];
+  const partnerUID: string =
+    loginUser.uid === senderUID ? receiverUID : senderUID;
   const messages: Message[] = useMessages(roomId);
   const [newMessage, setNewMessage] = useState<string>("");
+  const [partner, setPartner] = useState<Partner>({
+    uid: "",
+    username: "",
+    displayName: "",
+    avatarURL: "",
+  });
   const divElement = useRef<HTMLDivElement>(null);
+
+  const partnerRef: DocumentReference<DocumentData> = doc(
+    db,
+    `users/${partnerUID}`
+  );
+  const getPartner: () => void = () => {
+    getDoc(partnerRef).then((partnerSnap: DocumentSnapshot<DocumentData>) => {
+      setPartner({
+        uid: partnerUID,
+        username: partnerSnap.data()!.username,
+        displayName: partnerSnap.data()!.displayName,
+        avatarURL: partnerSnap.data()!.avatarURL
+          ? partnerSnap.data()!.avatarURL
+          : `${process.env.PUBLIC_URL}/noAvatar.png`,
+      });
+    });
+  };
+
+  useEffect(() => {
+    getPartner();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const messagesRef: DocumentReference<DocumentData> = doc(
+    db,
+    `rooms/${roomId}`
+  );
   const sendMessage = () => {
-    const roomsRef: DocumentReference<DocumentData> = doc(
-      db,
-      `rooms/${roomId}`
-    );
-    setDoc(roomsRef, {
+    setDoc(messagesRef, {
+      users: [loginUser.uid, partner.uid],
       senderUID: loginUser.uid,
-      senderAvatarURL: loginUser.avatarURL,
-      receiverUID: partnerUID,
+      senderAvatar: loginUser.avatarURL,
+      senderName: loginUser.username,
+      senderDisplayName: loginUser.displayName,
+      receiverUID: partner.uid,
+      receiverAvatar: partner.avatarURL,
+      receiverName: partner.username,
+      receiverDisplayName: partner.displayName,
       timestamp: serverTimestamp(),
     });
     const messageRef: DocumentReference<DocumentData> = doc(
@@ -47,8 +95,7 @@ const DirectMessage = () => {
     );
     setDoc(messageRef, {
       senderUID: loginUser.uid,
-      senderAvatarURL: loginUser.avatarURL,
-      receiverUID: partnerUID,
+      receiverUID: partner.uid,
       message: newMessage,
       timestamp: serverTimestamp(),
       unread: true,
@@ -120,14 +167,21 @@ const DirectMessage = () => {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <img
-                      src={message.senderAvatarURL}
-                      alt="送信者のアバター画像"
-                    />
-                    <p>{message.message}</p>
-                    <p>{message.timestamp}</p>
-                  </div>
+                  <Link to={`/${partner.username}`}>
+                    <div>
+                      <img
+                        src={partner.avatarURL}
+                        alt="ユーザーのアバター画像"
+                      />
+                      <p>{message.message}</p>
+                      <p>
+                        {moreThanOneMinutesAgo
+                          ? `${messageHour.substring(messageHour.length - 2)}:
+                    ${messageMinutes.substring(messageMinutes.length - 2)}`
+                          : `${secondsAgo}秒前`}
+                      </p>
+                    </div>
+                  </Link>
                 )}
               </div>
             );
