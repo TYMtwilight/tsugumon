@@ -23,13 +23,7 @@ import { Message } from "../interfaces/Message";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewOutlined";
 import SendRounded from "@mui/icons-material/SendRounded";
 import { getRandomString } from "../functions/GetRandomString";
-
-interface Partner {
-  uid:string;
-  username:string;
-  displayName: string;
-  avatarURL: string;
-}
+import { Partner } from "../interfaces/Partner";
 
 const DirectMessage = () => {
   const params: Readonly<Params<string>> = useParams();
@@ -72,21 +66,13 @@ const DirectMessage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const messagesRef: DocumentReference<DocumentData> = doc(
-    db,
-    `rooms/${roomId}`
-  );
+  const roomsRef: DocumentReference<DocumentData> = doc(db, `rooms/${roomId}`);
   const sendMessage = () => {
-    setDoc(messagesRef, {
-      users: [loginUser.uid, partner.uid],
-      senderUID: loginUser.uid,
-      senderAvatar: loginUser.avatarURL,
-      senderName: loginUser.username,
-      senderDisplayName: loginUser.displayName,
-      receiverUID: partner.uid,
-      receiverAvatar: partner.avatarURL,
-      receiverName: partner.username,
-      receiverDisplayName: partner.displayName,
+    setDoc(roomsRef, {
+      uids: [loginUser.uid, partner.uid],
+      avatars: [loginUser.avatarURL, partner.avatarURL],
+      usernames: [loginUser.username, partner.username],
+      displayNames: [loginUser.displayName, partner.displayName],
       timestamp: serverTimestamp(),
     });
     const messageRef: DocumentReference<DocumentData> = doc(
@@ -167,21 +153,32 @@ const DirectMessage = () => {
                     </div>
                   </div>
                 ) : (
-                  <Link to={`/${partner.username}`}>
-                    <div>
+                  <div className="flex relative flex-row m-4">
+                    <Link to={`/${partner.username}`}>
                       <img
+                        className="block absolute w-12 h-12 bottom-0 rounded-full"
                         src={partner.avatarURL}
                         alt="ユーザーのアバター画像"
                       />
-                      <p>{message.message}</p>
-                      <p>
-                        {moreThanOneMinutesAgo
-                          ? `${messageHour.substring(messageHour.length - 2)}:
-                    ${messageMinutes.substring(messageMinutes.length - 2)}`
-                          : `${secondsAgo}秒前`}
+                    </Link>
+                    <div className="flex flex-col">
+                      <p
+                        className="max-w-xs h-full 
+                         p-4  ml-16 bg-emerald-500 text-slate-100 rounded-t-3xl rounded-r-3xl"
+                      >
+                        {message.message}
                       </p>
+
+                      <div className="flex flex-row-reverse">
+                        <p>
+                          {moreThanOneMinutesAgo
+                            ? `${messageHour.substring(messageHour.length - 2)}:
+                    ${messageMinutes.substring(messageMinutes.length - 2)}`
+                            : `${secondsAgo}秒前`}
+                        </p>
+                      </div>
                     </div>
-                  </Link>
+                  </div>
                 )}
               </div>
             );
