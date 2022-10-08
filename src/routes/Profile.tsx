@@ -101,28 +101,30 @@ const Profile: React.VFC = memo(() => {
             alt="背景画像"
           />
         </div>
-        <div className="flex justify-between">
-          <img
-            className="w-20 h-20 ml-4 -mt-8 border-4 border-slate-100 object-cover rounded-full"
-            id="avatar"
-            src={
-              user.avatarURL
-                ? user.avatarURL
-                : `${process.env.PUBLIC_URL}/noAvatar.png`
-            }
-            alt="アバター画像"
-          />
-          <div className="flex justify-between w-40 p-2 mr-4">
+        <div className="flex relative w-screen">
+          <div className="flex">
+            <img
+              className="w-20 h-20 ml-4 -mt-8 border-4 border-slate-100 object-cover rounded-full"
+              id="avatar"
+              src={
+                user.avatarURL
+                  ? user.avatarURL
+                  : `${process.env.PUBLIC_URL}/noAvatar.png`
+              }
+              alt="アバター画像"
+            />
             {loginUser && loginUser.uid !== user.uid && (
               <Link
                 to={`/messages/${loginUser.uid}-${user.uid}`}
                 state={{ receiverUID: user.uid }}
               >
-                <button className="flex justify-center items-center w-8 h-8 rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                <button className="flex justify-center items-center w-8 h-8 mt-2 rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
                   <MailOutlined />
                 </button>
               </Link>
             )}
+          </div>
+          <div className="absolute top-2 right-8">
             {loginUser && loginUser.uid === user.uid ? (
               <Link
                 to={
@@ -131,15 +133,15 @@ const Profile: React.VFC = memo(() => {
                     : "/setting/normal"
                 }
               >
-                <div className="flex justify-center">
-                  <button className="w-24 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                <div className="text-sm flex justify-center">
+                  <button className="w-24 p-2 h-8 font-bold rounded-full border  border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
                     編集する
                   </button>
                 </div>
               </Link>
             ) : user.userType === "business" ? (
               <button
-                className="text-sm w-24 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500"
+                className="text-sm w-28 p-2 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500"
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                   event.preventDefault();
                   const following: FollowUser = {
@@ -168,6 +170,7 @@ const Profile: React.VFC = memo(() => {
             )}
           </div>
         </div>
+
         <div className="pl-4 pr-2 py-2">
           <p className="width-screen text-xl font-semibold ">
             {user.displayName}

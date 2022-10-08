@@ -87,7 +87,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   }, []);
 
   return (
-    <div className="mb-12">
+    <div className="mt-4">
       <div className="p-2">
         <Link className="flex" to={`/${props.username}`}>
           <img
@@ -169,15 +169,19 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
           </div>
         </div>
       </div>
-      <div className={props.detail ? "h-full px-4 py-2" : "h-8 px-4 py-2 overflow-hidden"}>
+      <div
+        className={
+          props.detail ? "h-full px-4 py-2" : "h-24 px-4 py-2 text-ellipsis"
+        }
+      >
         {props.detail ? (
           <Link to={`/${props.username}/${props.id}`}>
-            <p className="overflow-elipsis" id="caption">
+            <p className="h-full text-ellipsis" id="caption">
               {props.caption}
             </p>
           </Link>
         ) : (
-          <p className="overflow-elipsis" id="caption">
+          <p className="h-full text-ellipsis" id="caption">
             {props.caption}
           </p>
         )}
