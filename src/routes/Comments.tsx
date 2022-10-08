@@ -75,15 +75,21 @@ const Comments: React.VFC = () => {
         {comments.map((comment: Comment) => {
           return (
             <div className="p-4 mb-4" key={comment.id}>
-              <div className="flex">
-                <Link to={`/${comment.username}/`}>
+              <div>
+                <Link
+                  id="link"
+                  className="flex flex-row items-center"
+                  to={`/${comment.username}/`}
+                >
                   <img
-                    className="block w-8 h-8 rounded-full"
+                    className="block w-12 h-12 rounded-full"
                     src={comment.avatarURL}
                     alt="アバター画像"
                   />
                 </Link>
-                <p className="px-2 py-2 leading-4">{comment.displayName}</p>
+                <label htmlFor="link" className="px-2 py-2 leading-4">
+                  {comment.displayName}
+                </label>
               </div>
               <p className="w-full h-max my-2">{comment.comment}</p>
               <div className="relative">
@@ -110,9 +116,8 @@ const Comments: React.VFC = () => {
                 setComment(event.target.value);
               }}
               className="w-full h-24 mb-4 p-2 resize-none rounded-lg"
-            >
-              {comment}
-            </textarea>
+              value={comment}
+            />
           </div>
           <div className="flex justify-end">
             <button

@@ -24,7 +24,7 @@ export const useRooms: () => Room[] = () => {
   const unsubscribe = async () => {
     const messagesQuery: Query<DocumentData> = query(
       collection(db, "rooms"),
-      where("users", "array-contains", loginUser.uid),
+      where("uids", "array-contains", loginUser.uid),
       orderBy("timestamp", "asc")
     );
     onSnapshot(
@@ -33,20 +33,16 @@ export const useRooms: () => Room[] = () => {
         const mappedArray: Room[] = roomsSnap.docs.map(
           (roomSnap: QueryDocumentSnapshot<DocumentData>) => {
             return {
-              senderUID: roomSnap.data().senderUID,
-              senderAvatar: roomSnap.data().senderAvatar,
-              senderName: roomSnap.data().senderName,
-              senderDisplayName: roomSnap.data().displayName,
-              receiverUID: roomSnap.data().receiverUID,
-              receiverAvatar: roomSnap.data().receiverAvatar,
-              receiverName: roomSnap.data().receiverName,
-              receiverDisplayName:roomSnap.data().displayName,
+              id: roomSnap.id,
+              uids: roomSnap.data().uids,
+              avatars: roomSnap.data().avatars,
+              usernames: roomSnap.data().usernames,
+              displayNames: roomSnap.data().displayNames,
               timestamp: roomSnap.data().timestamp,
             };
           }
         );
         if (isMounted) {
-          console.log(mappedArray);
           setRooms(mappedArray);
         }
       },

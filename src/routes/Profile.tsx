@@ -78,19 +78,19 @@ const Profile: React.VFC = memo(() => {
         <div
           className="flex fixed top-0 w-screen h-12"
           style={{
-            backgroundColor: `rgba(241,245,249,${scroll / 144} )`,
+            backgroundColor: `rgba(241,245,249,${scroll / 120} )`,
           }}
         >
           <button
-            className={`p-2 ${
-              scroll > 144 ? "text-slate-500" : "text-slate-100"
-            }`}
+            className={`h-12 w-12 ${
+              scroll > 120 ? "text-slate-600" : "text-slate-100"
+            } box-shadow-md rounded-full`}
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
               navigate("/home");
             }}
           >
-            <ArrowBackRounded />
+            <ArrowBackRounded fontSize="small" />
           </button>
         </div>
         <div className="w-auto h-auto">
