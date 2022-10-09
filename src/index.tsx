@@ -8,7 +8,6 @@ import Followings from "./routes/Followings";
 import Home from "./routes/Home";
 import Search from "./routes/Search";
 import Notifications from "./routes/Notifications";
-import Rooms from "./routes/Messages";
 import Post from "./routes/PostDetail";
 import LikeUsers from "./routes/LikeUsers";
 import Comments from "./routes/Comments";
