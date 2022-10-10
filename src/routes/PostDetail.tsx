@@ -43,7 +43,6 @@ const PostDetail: React.VFC = memo(() => {
     uid: "",
     username: "",
   });
-  const [isFetched, setIsFetched] = useState<boolean>(false);
   const loginUser: LoginUser = useAppSelector(selectUser);
   const params: Readonly<Params<string>> = useParams();
   const postId: string = params.docId!;
@@ -70,7 +69,6 @@ const PostDetail: React.VFC = memo(() => {
         uid: postSnap.data()!.uid,
         username: postSnap.data()!.username,
       });
-      setIsFetched(true);
       return postSnap;
     });
   };
@@ -85,13 +83,6 @@ const PostDetail: React.VFC = memo(() => {
       isMounted = false;
     };
   }, []);
-
-  useEffect(() => {
-    if (isMounted !== true) {
-      return;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetched]);
 
   return (
     <div className="bg-slate-100">
