@@ -41,20 +41,20 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
       return;
     }
     setAdvertise({
-      closingHour: advertiseSnap.docs[0].data()!.closingHour,
-      closingMinutes: advertiseSnap.docs[0].data()!.closingMinutes,
-      displayName: advertiseSnap.docs[0].data()!.displayName,
-      imageURL: advertiseSnap.docs[0].data()!.imageURL,
-      jobDescription: advertiseSnap.docs[0].data()!.jobDescription,
-      location: advertiseSnap.docs[0].data()!.location,
-      maximumWage: advertiseSnap.docs[0].data()!.maximumWage,
-      message: advertiseSnap.docs[0].data()!.message,
-      minimamWage: advertiseSnap.docs[0].data()!.minimamWage,
-      openingHour: advertiseSnap.docs[0].data()!.openingHour,
-      openingMinutes: advertiseSnap.docs[0].data()!.openingMinutes,
+      closingHour: advertiseSnap.docs[0].data()?.closingHour,
+      closingMinutes: advertiseSnap.docs[0].data()?.closingMinutes,
+      displayName: advertiseSnap.docs[0].data()?.displayName,
+      imageURL: advertiseSnap.docs[0].data()?.imageURL,
+      jobDescription: advertiseSnap.docs[0].data()?.jobDescription,
+      location: advertiseSnap.docs[0].data()?.location,
+      maximumWage: advertiseSnap.docs[0].data()?.maximumWage,
+      message: advertiseSnap.docs[0].data()?.message,
+      minimamWage: advertiseSnap.docs[0].data()?.minimamWage,
+      openingHour: advertiseSnap.docs[0].data()?.openingHour,
+      openingMinutes: advertiseSnap.docs[0].data()?.openingMinutes,
       uid: advertiseSnap.docs[0].id,
-      username: advertiseSnap.docs[0].data()!.username,
-      wanted: advertiseSnap.docs[0].data()!.wanted,
+      username: advertiseSnap.docs[0].data()?.username,
+      wanted: advertiseSnap.docs[0].data()?.wanted,
     });
   };
 

@@ -83,15 +83,15 @@ const Profile: React.VFC = memo(() => {
     <div className="bg-slate-100 min-h-screen h-full">
       <div>
         <div
-          className="flex fixed top-0 w-screen h-12"
+          className="flex fixed top-0 w-screen h-12 z-10"
           style={{
             backgroundColor: `rgba(241,245,249,${scroll / 120} )`,
           }}
         >
           <button
-            className={`h-12 w-12 ${
-              scroll > 120 ? "text-slate-600" : "text-slate-100"
-            } box-shadow-md rounded-full`}
+            className={`h-8 w-8 m-2 ${
+              scroll < 120 && "bg-slate-100/75 rounded-full"}
+            `}
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
               navigate("/home");
@@ -323,7 +323,17 @@ const Profile: React.VFC = memo(() => {
                   src={advertise!.imageURL}
                   alt="イメージ画像"
                 />
-                <div className="absolute inset-y-1/2 left-4 ">
+                <div className="absolute flex items-center inset-y-1/2 left-4 ">
+                  <img
+                    className="w-12 h-12 mr-2 border-2 border-slate-100 object-cover rounded-full"
+                    id="avatar"
+                    src={
+                      user.avatarURL
+                        ? user.avatarURL
+                        : `${process.env.PUBLIC_URL}/noAvatar.png`
+                    }
+                    alt="アバター画像"
+                  />
                   <p className="text-xl text-slate-100 font-semibold">
                     {advertise!.displayName}
                   </p>
