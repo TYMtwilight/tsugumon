@@ -7,10 +7,10 @@ export interface AdvertiseData {
   location: string;
   maximumWage: number;
   message: string;
-  minimamWage: string;
+  minimumWage: string;
   openingHour: number;
   openingMinutes: number;
   uid: string;
-  username:string;
+  username: string;
   wanted: boolean;
 }

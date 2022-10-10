@@ -14,6 +14,7 @@ import Comments from "./routes/Comments";
 import Profile from "./routes/Profile";
 import SettingBusiness from "./routes/SettingBusiness";
 import SettingNormal from "./routes/SettingNormal";
+import SettingAdvertise from "./routes/SettingAdvertise";
 import SignUp from "./routes/SignUp";
 import Upload from "./routes/Upload";
 import DirectMessage from "./routes/DirectMessage";
@@ -38,6 +39,7 @@ ReactDOM.render(
           <Route path="/signup" element={<SignUp />} />
           <Route path="/setting/business" element={<SettingBusiness />} />
           <Route path="/setting/normal" element={<SettingNormal />} />
+          <Route path="/setting/advertise" element={<SettingAdvertise />} />
           <Route path="/:username" element={<Profile />} />
           <Route path="/:username/:docId" element={<Post />} />
           <Route path="/:username/:docId/likeUsers" element={<LikeUsers />} />

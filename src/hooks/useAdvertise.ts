@@ -22,7 +22,7 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
     location: "",
     maximumWage: 0,
     message: "",
-    minimamWage: "",
+    minimumWage: "",
     openingHour: 0,
     openingMinutes: 0,
     uid: "",
@@ -49,7 +49,7 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
       location: advertiseSnap.docs[0].data()?.location,
       maximumWage: advertiseSnap.docs[0].data()?.maximumWage,
       message: advertiseSnap.docs[0].data()?.message,
-      minimamWage: advertiseSnap.docs[0].data()?.minimamWage,
+      minimumWage: advertiseSnap.docs[0].data()?.minimumWage,
       openingHour: advertiseSnap.docs[0].data()?.openingHour,
       openingMinutes: advertiseSnap.docs[0].data()?.openingMinutes,
       uid: advertiseSnap.docs[0].id,
@@ -64,7 +64,7 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
-  },[]);
+  }, []);
 
   return advertise;
 };

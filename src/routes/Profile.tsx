@@ -90,7 +90,8 @@ const Profile: React.VFC = memo(() => {
         >
           <button
             className={`h-8 w-8 m-2 ${
-              scroll < 120 && "bg-slate-100/75 rounded-full"}
+              scroll < 120 && "bg-slate-100/75 rounded-full"
+            }
             `}
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
@@ -319,8 +320,12 @@ const Profile: React.VFC = memo(() => {
             <div>
               <div className="relative bg-slate-300">
                 <img
-                  className="object-cover w-screen h-44 brightness-75"
-                  src={advertise!.imageURL}
+                  className="w-screen h-44 object-cover  brightness-75"
+                  src={
+                    advertise.imageURL
+                      ? advertise.imageURL
+                      : `${process.env.PUBLIC_URL}/noPhoto.png`
+                  }
                   alt="イメージ画像"
                 />
                 <div className="absolute flex items-center inset-y-1/2 left-4 ">
@@ -338,15 +343,25 @@ const Profile: React.VFC = memo(() => {
                     {advertise!.displayName}
                   </p>
                 </div>
-                {loginUser && loginUser.uid !== advertise!.uid && (
-                  <Link
-                    to={`/messages/${loginUser.uid}-${advertise!.uid}`}
-                    state={{ receiverUID: advertise!.uid }}
-                  >
-                    <button className="flex absolute justify-center items-center w-8 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
-                      <MailOutlined />
-                    </button>
-                  </Link>
+                {loginUser && (
+                  <div>
+                    {loginUser.uid === user.uid ? (
+                      <Link to="/setting/advertise">
+                        <button className="flex absolute justify-center items-center w-36 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold">
+                          募集広告の編集
+                        </button>
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/messages/${loginUser.uid}-${advertise!.uid}`}
+                        state={{ receiverUID: advertise!.uid }}
+                      >
+                        <button className="flex absolute justify-center items-center w-8 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                          <MailOutlined />
+                        </button>
+                      </Link>
+                    )}
+                  </div>
                 )}
               </div>
               <div className="p-4">
@@ -365,7 +380,7 @@ const Profile: React.VFC = memo(() => {
                   <p className="text-sm text-slate-500">給与</p>
                   <p className="ml-2">
                     <label className="text-sm mr-2">月額</label>
-                    {advertise!.minimamWage.toLocaleString()}円 ~{" "}
+                    {advertise!.minimumWage.toLocaleString()}円 ~{" "}
                     {advertise!.maximumWage.toLocaleString()}円
                   </p>
                 </div>
