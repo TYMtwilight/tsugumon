@@ -87,7 +87,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   }, []);
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 bg-slate-100">
       <div className="p-2">
         <Link className="flex" to={`/${props.username}`}>
           <img
@@ -186,10 +186,10 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
           </p>
         )}
       </div>
-      <div>
+      <div className="flex flex-row-reverse">
         {props.detail && (
           <Link to={`/${props.username}/${props.id}/comments`}>
-            <p>コメントを書く</p>
+            <p className="w-36 h-8 mr-4 text-center align-middle leading-8 text-emerald-500 border border-emerald-500 rounded-full">コメントを書く</p>
           </Link>
         )}
       </div>
