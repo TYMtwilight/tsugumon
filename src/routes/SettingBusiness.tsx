@@ -102,24 +102,28 @@ const SettingBusiness = () => {
     event: React.ChangeEvent<HTMLInputElement>,
     imageFor: "avatar" | "background"
   ) => void = (event, imageFor) => {
+    event.preventDefault();
     const file: File = event.target.files![0];
-    const reader: FileReader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      const processed: string = await resizeImage(reader.result as string);
-      if (imageFor === "avatar") {
-        setAvatarImage(processed);
-      } else if (imageFor === "background") {
-        setBackgroundImage(processed);
-      } else {
-        return;
-      }
-    };
-    reader.onerror = () => {
-      if (process.env.NODE_ENV === "development") {
-        console.log(reader.error);
-      }
-    };
+    if (["image/png", "image/jpeg"].includes(file.type) === true) {
+      const reader: FileReader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const processed: string = await resizeImage(reader.result as string);
+        if (imageFor === "avatar") {
+          setAvatarImage(processed);
+        } else if (imageFor === "background") {
+          setBackgroundImage(processed);
+        } else {
+          return;
+        }
+      };
+      reader.onerror = () => {
+        if (process.env.NODE_ENV === "development") {
+          console.log(reader.error);
+        }
+      };
+    }
+    event.target.value = "";
   };
 
   const handleSubmit = async () => {
