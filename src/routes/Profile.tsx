@@ -316,7 +316,7 @@ const Profile: React.VFC = memo(() => {
                 );
               })}
             </div>
-          ) : (
+          ) : advertise.wanted ? (
             <div>
               <div className="relative bg-slate-300">
                 <img
@@ -353,7 +353,7 @@ const Profile: React.VFC = memo(() => {
                       </Link>
                     ) : (
                       <Link
-                        to={`/messages/${loginUser.uid}-${advertise!.uid}`}
+                        to={`/messages/${loginUser.uid}-${user.uid}`}
                         state={{ receiverUID: advertise!.uid }}
                       >
                         <button className="flex absolute justify-center items-center w-8 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
@@ -394,6 +394,17 @@ const Profile: React.VFC = memo(() => {
                   </p>
                 </div>
               </div>
+            </div>
+          ) : (
+            <div className="flex relative items-center p-4">
+              <p className="mr-8 text-red-500">募集は締め切られました</p>
+              {loginUser.uid === user.uid && (
+                <Link to="/setting/advertise">
+                  <button className="flex absolute justify-center items-center w-36 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold">
+                    募集広告の編集
+                  </button>
+                </Link>
+              )}
             </div>
           )}
         </div>

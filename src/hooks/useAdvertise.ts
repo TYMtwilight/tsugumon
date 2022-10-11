@@ -40,7 +40,7 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
     if (isMounted === false) {
       return;
     }
-    setAdvertise({
+    advertiseSnap.docs.length > 0 && setAdvertise({
       closingHour: advertiseSnap.docs[0].data()?.closingHour,
       closingMinutes: advertiseSnap.docs[0].data()?.closingMinutes,
       displayName: advertiseSnap.docs[0].data()?.displayName,

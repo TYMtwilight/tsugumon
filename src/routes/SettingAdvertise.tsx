@@ -20,6 +20,7 @@ import CloseRounded from "@mui/icons-material/CloseRounded";
 const SettingBusiness = () => {
   const [isFetched, setIsFetched] = useState<boolean>(false);
   const [advertiseImage, setAdvertiseImage] = useState<string>("");
+  const [wanted, setWanted] = useState<boolean>(false);
   const closingHour: React.RefObject<HTMLSelectElement> =
     useRef<HTMLSelectElement>(null);
   const closingMinutes: React.RefObject<HTMLSelectElement> =
@@ -38,7 +39,6 @@ const SettingBusiness = () => {
     useRef<HTMLSelectElement>(null);
   const openingMinutes: React.RefObject<HTMLSelectElement> =
     useRef<HTMLSelectElement>(null);
-  const wanted: React.RefObject<HTMLInputElement> = useRef(null);
   const navigate: NavigateFunction = useNavigate();
   const loginUser: LoginUser = useAppSelector(selectUser);
   let isMounted: boolean = true;
@@ -55,6 +55,7 @@ const SettingBusiness = () => {
     getDoc(advertiseRef).then(
       (advertiseSnap: DocumentSnapshot<DocumentData>) => {
         if (advertiseSnap.exists()) {
+          setAdvertiseImage(advertiseSnap.data()!.imageURL);
           const closingHourSnap = advertiseSnap.data()!.closingHour;
           closingHour.current!.value = `0${closingHourSnap}`.substring(
             `0${closingHourSnap}`.length - 2
@@ -77,7 +78,7 @@ const SettingBusiness = () => {
           openingMinutes.current!.value = `0${openingMinutesSnap}`.substring(
             `0${openingMinutesSnap}`.length - 2
           );
-          wanted.current!.value = advertiseSnap.data()!.wanted;
+          setWanted(advertiseSnap.data()!.wanted);
           setIsFetched(true);
         } else {
           return;
@@ -124,10 +125,10 @@ const SettingBusiness = () => {
       openingMinutes: openingMinutes.current!.value,
       uid: loginUser.uid,
       username: loginUser.username,
-      wanted: wanted.current!.value,
+      wanted: wanted,
     }).then(() => {
       setTimeout(() => {
-        navigate(`/loginUser.username}`);
+        navigate(`/${loginUser.username}`);
       }, 300);
     });
   };
@@ -156,7 +157,7 @@ const SettingBusiness = () => {
         </button>
         <p className="w-40 mx-auto font-bold">募集広告の編集</p>
       </div>
-      <div>
+      <div className="bg-slate-100">
         <div className="relative mt-12">
           <img
             className="w-screen h-44 object-cover brightness-50"
@@ -303,11 +304,37 @@ const SettingBusiness = () => {
             </div>
           </div>
         </div>
-        <div className="mb-8">
-          <input type="checkbox" id="wanted" ref={wanted} />
-          <label htmlFor="wanted">公開する</label>
+        <div className="flex items-center mb-8">
+          <div
+            className={`relative w-16 h-8 mx-4 rounded-full ${
+              wanted
+                ? "bg-emerald-500 duration-[300ms]"
+                : "bg-slate-200 duration-[300ms]"
+            } `}
+          >
+            <button
+              id="wanted"
+              className={`absolute w-8 h-8 ${
+                wanted ? "left-8 duration-[300ms]" : "left-0 duration-[300ms]"
+              } rounded-full drop-shadow-lg bg-slate-100`}
+              onClick={(
+                event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+              ) => {
+                event.preventDefault();
+                setWanted((prev) => {
+                  return !prev;
+                });
+              }}
+            />
+          </div>
+          <label
+            className={wanted ? "text-slate-800" : "text-slate-400"}
+            htmlFor="wanted"
+          >
+            {wanted ? "公開する" : "公開しない"}
+          </label>
         </div>
-        <div className="mb-8">
+        <div className="pb-8">
           <button
             className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
             onClick={(
