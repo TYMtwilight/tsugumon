@@ -88,7 +88,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
 
   return (
     <div className="bg-slate-100">
-      <div className="mt-8 mb-12">
+      <div className="mb-12">
         <div className="p-2">
           <Link className="flex" to={`/${props.username}`}>
             <img
