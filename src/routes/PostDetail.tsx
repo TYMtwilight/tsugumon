@@ -85,7 +85,7 @@ const PostDetail: React.VFC = memo(() => {
   }, []);
 
   return (
-    <div className="bg-slate-100">
+    <div className="relative min-h-screen h-full bg-slate-100">
       <div className="flex h-12 fixed justify-center items-center top-0 w-screen bg-slate-100 z-10">
         <div className="flex relative  h-12 justify-center items-center">
           <button
@@ -100,7 +100,7 @@ const PostDetail: React.VFC = memo(() => {
         </div>
         <p className="w-16 mx-auto font-bold">投稿画像</p>
       </div>
-      <div className="mt-12">
+      <div className="absolute top-12">
         {post.id && (
           <PostComponent
             avatarURL={post.avatarURL}

@@ -295,7 +295,7 @@ const Profile: React.VFC = memo(() => {
         </nav>
       )}
       {user.userType === "business" && (
-        <div>
+        <div className="mt-8">
           {tab === "album" ? (
             <div>
               {posts.map((post: Post) => {

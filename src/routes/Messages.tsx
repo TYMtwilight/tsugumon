@@ -10,7 +10,7 @@ const Messages = () => {
   const rooms: Room[] = useRooms();
   return (
     <div className="h-max">
-      <ul>
+      <ul className="mt-4">
         {rooms.map((room: Room) => {
           const messageId: string = room.id;
           const partner: Partner = {
@@ -29,7 +29,7 @@ const Messages = () => {
                 : room.avatars[0],
           };
           return (
-            <div className="p-4 mb-4" key={messageId}>
+            <div className="p-4" key={messageId}>
               <div>
                 <Link
                   id="link"
@@ -37,7 +37,7 @@ const Messages = () => {
                   to={`/messages/${messageId}`}
                 >
                   <img
-                    className="block w-12 h-12 rounded-full"
+                    className="block w-12 h-12 rounded-full object-cover"
                     src={partner.avatarURL}
                     alt="ユーザーのアバター画像"
                   />
