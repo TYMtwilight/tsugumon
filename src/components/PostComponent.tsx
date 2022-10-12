@@ -87,111 +87,117 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   }, []);
 
   return (
-    <div className="mt-4 bg-slate-100">
-      <div className="p-2">
-        <Link className="flex" to={`/${props.username}`}>
-          <img
-            id="avatarURL"
-            className="block w-12 h-12 rounded-full"
-            src={props.avatarURL}
-            alt="アバター画像"
-          />
-          <p className="px-2 py-4 leading-4 font-semibold" id="displayName">
-            {props.displayName}
-          </p>
-        </Link>
-      </div>
-      <p className="-mt-4 mr-4 text-right" id="timestamp">
-        {props.timestamp
-          ? `${props.timestamp.getFullYear()}年${
-              props.timestamp!.getMonth() + 1
-            }月${props.timestamp!.getDate()}日`
-          : ""}
-      </p>
-      <div>
-        <div className="w-auto h-auto">
-          {props.detail ? (
-            <img id="image" src={props.imageURL} alt="投稿画像" />
-          ) : (
-            <Link to={`/${props.username}/${props.id}`}>
-              <img
-                className="object-cover w-screen h-96 "
-                id="image"
-                src={props.imageURL}
-                alt="投稿画像"
-              />
-            </Link>
-          )}
-        </div>
-        <div className="flex ml-4 mt-2">
-          <div
-            className={`flex ${like ? "text-emerald-500" : "text-slate-400"}`}
-          >
-            <FavoriteRounded
-              onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-                event.preventDefault();
-                addLikes(props.id, loginUser.uid);
-              }}
+    <div className="bg-slate-100">
+      <div className="mt-8 mb-12">
+        <div className="p-2">
+          <Link className="flex" to={`/${props.username}`}>
+            <img
+              id="avatarURL"
+              className="block w-12 h-12 rounded-full"
+              src={props.avatarURL}
+              alt="アバター画像"
             />
-            <div className="w-12">
-              {likeCounts === 0 ? (
-                <p className="ml-2" id="likeCounts">
-                  {likeCounts}
-                </p>
-              ) : (
-                <Link to={`/${props.username}/${props.id}/likeUsers`}>
+            <p className="px-2 py-4 leading-4 font-semibold" id="displayName">
+              {props.displayName}
+            </p>
+          </Link>
+        </div>
+        <p className="-mt-4 mr-4 text-right" id="timestamp">
+          {props.timestamp
+            ? `${props.timestamp.getFullYear()}年${
+                props.timestamp!.getMonth() + 1
+              }月${props.timestamp!.getDate()}日`
+            : ""}
+        </p>
+        <div>
+          <div className="w-auto h-auto">
+            {props.detail ? (
+              <img id="image" src={props.imageURL} alt="投稿画像" />
+            ) : (
+              <Link to={`/${props.username}/${props.id}`}>
+                <img
+                  className="object-cover w-screen h-96 "
+                  id="image"
+                  src={props.imageURL}
+                  alt="投稿画像"
+                />
+              </Link>
+            )}
+          </div>
+          <div className="flex ml-4 mt-2">
+            <div
+              className={`flex ${like ? "text-emerald-500" : "text-slate-400"}`}
+            >
+              <FavoriteRounded
+                onClick={(
+                  event: React.MouseEvent<SVGSVGElement, MouseEvent>
+                ) => {
+                  event.preventDefault();
+                  addLikes(props.id, loginUser.uid);
+                }}
+              />
+              <div className="w-12">
+                {likeCounts === 0 ? (
                   <p className="ml-2" id="likeCounts">
                     {likeCounts}
                   </p>
-                </Link>
-              )}
-            </div>
-          </div>
-          <div
-            className={`flex ml-4 ${
-              comment ? "text-emerald-500" : "text-slate-400"
-            } `}
-          >
-            <Link to={`/${props.username}/${props.id}/comments`}>
-              <ChatBubbleRounded />
-              <div className="inline-block w-12">
-                {commentCounts === 0 ? (
-                  <p className="ml-2" id="likeCounts">
-                    {commentCounts}
-                  </p>
                 ) : (
-                  <p className="ml-2" id="likeCounts">
-                    {commentCounts}
-                  </p>
+                  <Link to={`/${props.username}/${props.id}/likeUsers`}>
+                    <p className="ml-2" id="likeCounts">
+                      {likeCounts}
+                    </p>
+                  </Link>
                 )}
               </div>
-            </Link>
+            </div>
+            <div
+              className={`flex ml-4 ${
+                comment ? "text-emerald-500" : "text-slate-400"
+              } `}
+            >
+              <Link to={`/${props.username}/${props.id}/comments`}>
+                <ChatBubbleRounded />
+                <div className="inline-block w-12">
+                  {commentCounts === 0 ? (
+                    <p className="ml-2" id="likeCounts">
+                      {commentCounts}
+                    </p>
+                  ) : (
+                    <p className="ml-2" id="likeCounts">
+                      {commentCounts}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-      <div
-        className={
-          props.detail ? "h-full px-4 py-2" : "h-24 px-4 py-2 text-ellipsis"
-        }
-      >
-        {props.detail ? (
-          <Link to={`/${props.username}/${props.id}`}>
-            <p className="h-full text-ellipsis" id="caption">
+        <div
+          className={
+            props.detail ? "h-full px-4 py-2" : "h-24 px-4 text-ellipsis ..."
+          }
+        >
+          {props.detail ? (
+            <Link to={`/${props.username}/${props.id}`}>
+              <p className=" text-ellipsis" id="caption">
+                {props.caption}
+              </p>
+            </Link>
+          ) : (
+            <p className="text-ellipsis " id="caption">
               {props.caption}
             </p>
-          </Link>
-        ) : (
-          <p className="h-full text-ellipsis" id="caption">
-            {props.caption}
-          </p>
-        )}
-      </div>
-      <div className="flex flex-row-reverse">
-        {props.detail && (
-          <Link to={`/${props.username}/${props.id}/comments`}>
-            <p className="w-36 h-8 mr-4 text-center align-middle leading-8 text-emerald-500 border border-emerald-500 rounded-full">コメントを書く</p>
-          </Link>
-        )}
+          )}
+        </div>
+        <div className="flex flex-row-reverse">
+          {props.detail && (
+            <Link to={`/${props.username}/${props.id}/comments`}>
+              <p className="w-36 h-8 mr-4 text-center align-middle leading-8 text-emerald-500 border border-emerald-500 rounded-full">
+                コメントを書く
+              </p>
+            </Link>
+          )}
+        </div>
       </div>
       <Outlet />
     </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { db } from "../firebase";
 import {
@@ -70,9 +70,22 @@ const Search: React.VFC = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="w-screen min-h-screen h-full bg-slate-100">
+      <div className="flex fixed items-center w-screen h-16 px-4 z-10 top-0 bg-slate-100">
+        <button
+          className="mx-4 z-20"
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            event.preventDefault();
+            const tags: string | null = searchParams.get("tag");
+            if (tags) {
+              getPosts(tags);
+            }
+          }}
+        >
+          <SearchRounded />
+        </button>
         <input
+          className="w-10/12 h-10 pl-12 rounded-lg fixed "
           type="text"
           value={searchParams.get("tag") || ""}
           onChange={(event) => {
@@ -84,44 +97,48 @@ const Search: React.VFC = () => {
               setSearchParams({});
             }
           }}
+          onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            event.preventDefault();
+            if (event.key === "Enter") {
+              const tags: string | null = searchParams.get("tag");
+              if (tags) {
+                getPosts(tags);
+              }
+            }
+          }}
         />
+        <button
+          className="fixed right-4 z-20"
+          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            event.preventDefault();
+            setSearchParams({});
+            getPosts("");
+          }}
+        >
+          <CloseRounded />
+        </button>
       </div>
-      <button
-        onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-          event.preventDefault();
-          setSearchParams({});
-        }}
-      >
-        <CloseRounded />
-      </button>
-      <button
-        onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-          event.preventDefault();
-          const tags: string | null = searchParams.get("tag");
-          if (tags) {
-            getPosts(tags);
-          }
-        }}
-      >
-        <SearchRounded />
-      </button>
-      {posts.map((post: Post) => {
-        return (
-          <PostComponent
-            key={post.id}
-            avatarURL={post.avatarURL}
-            caption={post.caption}
-            displayName={post.displayName}
-            id={post.id}
-            imageURL={post.imageURL}
-            tags={post.tags}
-            timestamp={post.timestamp}
-            uid={post.uid}
-            username={post.username}
-            detail={false}
-          />
-        );
-      })}
+      <div className="pt-20 bg-slate-100">
+        {posts.map((post: Post) => {
+          return (
+            <div>
+              <PostComponent
+                key={post.id}
+                avatarURL={post.avatarURL}
+                caption={post.caption}
+                displayName={post.displayName}
+                id={post.id}
+                imageURL={post.imageURL}
+                tags={post.tags}
+                timestamp={post.timestamp}
+                uid={post.uid}
+                username={post.username}
+                detail={false}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
