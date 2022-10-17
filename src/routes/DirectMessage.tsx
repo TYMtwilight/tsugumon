@@ -30,10 +30,10 @@ const DirectMessage = () => {
   const navigate: NavigateFunction = useNavigate();
   const loginUser: LoginUser = useAppSelector(selectUser);
   const roomId: string = params.messageId!;
-  const senderUID: string = params.messageId!.split("-")[0];
-  const receiverUID: string = params.messageId!.split("-")[1];
-  const partnerUID: string =
-    loginUser.uid === senderUID ? receiverUID : senderUID;
+  const uids: string[] = params.messageId!.split("-");
+  const partnerUID: string = uids.find((uid: string) => {
+    return uid !== loginUser.uid;
+  })!;
   const messages: Message[] = useMessages(roomId);
   const [newMessage, setNewMessage] = useState<string>("");
   const [partner, setPartner] = useState<Partner>({

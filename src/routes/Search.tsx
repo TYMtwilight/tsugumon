@@ -121,21 +121,19 @@ const Search: React.VFC = () => {
       <div className="pt-20 bg-slate-100">
         {posts.map((post: Post) => {
           return (
-            <div>
-              <PostComponent
-                key={post.id}
-                avatarURL={post.avatarURL}
-                caption={post.caption}
-                displayName={post.displayName}
-                id={post.id}
-                imageURL={post.imageURL}
-                tags={post.tags}
-                timestamp={post.timestamp}
-                uid={post.uid}
-                username={post.username}
-                detail={false}
-              />
-            </div>
+            <PostComponent
+              key={post.id}
+              avatarURL={post.avatarURL}
+              caption={post.caption}
+              displayName={post.displayName}
+              id={post.id}
+              imageURL={post.imageURL}
+              tags={post.tags}
+              timestamp={post.timestamp}
+              uid={post.uid}
+              username={post.username}
+              detail={false}
+            />
           );
         })}
       </div>
