@@ -66,7 +66,7 @@ const App: React.FC = () => {
   if (loginUser.uid) {
     return (
       <div
-        className="w-full min-h-screen h-100 bg-slate-100"
+        className="w-full min-h-screen h-full bg-slate-100"
         onScroll={(event: React.UIEvent<HTMLDivElement>) => {
           event.preventDefault();
           setScroll(window.scrollY);
@@ -106,19 +106,21 @@ const App: React.FC = () => {
               <p className="text-xs">見つける</p>
             </NavLink>
           </button>
-          <button className="w-32 ">
-            <NavLink
-              style={({ isActive }) => {
-                return {
-                  color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
-                };
-              }}
-              to="/upload"
-            >
-              <AddCircle />
-              <p className="text-xs">投稿</p>
-            </NavLink>
-          </button>
+          {loginUser.userType === "business" && (
+            <button className="w-32 ">
+              <NavLink
+                style={({ isActive }) => {
+                  return {
+                    color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
+                  };
+                }}
+                to="/upload"
+              >
+                <AddCircle />
+                <p className="text-xs">投稿</p>
+              </NavLink>
+            </button>
+          )}
           <button className="w-32 ">
             <NavLink
               style={({ isActive }) => {
