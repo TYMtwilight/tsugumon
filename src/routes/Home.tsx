@@ -50,12 +50,13 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              navigate("/");
-              signOut(auth).catch((error: any) => {
+              signOut(auth).then(()=>{
+                dispatch(logout());
+                dispatch(toggleIsNewUser(false));
+                navigate("/login");
+              }).catch((error: any) => {
                 console.log(`エラーが発生しました\n${error.message}`);
               });
-              dispatch(logout());
-              dispatch(toggleIsNewUser(false));
             }}
           >
             logout

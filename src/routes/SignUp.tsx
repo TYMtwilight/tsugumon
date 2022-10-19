@@ -55,6 +55,7 @@ const SignUp: React.VFC = () => {
   const onChangeImageHandler: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void = async (event) => {
+    console.log(event);
     event.preventDefault();
     const file: File = event.target.files![0];
     if (["image/png", "image/jpeg"].includes(file.type) === true) {
@@ -73,6 +74,7 @@ const SignUp: React.VFC = () => {
     } else {
       alert("拡張子が「png」もしくは「jpg」の画像ファイルを選択してください。");
     }
+    event.target.value = "";
   };
 
   const signUp: (
@@ -101,6 +103,22 @@ const SignUp: React.VFC = () => {
           backgroundURL: "",
           displayName: displayName,
           introduction: "",
+          userType: null,
+          username: `@${username.input}`,
+        });
+        const optionRef: DocumentReference<DocumentData> = doc(
+          db,
+          `option/${user.uid}`
+        );
+        setDoc(optionRef, {
+          achademicHistory: "",
+          address: "",
+          birthdate: null,
+          owner: "",
+          skill1: "",
+          skill2: "",
+          skill3: "",
+          typeOfWork: "",
           userType: null,
           username: `@${username.input}`,
         });
@@ -175,6 +193,7 @@ const SignUp: React.VFC = () => {
               id="selectAvatarImage"
               accept="image/png,image/jpeg"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                console.log("changed!");
                 onChangeImageHandler(event);
               }}
             />
@@ -265,7 +284,7 @@ const SignUp: React.VFC = () => {
           <button
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              navigate("/", { replace: true });
+              navigate("/login", { replace: true });
             }}
           >
             ログイン画面に戻る

@@ -56,11 +56,11 @@ const SettingBusiness = () => {
       (advertiseSnap: DocumentSnapshot<DocumentData>) => {
         if (advertiseSnap.exists()) {
           setAdvertiseImage(advertiseSnap.data()!.imageURL);
-          const closingHourSnap = advertiseSnap.data()!.closingHour;
+          const closingHourSnap = advertiseSnap.data()?.closingHour;
           closingHour.current!.value = `0${closingHourSnap}`.substring(
             `0${closingHourSnap}`.length - 2
           );
-          const closingMinutesSnap = advertiseSnap.data()!.closingMinutes;
+          const closingMinutesSnap = advertiseSnap.data()?.closingMinutes;
           closingMinutes.current!.value = `0${closingMinutesSnap}`.substring(
             `0${closingMinutesSnap}`.length - 2
           );

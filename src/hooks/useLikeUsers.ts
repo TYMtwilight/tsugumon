@@ -22,7 +22,7 @@ interface User {
 export const useLikeUsers: (postId: string) => User[] = (postId: string) => {
   const [likeUsers, setLikeUsers] = useState<User[]>([]);
   let isMounted: boolean = postId !== undefined;
-  const unsubscribe: (isMounted: boolean) => void = async (isMounted) => {
+  const unsubscribe: () => void = async () => {
     if (isMounted === false) {
       return;
     }
@@ -30,25 +30,28 @@ export const useLikeUsers: (postId: string) => User[] = (postId: string) => {
       db,
       `posts/${postId}/likeUsers/`
     );
-
     onSnapshot(
       likeUsersRef,
       (snapshots: QuerySnapshot<DocumentData>) => {
-        setLikeUsers(
-          snapshots.docs.map(
-            (snapshot: QueryDocumentSnapshot<DocumentData>) => {
-              const likeUser: User = {
-                avatarURL: snapshot.data().avatarURL,
-                caption: snapshot.data().caption,
-                displayName: snapshot.data().displayName,
-                uid: snapshot.id,
-                username: snapshot.data().username,
-                userType: snapshot.data().userType,
-              };
-              return likeUser;
-            }
-          )
-        );
+        if (isMounted === true) {
+          setLikeUsers(
+            snapshots.docs.map(
+              (snapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const likeUser: User = {
+                  avatarURL: snapshot.data().avatarURL,
+                  caption: snapshot.data().caption,
+                  displayName: snapshot.data().displayName,
+                  uid: snapshot.id,
+                  username: snapshot.data().username,
+                  userType: snapshot.data().userType,
+                };
+                return likeUser;
+              }
+            )
+          );
+        } else {
+          return;
+        }
       },
       (error: FirestoreError) => {
         if (process.env.NODE_ENV === "development") {
@@ -59,11 +62,11 @@ export const useLikeUsers: (postId: string) => User[] = (postId: string) => {
   };
 
   useEffect(() => {
-    unsubscribe(isMounted);
+    unsubscribe();
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
-      unsubscribe(isMounted);
+      unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

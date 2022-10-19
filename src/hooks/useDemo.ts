@@ -128,6 +128,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
               backgroundURL: "backgroundURL",
               displayName: user.displayName,
               introduction: fetchedUser.introduction,
+              uid: uid,
               userType: fetchedUser.userType,
               username: fetchedUser.username,
             });
@@ -147,6 +148,7 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
               skill2: fetchedUser.option.skill2,
               skill3: fetchedUser.option.skill3,
               typeOfWork: fetchedUser.option.typeOfWork,
+              uid: uid,
               username: fetchedUser.username,
               userType: fetchedUser.userType,
             });
