@@ -41,10 +41,11 @@ const Followers: React.VFC = () => {
         </div>
         <p className="flex w-20 mx-auto font-bold">フォロワー</p>
       </div>
+      <div className="h-16 min-w-screen bg-slate-100" />
       {followers.map((follower: Follower) => {
         return (
-          <div className="flex flex-col absolute top-16">
-            <Link to={`/${follower.username}`} key={follower.username}>
+          <div className="flex flex-col mb-4" key={follower.username}>
+            <Link to={`/${follower.username}`}>
               <div className="flex flex-row px-4 items-center">
                 <img
                   className="block w-12 h-12 rounded-full object-cover"

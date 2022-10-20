@@ -17,10 +17,6 @@ export const addLikes: (postId: string, loginUid: string) => void = async (
     db,
     `users/${loginUid}`
   );
-  const likePostRef: DocumentReference<DocumentData> = doc(
-    db,
-    `users/${loginUid}/likePosts/${postId}`
-  );
   const likeUserRef: DocumentReference<DocumentData> = doc(
     db,
     `posts/${postId}/likeUsers/${loginUid}`
@@ -39,9 +35,7 @@ export const addLikes: (postId: string, loginUid: string) => void = async (
       username: loginUserSnap.data()!.username,
       userType: loginUserSnap.data()!.userType,
     });
-    setDoc(likePostRef, { timestamp: new Date() });
   } else {
     deleteDoc(likeUserRef);
-    deleteDoc(likePostRef);
   }
 };
