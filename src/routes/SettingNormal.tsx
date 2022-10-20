@@ -75,6 +75,11 @@ const SettingNormal = () => {
     `${loginUser.uid}`
   );
 
+  const usernameRef: DocumentReference<DocumentData> = doc(
+    db,
+    `usernames/${loginUser.uid}`
+  );
+
   const optionRef: DocumentReference<DocumentData> = doc(
     db,
     "option",
@@ -222,11 +227,17 @@ const SettingNormal = () => {
       backgroundURL: backgroundURL,
       displayName: displayName,
       introduction: introduction.current!.value,
+      uid: `${loginUser.uid}`,
       username: `@${username.input}`,
     });
+    updateDoc(usernameRef,{
+      uid: `${loginUser.uid}`,
+      username: `@${username.input}`,
+    })
     updateDoc(optionRef, {
       address: address.current!.value,
       birthdate: birthdate,
+      uid: `@${loginUser.uid}`
     });
     updateProfile(auth.currentUser!, {
       displayName: displayName,
