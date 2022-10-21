@@ -8,7 +8,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
 
 const SelectUserType = () => {
-  const [userType, setUserType] = useState<"business" | "normal" | null>(null);
+  const [userType, setUserType] = useState<"business" | "normal">("business");
 
   const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
@@ -29,12 +29,13 @@ const SelectUserType = () => {
       <div className="flex fixed top-0">
         <div className="flex relative h-12 w-screen items-center bg-slate-100">
           <button
+            className="ml-2"
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
               signOut(auth)
                 .then(() => {
                   dispatch(logout());
-                  navigate("/login");
+                  navigate("/login",{ replace:true });
                 })
                 .catch((error: any) => {
                   console.log(`エラーが発生しました\n${error.message}`);
