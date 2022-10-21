@@ -83,13 +83,13 @@ const Profile: React.VFC = memo(() => {
     <div className="bg-slate-100 min-h-screen h-full">
       <div>
         <div
-          className="flex fixed top-0 w-screen h-12 z-10"
+          className="relative before:fixed top-0 w-screen h-12 z-10"
           style={{
             backgroundColor: `rgba(241,245,249,${scroll / 120} )`,
           }}
         >
           <button
-            className={`h-8 w-8 m-2 ${
+            className={`absolute h-8 w-8 m-2 ${
               scroll < 120 && "bg-slate-100/75 rounded-full"
             }
             `}

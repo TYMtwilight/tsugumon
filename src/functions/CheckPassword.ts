@@ -14,13 +14,13 @@ export const checkPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
   const checkApproval = () => {
     if (checkedResults.lengthCheck && checkedResults.patternCheck) {
       checkedResults.input = event.target.value;
-    }else{
+    } else {
       checkedResults.input = "";
     }
   };
   // NOTE >> 入力文字数をチェックします
   const length = event.target.value.length;
-  if (length < 8 || length > 20) {
+  if ((length > 0 && length < 8) || length > 20) {
     checkedResults.lengthCheck = false;
   } else {
     checkedResults.lengthCheck = true;

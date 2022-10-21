@@ -26,7 +26,6 @@ import {
 } from "firebase/storage";
 import { resizeImage } from "../functions/ResizeImage";
 import { checkUsername } from "../functions/CheckUsername";
-import { checkIsUnique } from "../functions/useCheckIsUnique";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
 import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
 import PersonOutline from "@mui/icons-material/PersonOutline";
@@ -46,7 +45,6 @@ const SettingBusiness = () => {
     input: "",
   });
   const [displayName, setDisplayName] = useState<string>("");
-  const [isUnique, setIsUnique] = useState<boolean>(true);
   const address = useRef<HTMLInputElement>(null);
   const introduction = useRef<HTMLTextAreaElement>(null);
   const owner = useRef<HTMLInputElement>(null);
@@ -61,6 +59,11 @@ const SettingBusiness = () => {
     db,
     "users",
     `${loginUser.uid}`
+  );
+
+  const usernameRef: DocumentReference<DocumentData> = doc(
+    db,
+    `usernames/${loginUser.uid}`
   );
 
   const optionRef: DocumentReference<DocumentData> = doc(
@@ -168,12 +171,18 @@ const SettingBusiness = () => {
       backgroundURL: backgroundURL,
       displayName: displayName,
       introduction: introduction.current!.value,
+      uid: `${loginUser.uid}`,
       username: `@${username.input}`,
     });
+    updateDoc(usernameRef,{
+      uid: `${loginUser.uid}`,
+      username: `@${username.input}`,
+    })
     updateDoc(optionRef, {
       address: address.current!.value,
       owner: owner.current!.value,
       typeOfWork: typeOfWork.current!.value,
+      uid: `${loginUser.uid}`,
       username: `@${username.input}`,
     });
     updateProfile(auth.currentUser!, {
@@ -286,8 +295,8 @@ const SettingBusiness = () => {
             <div className="-mt-8 ml-4 w-20 h-20 border-4 border-slate-100 bg-slate-500 rounded-full" />
           )}
           <label
-            className="absolute flex justify-center items-center w-20 h-20 border-4 top-0 left-4 border-slate-100 rounded-full text-slate-100 hover:cursor-pointer"
             htmlFor="avatarInput"
+            className="absolute flex justify-center items-center w-20 h-20 border-4 top-0 left-4 border-slate-100 rounded-full text-slate-100 hover:cursor-pointer"
           >
             <div className="box rounded-full">
               <PersonOutline fontSize="large" />
@@ -318,36 +327,28 @@ const SettingBusiness = () => {
                 setUsername(await checkUsername(event.target.value));
               }}
             />
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-red-500">
               {username.uniqueCheck === false &&
                 "既に使用されているユーザー名です。"}
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-red-500">
               {username.patternCheck === false &&
                 "入力できない文字が含まれいます。"}
             </p>
           </div>
           <div className="mb-4">
-            <p className="text-sm text-slate-500">氏名</p>
+            <label htmlFor="displayName" className="text-sm text-slate-500">
+              企業名
+            </label>
             <input
-              className="h-8 w-full p-4  bg-slate-200 rounded-md"
+              id="displayName"
+              className="h-8 w-full p-4 bg-slate-200 rounded-md"
               type="text"
               value={displayName}
               onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                 setDisplayName(event.target.value);
               }}
-              onBlur={async (
-                event: React.FocusEvent<HTMLInputElement, Element>
-              ) => {
-                event.preventDefault();
-                setIsUnique(
-                  await checkIsUnique(displayName, loginUser.displayName)
-                );
-              }}
             />
-            <p className="text-sm text-slate-500">
-              {isUnique === false && "その氏名は既に使用されています。"}
-            </p>
           </div>
           <div className="mb-4">
             <p className="text-sm text-slate-500">紹介文</p>
@@ -392,7 +393,6 @@ const SettingBusiness = () => {
               handleSubmit();
             }}
             disabled={
-              !isUnique ||
               !username.patternCheck ||
               !username.uniqueCheck ||
               username.input === ""

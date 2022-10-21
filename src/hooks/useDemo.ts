@@ -132,6 +132,14 @@ export const useDemo: (uploadDemo: boolean) => "wait" | "run" | "done" = (
               userType: fetchedUser.userType,
               username: fetchedUser.username,
             });
+            const usernameRef: DocumentReference<DocumentData> = doc(
+              db,
+              `usernames/${uid}`
+            );
+            setDoc(usernameRef, {
+              uid: uid,
+              username: fetchedUser.username,
+            });
             const optionRef: DocumentReference<DocumentData> = doc(
               db,
               `option/${uid}/`

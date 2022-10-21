@@ -13,6 +13,7 @@ export const checkUsername: (input: string) => Promise<{
   uniqueCheck: boolean;
   input: string;
 }> = async (input) => {
+  console.log("checkUsernameが実行されました");
   const checkIsSafe: () => boolean = () => {
     let isSafe: boolean = true;
     const regex: RegExp = /^[a-z|A-Z|0-9|_]+$/;
@@ -22,12 +23,12 @@ export const checkUsername: (input: string) => Promise<{
     return isSafe;
   };
   const checkIsUnique: () => Promise<boolean> = async () => {
-    const usersQuery: Query<DocumentData> = query(
-      collection(db, "users"),
+    const usernamesQuery: Query<DocumentData> = query(
+      collection(db, "usernames"),
       where("username", "==", `@${input}`)
     );
-    const isUnique: boolean = await getDocs(usersQuery).then((usersSnap) => {
-      if (usersSnap.docs.length === 0) {
+    const isUnique: boolean = await getDocs(usernamesQuery).then((usernamesSnap) => {
+      if (usernamesSnap.docs.length === 0) {
         return true;
       } else {
         return false;

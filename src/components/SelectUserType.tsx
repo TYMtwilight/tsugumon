@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectUser, updateUserType } from "../features/userSlice";
+import { useNavigate, NavigateFunction } from "react-router-dom";
+import { selectUser, logout,updateUserType } from "../features/userSlice";
 import { auth, db } from "../firebase";
 import { signOut } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
@@ -12,6 +13,7 @@ const SelectUserType = () => {
   const [userType, setUserType] = useState<"business" | "normal" | null>(null);
 
   const dispatch = useAppDispatch();
+  const navigate:NavigateFunction = useNavigate();
   const user = useAppSelector(selectUser);
 
   const registUserType: (
@@ -79,10 +81,16 @@ const SelectUserType = () => {
         />
       </form>
       <button
-        onClick={() => {
-          signOut(auth).catch((error: any) => {
-            console.log(`エラーが発生しました\n${error.message}`);
-          });
+        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+          event.preventDefault();
+          signOut(auth)
+            .then(() => {
+              dispatch(logout());
+              navigate("/login");
+            })
+            .catch((error: any) => {
+              console.log(`エラーが発生しました\n${error.message}`);
+            });
         }}
       >
         logout
