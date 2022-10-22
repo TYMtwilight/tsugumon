@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-// import { useDemo } from "../hooks/useDemo";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { checkPassword } from "../functions/CheckPassword";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -14,13 +13,11 @@ const UserAuthentication = () => {
     patternCheck: boolean;
     input: string;
   }>({
-    lengthCheck: false,
+    lengthCheck: true,
     patternCheck: true,
     input: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  // const [upload, setUpload] = useState<boolean>(false);
-  // const progress: "wait" | "run" | "done" = useDemo(upload);
   const navigate = useNavigate();
 
   const login: (
@@ -42,33 +39,11 @@ const UserAuthentication = () => {
     );
   };
 
-  // useEffect(() => {
-  //   switch (progress) {
-  //     case "wait":
-  //       if (process.env.NODE_ENV === "development") {
-  //         console.log(`${progress}: アップロードの待機中`);
-  //         setUpload(false);
-  //       }
-  //       break;
-  //     case "run":
-  //       if (process.env.NODE_ENV === "development") {
-  //         console.log(`${progress}: アップロードの実行中`);
-  //       }
-  //       break;
-  //     case "done":
-  //       if (process.env.NODE_ENV === "development") {
-  //         console.log(`${progress}: アップロード完了`);
-  //         setUpload(false);
-  //       }
-  //   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [progress]);
-
   return (
-    <div>
-      <div>
-        <header className="flex h-44 mb-4 justify-center items-center bg-hero bg-cover bg-bottom brightness-125">
-          <h1 className="font-kiwi text-2xl text-slate-100">つぐもん</h1>
+    <div className="md:flex md:justify-center md:h-screen md:px-4 md:py-8 bg-slate-100">
+      <div className="sm:w-screen md:w-1/3 md:rounded-2xl bg-white">
+        <header className="flex w-full h-44 justify-center items-center mb-4 bg-hero bg-cover bg-bottom md:rounded-t-2xl brightness-125">
+          <h1 className="font-kiwi text-2xl text-slate-50">つぐもん</h1>
         </header>
         <form className="p-4">
           <div className="mb-12">
@@ -81,8 +56,8 @@ const UserAuthentication = () => {
               type="email"
               id="email"
               value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setEmail(e.target.value);
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setEmail(event.target.value);
               }}
               placeholder="例) tsugumon@example.com"
               autoFocus
@@ -109,9 +84,9 @@ const UserAuthentication = () => {
                 <button
                   className="ml-4"
                   onClick={(
-                    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
                   ) => {
-                    e.preventDefault();
+                    event.preventDefault();
                     setShowPassword(!showPassword);
                   }}
                 >
@@ -155,15 +130,6 @@ const UserAuthentication = () => {
           </p>
         </div>
         <footer className="flex mt-16 justify-center">
-          {/* <button
-            className="w-40 h-8 rounded-md border hover:border-none border-slate-500 text-slate-500 hover:text-slate-100 font-bold hover:bg-slate-500"
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              setUpload(true);
-            }}
-          >
-            デモデータの登録
-          </button> */}
           <button
             className="w-48 h-8 rounded-md border hover:border-none border-slate-500 text-slate-500 hover:text-slate-100 font-bold hover:bg-slate-500"
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
