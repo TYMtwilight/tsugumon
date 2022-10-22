@@ -5,7 +5,6 @@ export const splitByHash: (input: string) => string[] = (input) => {
       return word.trim();
     });
     if (result.length > 1) {
-      console.log(result);
       result.shift();
     }
     return result;
