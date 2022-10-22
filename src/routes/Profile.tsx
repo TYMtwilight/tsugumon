@@ -403,7 +403,7 @@ const Profile: React.VFC = memo(() => {
             </div>
           ) : (
             <div className="flex relative items-center p-4">
-              <p className="mr-8 text-red-500">募集は締め切られました</p>
+              <p className="mr-8 text-red-500">現在、募集はおこなわれていません。</p>
               {loginUser.uid === user.uid && (
                 <Link to="/setting/advertise">
                   <button className="flex absolute justify-center items-center w-36 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold">
