@@ -83,29 +83,35 @@ const Profile: React.VFC = memo(() => {
     <div className="bg-slate-100 min-h-screen h-full">
       <div>
         <div
-          className="relative before:fixed top-0 w-screen h-12 z-10"
+          className="fixed top-0 w-screen h-12 z-10"
           style={{
             backgroundColor: `rgba(241,245,249,${scroll / 120} )`,
           }}
         >
-          <button
-            className={`absolute h-8 w-8 m-2 ${
-              scroll < 120 && "bg-slate-100/75 rounded-full"
-            }
+          <div className="fixed">
+            <button
+              className={`absolute h-8 w-8 m-2 ${
+                scroll < 120 && "bg-slate-100/75 rounded-full"
+              }
             `}
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              navigate("/home");
-            }}
-          >
-            <ArrowBackRounded fontSize="small" />
-          </button>
+              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                event.preventDefault();
+                navigate("/home");
+              }}
+            >
+              <ArrowBackRounded fontSize="small" />
+            </button>
+          </div>
         </div>
         <div className="w-auto h-auto">
           <img
             className="object-cover w-screen h-44"
             id="background"
-            src={user.backgroundURL}
+            src={
+              user.backgroundURL !== ""
+                ? user.backgroundURL
+                : `${process.env.PUBLIC_URL}/noPhoto.png`
+            }
             alt="背景画像"
           />
         </div>
