@@ -12,8 +12,8 @@ import {
 
 interface User {
   avatarURL: string;
-  caption: string;
   displayName: string;
+  introduction: string;
   uid: string;
   username: string;
   userType: "business" | "normal" | null;
@@ -39,8 +39,8 @@ export const useLikeUsers: (postId: string) => User[] = (postId: string) => {
               (snapshot: QueryDocumentSnapshot<DocumentData>) => {
                 const likeUser: User = {
                   avatarURL: snapshot.data().avatarURL,
-                  caption: snapshot.data().caption,
                   displayName: snapshot.data().displayName,
+                  introduction: snapshot.data().introduction,
                   uid: snapshot.id,
                   username: snapshot.data().username,
                   userType: snapshot.data().userType,

@@ -31,6 +31,7 @@ export const addLikes: (postId: string, loginUid: string) => void = async (
     setDoc(likeUserRef, {
       avatarURL: loginUserSnap.data()!.avatarURL,
       displayName: loginUserSnap.data()!.displayName,
+      introduction: loginUserSnap.data()!.introduction,
       uid: loginUid,
       username: loginUserSnap.data()!.username,
       userType: loginUserSnap.data()!.userType,
