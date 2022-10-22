@@ -27,7 +27,7 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
     openingMinutes: 0,
     uid: "",
     username: "",
-    wanted: true,
+    wanted: false,
   });
   const advertiseQuery: Query<DocumentData> = query(
     collection(db, "advertises"),
