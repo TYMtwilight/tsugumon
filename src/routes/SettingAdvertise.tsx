@@ -9,30 +9,27 @@ import {
   DocumentReference,
   DocumentSnapshot,
   getDoc,
-  updateDoc,
+  setDoc,
 } from "firebase/firestore";
-
 import { resizeImage } from "../functions/ResizeImage";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
 import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
 import CloseRounded from "@mui/icons-material/CloseRounded";
 
-const SettingBusiness = () => {
+const SettingAdvertise = () => {
   const [isFetched, setIsFetched] = useState<boolean>(false);
   const [advertiseImage, setAdvertiseImage] = useState<string>("");
   const [wanted, setWanted] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [jobDescription, setJobDescription] = useState<string>("");
   const closingHour: React.RefObject<HTMLSelectElement> =
     useRef<HTMLSelectElement>(null);
   const closingMinutes: React.RefObject<HTMLSelectElement> =
     useRef<HTMLSelectElement>(null);
-  const jobDescription: React.RefObject<HTMLTextAreaElement> =
-    useRef<HTMLTextAreaElement>(null);
   const location: React.RefObject<HTMLInputElement> =
     useRef<HTMLInputElement>(null);
   const maximumWage: React.RefObject<HTMLInputElement> =
     useRef<HTMLInputElement>(null);
-  const message: React.RefObject<HTMLTextAreaElement> =
-    useRef<HTMLTextAreaElement>(null);
   const minimumWage: React.RefObject<HTMLInputElement> =
     useRef<HTMLInputElement>(null);
   const openingHour: React.RefObject<HTMLSelectElement> =
@@ -64,10 +61,10 @@ const SettingBusiness = () => {
           closingMinutes.current!.value = `0${closingMinutesSnap}`.substring(
             `0${closingMinutesSnap}`.length - 2
           );
-          jobDescription.current!.value = advertiseSnap.data()!.jobDescription;
+          setJobDescription(advertiseSnap.data()!.jobDescription);
           location.current!.value = advertiseSnap.data()!.location;
           maximumWage.current!.value = advertiseSnap.data()!.maximumWage;
-          message.current!.value = advertiseSnap.data()!.message;
+          setMessage(advertiseSnap.data()!.message);
           minimumWage.current!.value = advertiseSnap.data()!.minimumWage;
           const openingHourSnap = advertiseSnap.data()!.openingHour;
           openingHour.current!.value = `0${openingHourSnap}`.substring(
@@ -110,23 +107,26 @@ const SettingBusiness = () => {
     //         検討しましたが、useEffect内の処理（ステートに既存の画像URLを
     //         読み込む処理）で、エラーが起きてしまうのを避けるため、
     //         Firestoreに直接、画像のDataURLを書き込み、読み込むかたちに変更しました。
-
-    updateDoc(advertiseRef, {
-      closingHour: closingHour.current!.value,
-      closingMinutes: closingMinutes.current!.value,
-      displayName: loginUser.displayName,
-      imageURL: advertiseImage,
-      jobDescription: jobDescription.current!.value,
-      location: location.current!.value,
-      maximumWage: maximumWage.current!.value,
-      message: message.current!.value,
-      minimumWage: minimumWage.current!.value,
-      openingHour: openingHour.current!.value,
-      openingMinutes: openingMinutes.current!.value,
-      uid: loginUser.uid,
-      username: loginUser.username,
-      wanted: wanted,
-    }).then(() => {
+    setDoc(
+      advertiseRef,
+      {
+        closingHour: closingHour.current!.value,
+        closingMinutes: closingMinutes.current!.value,
+        displayName: loginUser.displayName,
+        imageURL: advertiseImage,
+        jobDescription: jobDescription,
+        location: location.current!.value,
+        maximumWage: maximumWage.current!.value,
+        message: message,
+        minimumWage: minimumWage.current!.value,
+        openingHour: openingHour.current!.value,
+        openingMinutes: openingMinutes.current!.value,
+        uid: loginUser.uid,
+        username: loginUser.username,
+        wanted: wanted,
+      },
+      {merge:true}
+    ).then(() => {
       setTimeout(() => {
         navigate(`/${loginUser.username}`);
       }, 300);
@@ -218,15 +218,23 @@ const SettingBusiness = () => {
             <p className="text-sm text-slate-500">メッセージ</p>
             <textarea
               className="w-full h-32 p-2 border-none bg-slate-200 rounded-md resize-none"
-              ref={message}
               placeholder="応募者へのメッセージを入力してください"
+              value={message}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                event.preventDefault();
+                setMessage(event.target.value);
+              }}
             />
           </div>
           <div className="mb-4">
             <p className="text-sm text-slate-500">勤務内容</p>
             <textarea
               className="w-full h-32 p-2 border-none bg-slate-200 rounded-md resize-none"
-              ref={jobDescription}
+              value={jobDescription}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                event.preventDefault();
+                setJobDescription(event.target.value);
+              }}
             />
           </div>
           <div className="mb-4">
@@ -343,6 +351,7 @@ const SettingBusiness = () => {
               event.preventDefault();
               handleSubmit();
             }}
+            disabled={message === "" || jobDescription === ""}
           >
             登録する
           </button>
@@ -352,4 +361,4 @@ const SettingBusiness = () => {
   );
 };
 
-export default SettingBusiness;
+export default SettingAdvertise;
