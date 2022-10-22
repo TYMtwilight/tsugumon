@@ -12,13 +12,14 @@ const Upload: React.FC = memo(() => {
   const [modal, setModal] = useState<boolean>(false);
   const [postImage, setPostImage] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
-  const [tag, setTag] = useState<string>("");
+  const [tagString, setTagString] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(false);
   const navigate: NavigateFunction = useNavigate();
   const progress: "wait" | "run" | "done" = useBatch(
     upload,
     postImage,
-    caption
+    caption,
+    tagString
   );
 
   const onChangeImageHandler: (
@@ -40,7 +41,7 @@ const Upload: React.FC = memo(() => {
   };
 
   const cancel = () => {
-    if (postImage === "" && caption === "" && tag === "") {
+    if (postImage === "" && caption === "" && tagString === "") {
       navigate(-1);
     } else {
       setModal(true);
@@ -138,9 +139,9 @@ const Upload: React.FC = memo(() => {
             <textarea
               className="w-full h-32 p-2 border-none rounded-md resize-none"
               placeholder="タップして入力する"
-              value={tag}
+              value={tagString}
               onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-                setTag(event.target.value);
+                setTagString(event.target.value);
               }}
             />
           </div>

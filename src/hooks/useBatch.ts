@@ -23,7 +23,8 @@ import {
   QuerySnapshot,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
-import {getRandomString} from "../functions/GetRandomString";
+import { getRandomString } from "../functions/GetRandomString";
+import { splitBySpace } from "../functions/SplitBySpace";
 
 interface Post {
   uid: string;
@@ -32,17 +33,21 @@ interface Post {
   avatarURL: string;
   imageURL: string;
   caption: string;
+  tags: string[];
   timestamp: FieldValue;
 }
 
 export const useBatch: (
   upload: boolean,
   postImage: string,
-  caption: string
-) => "wait" | "run" | "done" = (upload, postImage, caption) => {
+  caption: string,
+  tagString: string
+) => "wait" | "run" | "done" = (upload, postImage, caption, tagString) => {
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
   const loginUser: LoginUser = useAppSelector(selectUser);
   const batch: WriteBatch = writeBatch(db);
+  console.log(tagString);
+  const tags = splitBySpace(tagString);
 
   const setBatch: (downloadURL: string) => Promise<void> = async (
     downloadURL
@@ -57,6 +62,7 @@ export const useBatch: (
       avatarURL: loginUser.avatarURL,
       imageURL: downloadURL,
       caption: caption,
+      tags: tags,
       timestamp: serverTimestamp(),
     };
     batch.set(postRef, postData);
