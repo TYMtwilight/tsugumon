@@ -147,11 +147,9 @@ const Profile: React.VFC = memo(() => {
                     : "/setting/normal"
                 }
               >
-                <div className="text-sm flex justify-center">
-                  <button className="w-24 p-2 h-8 font-bold rounded-full border  border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
-                    編集する
-                  </button>
-                </div>
+                <button className="flex justify-center items-center w-24 h-8 font-bold rounded-full border  border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                  編集する
+                </button>
               </Link>
             ) : user.userType === "business" ? (
               <button
@@ -402,11 +400,17 @@ const Profile: React.VFC = memo(() => {
               </div>
             </div>
           ) : (
-            <div className="flex relative items-center p-4">
-              <p className="mr-8 text-red-500">現在、募集はおこなわれていません。</p>
+            <div className="flex flex-col relative items-center p-4">
+              <p className="w-full text-center text-red-500">
+                現在、募集はおこなわれていません。
+              </p>
               {loginUser.uid === user.uid && (
                 <Link to="/setting/advertise">
-                  <button className="flex absolute justify-center items-center w-36 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold">
+                  <button
+                    className={`flex justify-center items-center w-36 h-8 ${
+                      advertise.wanted ? "absolute right-2 bottom-2" : "mt-4"
+                    } rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold`}
+                  >
                     募集広告の編集
                   </button>
                 </Link>
