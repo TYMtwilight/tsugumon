@@ -40,9 +40,9 @@ const UserAuthentication = () => {
   };
 
   return (
-    <div className="md:flex md:justify-center md:h-screen md:px-4 md:py-8 bg-slate-100">
-      <div className="sm:w-screen md:w-1/3 md:rounded-2xl bg-white">
-        <header className="flex w-full h-44 justify-center items-center mb-4 bg-hero bg-cover bg-bottom md:rounded-t-2xl brightness-125">
+    <div className="lg:flex md:flex lg:justify-center md:justify-center h-full sm:min-h-screen bg-slate-100">
+      <div className="sm:w-screen lg:w-1/3 md:w-1/2 sm:min-h-screen bg-white">
+        <header className="flex w-full h-44 justify-center items-center mb-4 bg-hero bg-cover bg-bottom brightness-125">
           <h1 className="font-kiwi text-2xl text-slate-50">つぐもん</h1>
         </header>
         <form className="p-4">
