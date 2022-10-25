@@ -26,7 +26,7 @@ const SelectUserType = () => {
 
   return (
     <div className="md:flex md:justify-center w-screen ">
-      <div className="flex fixed sm:w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center bg-white top-0 z-10">
+      <div className="flex fixed sm:w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center bg-white top-0">
         <button
           className="absolute left-2 align-middle"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -43,7 +43,7 @@ const SelectUserType = () => {
         >
           <ArrowBackRounded />
         </button>
-        <p className="w-screen text-center font-bold z-50">
+        <p className="w-screen text-center font-bold">
           ユーザータイプを選択
         </p>
       </div>
@@ -66,20 +66,17 @@ const SelectUserType = () => {
               alt="企業ユーザーの画像"
             />
             <div
-              className={`absolute w-full h-full rounded-lg z-20  ${
+              className={`absolute w-full h-full rounded-lg ${
                 userType === "business"
                   ? "bg-gradient-to-br from-emerald-700/70 to-lime-500/70 shadow-xl duration-200"
                   : "bg-slate-400"
               }`}
             />
-            <p className="w-full align-middle text-center text-white text-2xl font-bold z-30">
+            <p className="w-full align-middle text-center text-white text-xl font-bold z-10">
               企業ユーザー
             </p>
-            <p className="w-68 mx-auto text-sm text-white z-30">
-              働き手を探している企業や事業者向け
-            </p>
-            <p className="w-64 mx-auto text-sm text-left text-white my-4 z-30">
-              企業ユーザーは、記事やプロフィールの閲覧機能、DM機能、検索機能のほか、記事の投稿や求人広告の掲示といった機能を利用できます。
+            <p className="w-64 mx-auto text-sm text-left text-white mt-4 z-10">
+              記事やプロフィールの閲覧、DM、検索のほか、記事の投稿や求人広告の掲示といった機能を利用できます。
             </p>
           </button>
           <button
@@ -95,7 +92,7 @@ const SelectUserType = () => {
               alt="一般ユーザーの画像"
             />
             <div
-              className={`absolute w-full h-full  rounded-lg z-20
+              className={`absolute w-full h-full rounded-lg
          ${
            userType === "normal"
              ? "bg-gradient-to-br from-cyan-700/70 to-violet-500/70 shadow-xl duration-200"
@@ -103,18 +100,15 @@ const SelectUserType = () => {
          }
           `}
             />
-            <p className="w-full align-middle text-center text-white text-2xl font-bold z-30">
+            <p className="w-full align-middle text-center text-white text-xl font-bold z-10">
               一般ユーザー
             </p>
-            <p className="w-68 mx-auto text-sm text-white z-30">
-              就め先や移住先を探しているかた向け
-            </p>
-            <p className="w-64 mx-auto text-sm text-left text-white my-4 z-30">
-              一般ユーザーは、記事やプロフィールの閲覧機能、DM機能や検索機能を利用できます。
+            <p className="w-64 mx-auto text-sm text-left text-white mt-4 z-10">
+              記事やプロフィールの閲覧、DMや検索といった機能を利用できます。
             </p>
           </button>
           <button
-            className="block w-40 h-8 mx-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-white disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
+            className="block w-40 h-8 mx-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-white disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300 mb-20"
             onClick={(
               event: React.MouseEvent<HTMLButtonElement, MouseEvent>
             ) => {

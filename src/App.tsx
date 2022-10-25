@@ -66,7 +66,7 @@ const App: React.FC = () => {
   if (loginUser.uid) {
     return (
       <div
-        className="w-full min-h-screen h-full bg-slate-100"
+        className="w-screen min-h-screen h-full bg-slate-100"
         onScroll={(event: React.UIEvent<HTMLDivElement>) => {
           event.preventDefault();
           setScroll(window.scrollY);
@@ -75,8 +75,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
-        <div className="md:flex lg:flex fixed w-screen justify-center bottom-0 z-50">
-          <nav className="flex justify-around sm:w-screen md:w-1/2 lg:w-1/3 h-16 bg-white border-t ">
+        <div className="fixed bottom-0 w-screen mt-20">
+          <nav className="flex sm:flex-row md:flex-col justify-around sm:w-screen sm:h-16 pt-2 md:w-24 md:h-screen bg-white border-t ">
             <button>
               <NavLink
                 style={({ isActive }) => {
