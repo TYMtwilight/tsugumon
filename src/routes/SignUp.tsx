@@ -152,9 +152,9 @@ const SignUp: React.VFC = () => {
   };
 
   return (
-    <div className="flex lg:justify-center md:justify-center h-screen bg-slate-100">
+    <div className="md:flex lg:flex lg:justify-center md:justify-center h-screen bg-slate-100">
       <div className="flex flex-col sm:w-screen md:w-1/2 lg:w-1/3 bg-white">
-        <div className="flex fixed sm:w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center bg-white z-10">
+        <div className="flex fixed w-full md:w-1/2 lg:w-1/3 h-12 justify-center items-center bg-white z-10">
           <button
             className="absolute left-2"
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
