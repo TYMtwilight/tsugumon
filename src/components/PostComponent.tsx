@@ -93,7 +93,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
           <Link className="flex" to={`/${props.username}`}>
             <img
               id="avatarURL"
-              className="block w-12 h-12 rounded-full"
+              className="block w-12 h-12 rounded-full box-border"
               src={props.avatarURL}
               alt="アバター画像"
             />

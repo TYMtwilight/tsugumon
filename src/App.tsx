@@ -66,7 +66,7 @@ const App: React.FC = () => {
   if (loginUser.uid) {
     return (
       <div
-        className="w-full min-h-screen h-full bg-slate-100"
+        className="w-screen min-h-screen h-full bg-slate-100"
         onScroll={(event: React.UIEvent<HTMLDivElement>) => {
           event.preventDefault();
           setScroll(window.scrollY);
@@ -75,83 +75,81 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
-        <nav
-          className={`flex justify-around w-full h-16 fixed bottom-0 bg-slate-100 border-t border-slate-200 ${
-            scroll > 50 && "pb-4"
-          }`}
-        >
-          <button className="w-32">
-            <NavLink
-              style={({ isActive }) => {
-                return {
-                  color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
-                };
-              }}
-              to="/home"
-            >
-              <HomeRounded />
-              <p className="text-xs">ホーム</p>
-            </NavLink>
-          </button>
-          <button className="w-32 ">
-            <NavLink
-              style={({ isActive }) => {
-                return {
-                  color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
-                };
-              }}
-              to="/search"
-            >
-              <SearchRounded />
-              <p className="text-xs">見つける</p>
-            </NavLink>
-          </button>
-          {loginUser.userType === "business" && (
-            <button className="w-32 ">
+        <div className="fixed bottom-0 w-screen mt-20">
+          <nav className="flex sm:flex-row md:flex-col justify-around sm:w-screen sm:h-16 pt-2 md:w-24 md:h-screen bg-white border-t ">
+            <button>
               <NavLink
                 style={({ isActive }) => {
                   return {
                     color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
                   };
                 }}
-                to="/upload"
+                to="/home"
               >
-                <AddCircle />
-                <p className="text-xs">投稿</p>
+                <HomeRounded />
+                <p className="text-xs">ホーム</p>
               </NavLink>
             </button>
-          )}
-          <button className="w-32 ">
-            <NavLink
-              style={({ isActive }) => {
-                return {
-                  color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
-                };
-              }}
-              to="/notifications"
-            >
-              <NotificationsRounded />
-              <p className="text-xs">通知</p>
-            </NavLink>
-          </button>
-          <button className="w-32">
-            <NavLink
-              style={({ isActive }) => {
-                return {
-                  color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
-                };
-              }}
-              to={`/${loginUser.username}`}
-            >
-              <img
-                className="block w-8 h-8 mx-auto rounded-full"
-                src={loginUser.avatarURL}
-                alt={`${loginUser.username}のアバター`}
-              />
-              <p className="text-xs">自分</p>
-            </NavLink>
-          </button>
-        </nav>
+            <button>
+              <NavLink
+                style={({ isActive }) => {
+                  return {
+                    color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
+                  };
+                }}
+                to="/search"
+              >
+                <SearchRounded />
+                <p className="text-xs">見つける</p>
+              </NavLink>
+            </button>
+            {loginUser.userType === "business" && (
+              <button>
+                <NavLink
+                  style={({ isActive }) => {
+                    return {
+                      color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
+                    };
+                  }}
+                  to="/upload"
+                >
+                  <AddCircle />
+                  <p className="text-xs">投稿</p>
+                </NavLink>
+              </button>
+            )}
+            <button>
+              <NavLink
+                style={({ isActive }) => {
+                  return {
+                    color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
+                  };
+                }}
+                to="/notifications"
+              >
+                <NotificationsRounded />
+                <p className="text-xs">通知</p>
+              </NavLink>
+            </button>
+            <button>
+              <NavLink
+                style={({ isActive }) => {
+                  return {
+                    color: isActive ? "rgb(16 185 129)" : "rgb(148 163 184)",
+                  };
+                }}
+                to={`/${loginUser.username}`}
+              >
+                <img
+                  className="block w-8 h-8 mx-auto rounded-full"
+                  src={loginUser.avatarURL}
+                  alt={`${loginUser.username}のアバター`}
+                />
+                <p className="text-xs">自分</p>
+              </NavLink>
+            </button>
+          </nav>
+        </div>
         <Outlet />
       </div>
     );
