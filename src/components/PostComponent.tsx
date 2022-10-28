@@ -35,6 +35,14 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   const [like, setLike] = useState<boolean>(false);
   const [comment, setComment] = useState<boolean>(false);
   let isMounted: boolean = true;
+  const currentTime: number = new Date().getTime();
+  const messageTime: number = props.timestamp!.getTime();
+  const beforeTime: number = currentTime - messageTime;
+  const week: number = 604800000;
+  const day: number = 86400000;
+  const hour: number = 3600000;
+  const minute: number = 60000;
+  const second: number = 1000;
 
   const unsubscribe: () => void = () => {
     const likeUsersRef: CollectionReference<DocumentData> = collection(
@@ -87,13 +95,13 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   }, []);
 
   return (
-    <div className="bg-slate-100">
+    <div className="bg-white">
       <div className="mb-12">
         <div className="p-2">
           <Link className="flex" to={`/${props.username}`}>
             <img
               id="avatarURL"
-              className="block w-12 h-12 rounded-full box-border"
+              className="block w-12 h-12 rounded-full object-cover"
               src={props.avatarURL}
               alt="アバター画像"
             />
@@ -103,11 +111,17 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
           </Link>
         </div>
         <p className="-mt-4 mr-4 text-right" id="timestamp">
-          {props.timestamp
-            ? `${props.timestamp.getFullYear()}年${
+          {beforeTime > week
+            ? `${props.timestamp!.getFullYear()}年${
                 props.timestamp!.getMonth() + 1
               }月${props.timestamp!.getDate()}日`
-            : ""}
+            : beforeTime > day
+            ? `${Math.floor(beforeTime / day)}日前`
+            : beforeTime > hour
+            ? `${Math.floor(beforeTime / hour)}時間前`
+            : beforeTime > minute
+            ? `${Math.floor(beforeTime / minute)}分前`
+            : `${Math.floor(beforeTime / second)}秒前`}
         </p>
         <div>
           <div className="w-auto h-auto">
@@ -172,11 +186,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
             </div>
           </div>
         </div>
-        <div
-          className={
-            props.detail ? "h-full px-4 py-2" : "h-24 px-4 text-ellipsis ..."
-          }
-        >
+        <div className={props.detail ? "h-full px-4 mb-4" : "h-24 px-4 mb-4"}>
           {props.detail ? (
             <Link to={`/${props.username}/${props.id}`}>
               <p className=" text-ellipsis" id="caption">
@@ -184,9 +194,15 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
               </p>
             </Link>
           ) : (
-            <p className="text-ellipsis " id="caption">
-              {props.caption}
-            </p>
+            <div className="relative">
+              <p className="h-36 overflow-hidden" id="caption">
+                {props.caption}...
+              </p>
+              <div
+                className="absolute w-full h-8 bottom-0 bg-gradient-to-b from-white/0 to-white/100"
+                z-20
+              />
+            </div>
           )}
         </div>
         <div className="flex flex-row-reverse">

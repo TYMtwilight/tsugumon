@@ -28,26 +28,10 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
   const feeds: Post[] = useFeeds();
   if (loginUser.userType) {
     return (
-      <div>
-        {feeds.map((feed: Post) => {
-          return (
-            <PostComponent
-              detail={false}
-              avatarURL={feed.avatarURL}
-              caption={feed.caption}
-              displayName={feed.displayName}
-              id={feed.id}
-              imageURL={feed.imageURL}
-              key={feed.id}
-              timestamp={feed.timestamp}
-              uid={feed.uid}
-              username={feed.username}
-              tags={feed.tags}
-            />
-          );
-        })}
-        <div className="mb-16">
+      <div className="md:flex md:justify-center w-screen">
+        <div className="flex fixed sm:w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center bg-white top-0">
           <button
+            className="absolute left-2 align-middle text-xs"
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
               signOut(auth)
@@ -61,8 +45,29 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
                 });
             }}
           >
-            logout
+            ログアウト
           </button>
+          <p className="w-screen text-center font-bold">ホーム</p>
+        </div>
+
+        <div className="sm:w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-12 bg-white">
+          {feeds.map((feed: Post) => {
+            return (
+              <PostComponent
+                detail={false}
+                avatarURL={feed.avatarURL}
+                caption={feed.caption}
+                displayName={feed.displayName}
+                id={feed.id}
+                imageURL={feed.imageURL}
+                key={feed.id}
+                timestamp={feed.timestamp}
+                uid={feed.uid}
+                username={feed.username}
+                tags={feed.tags}
+              />
+            );
+          })}
         </div>
         <Outlet />
       </div>
