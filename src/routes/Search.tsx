@@ -89,7 +89,7 @@ const Search: React.VFC = () => {
           type="text"
           value={searchParams.get("tag") || ""}
           onChange={(event) => {
-            event.preventDefault();
+            console.log(event.target.value);
             let tag = event.target.value;
             if (tag) {
               setSearchParams({ tag });
@@ -98,7 +98,6 @@ const Search: React.VFC = () => {
             }
           }}
           onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
-            event.preventDefault();
             if (event.key === "Enter") {
               const tags: string | null = searchParams.get("tag");
               if (tags) {

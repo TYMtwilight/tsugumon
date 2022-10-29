@@ -117,8 +117,13 @@ const DirectMessage = () => {
             const messageTime: number = message.timestamp.getTime();
             const moreThanOneDayAgo: boolean =
               currentTime - messageTime > 86400000;
+            const moreThanOneHourAgo: boolean =
+              currentTime - messageTime > 3600000;
             const moreThanOneMinutesAgo: boolean =
               currentTime - messageTime > 60000;
+            const minutesAgo: number = Math.trunc(
+              (currentTime - messageTime) / 60000
+            );
             const secondsAgo: number = Math.trunc(
               (currentTime - messageTime) / 1000
             );
@@ -129,7 +134,9 @@ const DirectMessage = () => {
                 {message.timestamp && moreThanOneDayAgo && (
                   <div className="flex justify-center">
                     <p>
-                      {`${message.timestamp.getFullYear()}年${message.timestamp.getMonth()}月${message.timestamp.getDate()}日`}
+                      {`${message.timestamp.getFullYear()}年${
+                        message.timestamp.getMonth() + 1
+                      }月${message.timestamp.getDate()}日`}
                     </p>
                   </div>
                 )}
@@ -144,9 +151,14 @@ const DirectMessage = () => {
                       </p>
                       <div className="flex flex-row-reverse">
                         <p>
-                          {moreThanOneMinutesAgo
-                            ? `${messageHour.substring(messageHour.length - 2)}:
-                    ${messageMinutes.substring(messageMinutes.length - 2)}`
+                          {moreThanOneHourAgo
+                            ? `${messageHour.substring(
+                                messageHour.length - 2
+                              )}:${messageMinutes.substring(
+                                messageMinutes.length - 2
+                              )}`
+                            : moreThanOneMinutesAgo
+                            ? `${minutesAgo}分前`
                             : `${secondsAgo}秒前`}
                         </p>
                       </div>

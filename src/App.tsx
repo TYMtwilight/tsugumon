@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { Navigate, NavLink, Outlet, Route, Routes } from "react-router-dom";
 import { selectUser, login, logout } from "./features/userSlice";
@@ -20,7 +20,6 @@ import NotificationsRounded from "@mui/icons-material/NotificationsRounded";
 const App: React.FC = () => {
   const loginUser = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
-  const [scroll, setScroll] = useState<number>(0);
 
   useEffect(() => {
     const unsubscribe: Unsubscribe = onAuthStateChanged(
@@ -65,18 +64,12 @@ const App: React.FC = () => {
 
   if (loginUser.uid) {
     return (
-      <div
-        className="w-screen min-h-screen h-full bg-slate-100"
-        onScroll={(event: React.UIEvent<HTMLDivElement>) => {
-          event.preventDefault();
-          setScroll(window.scrollY);
-        }}
-      >
+      <div className="w-screen min-h-screen h-full bg-slate-100">
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
-        <div className="fixed bottom-0 w-screen mt-20">
-          <nav className="flex sm:flex-row md:flex-col justify-around sm:w-screen sm:h-16 pt-2 md:w-24 md:h-screen bg-white border-t ">
+        <div className="fixed bottom-0 mt-20">
+          <nav className="flex sm:flex-row md:flex-col justify-around w-screen sm:h-16 pt-2 md:w-24 md:h-screen bg-white border-t ">
             <button>
               <NavLink
                 style={({ isActive }) => {
