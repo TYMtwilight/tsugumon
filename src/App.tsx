@@ -68,8 +68,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
-        <div className="fixed bottom-0 mt-20">
-          <nav className="flex sm:flex-row md:flex-col justify-around w-screen sm:h-16 pt-2 md:w-24 md:h-screen bg-white border-t ">
+        <div className="fixed bottom-0 z-50">
+          <nav className="flex sm:flex-row md:flex-col justify-around w-screen sm:h-16 pt-2 md:w-24 md:h-screen bg-white border-t">
             <button>
               <NavLink
                 style={({ isActive }) => {

@@ -25,7 +25,6 @@ const Upload: React.FC = memo(() => {
   const onChangeImageHandler: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void = async (event) => {
-    event.preventDefault();
     const file: File = event.target.files![0];
     if (["image/png", "image/jpeg"].includes(file.type) === true) {
       const reader: FileReader = new FileReader();
@@ -73,31 +72,25 @@ const Upload: React.FC = memo(() => {
   }, [progress]);
 
   return (
-    <div className="w-screen  bg-slate-100">
-      {loginUser.uid === "" && <Navigate to="/login" replace={true} />}
-      <div className="flex relative  h-12 justify-center items-center">
-        <button
-          className="absolute left-2"
-          id="cancel"
-          type="button"
-          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-            event.preventDefault();
-            cancel();
-          }}
-        >
-          <CloseRounded />
-        </button>
-        <p className="w-16 mx-auto font-bold" id="title">
-          新規登録
-        </p>
-      </div>
-      <form
-        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          setUpload(true);
-        }}
-      >
-        <div className="relative w-auto h-auto">
+    <div className="md:flex md:justify-center w-screen h-screen bg-slate-100">
+      <div className="relative sm:w-screen md:w-1/2 lg:w-1/3 h-full justify-center bg-white">
+        {loginUser.uid === "" && <Navigate to="/login" replace={true} />}
+        <div className="flex relative w-full h-12 justify-center items-center bg-white z-50">
+          <button
+            className="ml-2 align-middle"
+            id="cancel"
+            type="button"
+            onClick={() => {
+              cancel();
+            }}
+          >
+            <CloseRounded />
+          </button>
+          <p className="w-16 mx-auto font-bold" id="title">
+            新規登録
+          </p>
+        </div>
+        <div>
           <img
             className="object-cover w-screen h-96"
             id="postPreview"
@@ -107,7 +100,7 @@ const Upload: React.FC = memo(() => {
             alt="投稿画像のプレビュー"
           />
           <label
-            className="flex absolute justify-center items-center w-16 h-16 right-4 bottom-4 rounded-full text-slate-100 drop-shadow-md  bg-emerald-500 hover:bg-emerald-400"
+            className="flex absolute justify-center items-center w-16 h-16 rounded-full -mt-20 right-8 text-slate-100 drop-shadow-md  bg-emerald-500 hover:bg-emerald-400"
             htmlFor="selectImage"
           >
             <AddToPhotosRounded fontSize="large" />
@@ -122,11 +115,11 @@ const Upload: React.FC = memo(() => {
             }}
           />
         </div>
-        <div className="w-screen p-4">
+        <div className="w-full p-4">
           <div className="mb-4">
             <p className="ml-2 text-sm">キャプション</p>
             <textarea
-              className="w-full h-40 p-2 border-none rounded-md resize-none"
+              className="w-full h-28 p-2 border-none rounded-md resize-none bg-slate-100"
               placeholder="タップして入力する"
               value={caption}
               onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -137,7 +130,7 @@ const Upload: React.FC = memo(() => {
           <div className="mb-4">
             <p className="ml-2 text-sm">タグ</p>
             <textarea
-              className="w-full h-32 p-2 border-none rounded-md resize-none"
+              className="w-full h-20 p-2 border-none rounded-md resize-none bg-slate-100"
               placeholder="タップして入力する"
               value={tagString}
               onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -146,28 +139,28 @@ const Upload: React.FC = memo(() => {
             />
           </div>
         </div>
-        <div>
-          <input
-            className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
-            id="submit"
-            type="submit"
-            value="投稿する"
+        <div className="flex justify-center w-full">
+          <button
+            className="block w-24 h-8 border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
             disabled={!postImage || modal}
-          />
+            onClick={() => {
+              setUpload(true);
+            }}
+          >
+            投稿する
+          </button>
         </div>
-      </form>
-      <footer className="h-48" />
-      {progress === "run" && (
-        <div id="modal">
-          <p>画像をアップロード...</p>
-        </div>
-      )}
-      {progress === "done" && (
-        <div id="toast">
-          <p>アップロードが完了しました!</p>
-        </div>
-      )}
-
+        {progress === "run" && (
+          <div id="modal">
+            <p>画像をアップロード...</p>
+          </div>
+        )}
+        {progress === "done" && (
+          <div id="toast">
+            <p>アップロードが完了しました!</p>
+          </div>
+        )}
+      </div>
       {modal === true && (
         <div className="flex flex-col">
           <div className="flex flex-col fixed w-screen h-screen top-0 left-0   bg-slate-900/90">
@@ -176,8 +169,7 @@ const Upload: React.FC = memo(() => {
             </p>
             <button
               className="w-36 mx-auto h-8 mb-8 border rounded-full font-bold border-red-500 text-red-500"
-              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                event.preventDefault();
+              onClick={() => {
                 navigate(-1);
               }}
             >
@@ -185,8 +177,7 @@ const Upload: React.FC = memo(() => {
             </button>
             <button
               className="block w-36 h-8 mb-8 mx-auto border rounded-full font-bold border-slate-100 text-slate-100"
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.preventDefault();
+              onClick={() => {
                 setModal(false);
               }}
             >
