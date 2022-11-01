@@ -70,10 +70,10 @@ const Search: React.VFC = () => {
   };
 
   return (
-    <div className="w-screen min-h-screen h-full bg-slate-100">
-      <div className="flex fixed items-center w-screen h-16 px-4 z-10 top-0 bg-slate-100">
+    <div className="md:flex md:justify-center w-screen">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-16 top-0 items-center bg-white z-50">
         <button
-          className="mx-4 z-20"
+          className="w-8 h-8 mx-2 rounded-full bg-slate-100 z-50"
           onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             event.preventDefault();
             const tags: string | null = searchParams.get("tag");
@@ -85,11 +85,10 @@ const Search: React.VFC = () => {
           <SearchRounded />
         </button>
         <input
-          className="w-10/12 h-10 pl-12 rounded-lg fixed "
+          className="w-10/12 h-10 px-2 rounded-lg bg-slate-100"
           type="text"
           value={searchParams.get("tag") || ""}
-          onChange={(event) => {
-            console.log(event.target.value);
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             let tag = event.target.value;
             if (tag) {
               setSearchParams({ tag });
@@ -102,12 +101,14 @@ const Search: React.VFC = () => {
               const tags: string | null = searchParams.get("tag");
               if (tags) {
                 getPosts(tags);
+              }else{
+                setPosts([]);
               }
             }
           }}
         />
         <button
-          className="fixed right-4 z-20"
+          className="mx-2"
           onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             event.preventDefault();
             setSearchParams({});
@@ -117,7 +118,7 @@ const Search: React.VFC = () => {
           <CloseRounded />
         </button>
       </div>
-      <div className="pt-20 bg-slate-100">
+      <div className="sm:w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-16 bg-white">
         {posts.map((post: Post) => {
           return (
             <PostComponent
