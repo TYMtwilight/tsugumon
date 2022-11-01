@@ -73,7 +73,7 @@ const Upload: React.FC = memo(() => {
 
   return (
     <div className="md:flex md:justify-center w-screen h-screen bg-slate-100">
-      <div className="relative sm:w-screen md:w-1/2 lg:w-1/3 h-full justify-center bg-white">
+      <div className="relative sm:w-screen md:w-1/2 lg:w-1/3 h-full bg-white">
         {loginUser.uid === "" && <Navigate to="/login" replace={true} />}
         <div className="flex relative w-full h-12 justify-center items-center bg-white z-50">
           <button
