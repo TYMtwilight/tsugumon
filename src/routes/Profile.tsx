@@ -80,45 +80,43 @@ const Profile: React.VFC = memo(() => {
   });
 
   return (
-    <div className="bg-slate-100 min-h-screen h-full">
-      <div>
+    <div className="w-screen bg-slate-100">
+      <div className="flex justify-center">
         <div
-          className="fixed top-0 w-screen h-12 z-10"
+          className="fixed w-screen md:w-1/2 lg:w-1/3 h-12 top-0 items-center bg-white z-50"
           style={{
-            backgroundColor: `rgba(241,245,249,${scroll / 120} )`,
+            backgroundColor: `rgba(255,255,255,${scroll / 120} )`,
           }}
         >
-          <div className="fixed">
-            <button
-              className={`absolute h-8 w-8 m-2 ${
-                scroll < 120 && "bg-slate-100/75 rounded-full"
-              }
-            `}
-              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                event.preventDefault();
-                navigate("/home");
-              }}
-            >
-              <ArrowBackRounded fontSize="small" />
-            </button>
-          </div>
-        </div>
-        <div className="w-auto h-auto">
-          <img
-            className="object-cover w-screen h-44"
-            id="background"
-            src={
-              user.backgroundURL !== ""
-                ? user.backgroundURL
-                : `${process.env.PUBLIC_URL}/noPhoto.png`
+          <button
+            className={`absolute h-8 w-8 m-2 ${
+              scroll < 120 && "bg-white/75 rounded-full"
             }
-            alt="背景画像"
-          />
+            `}
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              navigate("/home");
+            }}
+          >
+            <ArrowBackRounded fontSize="small" />
+          </button>
         </div>
-        <div className="flex relative w-screen">
-          <div className="flex">
+        <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full bg-white">
+          <div className="h-44">
             <img
-              className="w-20 h-20 ml-4 -mt-8 border-4 border-slate-100 object-cover rounded-full"
+              className="object-cover w-full h-full"
+              id="background"
+              src={
+                user.backgroundURL !== ""
+                  ? user.backgroundURL
+                  : `${process.env.PUBLIC_URL}/noPhoto.png`
+              }
+              alt="背景画像"
+            />
+          </div>
+          <div className="relative">
+            <img
+              className="w-20 h-20 ml-4 -mt-8 border-4 border-white object-cover rounded-full"
               id="avatar"
               src={
                 user.avatarURL
@@ -132,13 +130,11 @@ const Profile: React.VFC = memo(() => {
                 to={`/messages/${loginUser.uid}-${user.uid}`}
                 state={{ receiverUID: user.uid }}
               >
-                <button className="flex justify-center items-center w-8 h-8 mt-2 rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                <button className="flex justify-center items-center w-8 h-8 mt-2 rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-white hover:bg-emerald-500">
                   <MailOutlined />
                 </button>
               </Link>
             )}
-          </div>
-          <div className="absolute top-2 right-8">
             {loginUser && loginUser.uid === user.uid ? (
               <Link
                 to={
@@ -147,7 +143,7 @@ const Profile: React.VFC = memo(() => {
                     : "/setting/normal"
                 }
               >
-                <button className="flex justify-center items-center w-24 h-8 font-bold rounded-full border  border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                <button className="flex absolute justify-center items-center w-24 h-8 font-bold rounded-full right-4 top-2 border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
                   編集する
                 </button>
               </Link>
@@ -181,245 +177,248 @@ const Profile: React.VFC = memo(() => {
               ""
             )}
           </div>
-        </div>
-
-        <div className="pl-4 pr-2 py-2">
-          <p className="width-screen text-xl font-semibold ">
-            {user.displayName}
-          </p>
-          <p className="width-screen text-sm text-slate-500">{user.username}</p>
-        </div>
-        <div className="flex px-4">
-          {user.userType === "business" && (
-            <div>
-              {followersCount > 0 ? (
-                <Link className="flex" to={`/${username}/followers`}>
-                  <p className="text-sm">フォロワー</p>
+          <div className="pl-4 pr-2 py-2">
+            <p className="text-xl font-semibold ">{user.displayName}</p>
+            <p className="text-sm text-slate-500">{user.username}</p>
+          </div>
+          <div className="flex pl-4">
+            {user.userType === "business" && (
+              <>
+                <label htmlFor="followers" className="text-sm">
+                  フォロワー
+                </label>
+                {followersCount > 0 ? (
+                  <Link className="flex" to={`/${username}/followers`}>
+                    <p id="followers" className="w-12 ml-2 text-sm font-bold">
+                      {followersCount}
+                    </p>
+                  </Link>
+                ) : (
                   <p className="w-12 ml-2 text-sm font-bold">
                     {followersCount}
                   </p>
-                </Link>
-              ) : (
-                <div className="flex">
-                  <p className="text-sm">フォロワー</p>
-                  <p className="w-12 ml-2 text-sm font-bold">
-                    {followersCount}
+                )}
+                <label htmlFor="followings" className="pl-2 text-sm">
+                  フォロー中
+                </label>
+                {followingsCount > 0 ? (
+                  <Link className="flex" to={`/${username}/followings`}>
+                    <p id="followings" className="w-12 ml-2 text-sm font-bold">
+                      {followingsCount}
+                    </p>
+                  </Link>
+                ) : (
+                  <p id="followings" className="w-12 ml-2 text-sm font-bold">
+                    {followingsCount}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+          <div className="p-4" id="profile">
+            <p className="mb-4">{user.introduction}</p>
+            {user.userType === "business" ? (
+              <div id="business">
+                <div id="owner" className="mb-4">
+                  <p className="text-sm text-slate-500">事業主</p>
+                  <p className="ml-2">{option.owner}</p>
+                </div>
+                <div id="typeOfWork" className="mb-4">
+                  <p className="text-sm text-slate-500">職種</p>
+                  <p className="ml-2">{option.typeOfWork}</p>
+                </div>
+                <div id="address">
+                  <p className="text-sm text-slate-500">住所</p>
+                  <p className="ml-2">{option.address}</p>
+                </div>
+              </div>
+            ) : (
+              <div id="normal">
+                <div id="birthdate" className="mb-4">
+                  <p className="text-sm text-slate-500">生年月日</p>
+                  <p className="ml-2">
+                    {option.birthdate
+                      ? `${option.birthdate.getFullYear()}年${
+                          option.birthdate.getMonth() + 1
+                        }月${option.birthdate.getDate()}日`
+                      : ""}
                   </p>
                 </div>
-              )}
-            </div>
-          )}
-          <div className="flex">
-            {followingsCount > 0 ? (
-              <Link className="flex" to={`/${username}/followings`}>
-                <p className="text-sm">フォロー中</p>
-                <p className="w-12 ml-2 text-sm font-bold">{followingsCount}</p>
-              </Link>
-            ) : (
-              <div className="flex">
-                <p className="text-sm">フォロー中</p>
-                <p className="w-12 ml-2 text-sm font-bold">{followingsCount}</p>
+                <div id="skill" className="mb-4">
+                  <p className="text-sm text-slate-500">資格・技能</p>
+                  <p className="ml-2">{option.skill1}</p>
+                  <p className="ml-2">{option.skill2}</p>
+                  <p className="ml-2">{option.skill3}</p>
+                </div>
+                <div id="address" className="mb-4">
+                  <p className="text-sm text-slate-500">住所</p>
+                  <p className="ml-2">{option.address}</p>
+                </div>
               </div>
             )}
           </div>
-        </div>
-      </div>
-      <div className="p-4" id="profile">
-        <p className="mb-4">{user.introduction}</p>
-        {user.userType === "business" ? (
-          <div id="business">
-            <div id="owner" className="mb-4">
-              <p className="text-sm text-slate-500">事業主</p>
-              <p className="ml-2">{option.owner}</p>
-            </div>
-            <div id="typeOfWork" className="mb-4">
-              <p className="text-sm text-slate-500">職種</p>
-              <p className="ml-2">{option.typeOfWork}</p>
-            </div>
-            <div id="address">
-              <p className="text-sm text-slate-500">住所</p>
-              <p className="ml-2">{option.address}</p>
-            </div>
-          </div>
-        ) : (
-          <div id="normal">
-            <div id="birthdate" className="mb-4">
-              <p className="text-sm text-slate-500">生年月日</p>
-              <p className="ml-2">
-                {option.birthdate
-                  ? `${option.birthdate.getFullYear()}年${
-                      option.birthdate.getMonth() + 1
-                    }月${option.birthdate.getDate()}日`
-                  : ""}
-              </p>
-            </div>
-            <div id="skill" className="mb-4">
-              <p className="text-sm text-slate-500">資格・技能</p>
-              <p className="ml-2">{option.skill1}</p>
-              <p className="ml-2">{option.skill2}</p>
-              <p className="ml-2">{option.skill3}</p>
-            </div>
-            <div id="address" className="mb-4">
-              <p className="text-sm text-slate-500">住所</p>
-              <p className="ml-2">{option.address}</p>
-            </div>
-          </div>
-        )}
-      </div>
-      {user.userType === "business" && (
-        <nav className="flex w-screen h-12">
-          <button
-            className={`flex items-center justify-center w-1/2 ${
-              tab === "album"
-                ? "border-b-4 box-border border-emerald-500 text-emerald-500 "
-                : "border-b-4 box-border border-slate-100 text-slate-500"
-            }`}
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              setTab("album");
-            }}
-          >
-            <PhotoLibraryOutlined />
-            <p className="h-4 ml-2 text-sm font-bold">過去の投稿</p>
-          </button>
-          <button
-            className={`flex items-center justify-center w-1/2 ${
-              tab === "wanted"
-                ? "border-b-4 box-border border-emerald-500 text-emerald-500"
-                : "border-b-4 box-border border-slate-100 text-slate-500"
-            }`}
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              setTab("wanted");
-            }}
-          >
-            <PersonAddOutlined />
-            <p className="h-4 ml-2 text-sm font-bold">募集中</p>
-          </button>
-        </nav>
-      )}
-      {user.userType === "business" && (
-        <div className="mt-8">
-          {tab === "album" ? (
-            <div>
-              {posts.map((post: Post) => {
-                return (
-                  <PostComponent
-                    key={post.id}
-                    avatarURL={post.avatarURL}
-                    caption={post.caption}
-                    displayName={post.displayName}
-                    id={post.id}
-                    imageURL={post.imageURL}
-                    timestamp={post.timestamp}
-                    tags={post.tags}
-                    uid={post.uid}
-                    username={post.username}
-                    detail={false}
-                  />
-                );
-              })}
-            </div>
-          ) : advertise.wanted ? (
-            <div>
-              <div className="relative bg-slate-300">
-                <img
-                  className="w-screen h-44 object-cover  brightness-75"
-                  src={
-                    advertise.imageURL
-                      ? advertise.imageURL
-                      : `${process.env.PUBLIC_URL}/noPhoto.png`
-                  }
-                  alt="イメージ画像"
-                />
-                <div className="absolute flex items-center inset-y-1/2 left-4 ">
-                  <img
-                    className="w-12 h-12 mr-2 border-2 border-slate-100 object-cover rounded-full"
-                    id="avatar"
-                    src={
-                      user.avatarURL
-                        ? user.avatarURL
-                        : `${process.env.PUBLIC_URL}/noAvatar.png`
-                    }
-                    alt="アバター画像"
-                  />
-                  <p className="text-xl text-slate-100 font-semibold">
-                    {advertise!.displayName}
-                  </p>
+          {user.userType === "business" && (
+            <nav className="flex h-12">
+              <button
+                className={`flex items-center justify-center w-1/2 ${
+                  tab === "album"
+                    ? "border-b-4 box-border border-emerald-500 text-emerald-500 "
+                    : "border-b-4 box-border border-white text-slate-500"
+                }`}
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                  event.preventDefault();
+                  setTab("album");
+                }}
+              >
+                <PhotoLibraryOutlined />
+                <p className="h-4 ml-2 text-sm font-bold">過去の投稿</p>
+              </button>
+              <button
+                className={`flex items-center justify-center w-1/2 ${
+                  tab === "wanted"
+                    ? "border-b-4 box-border border-emerald-500 text-emerald-500"
+                    : "border-b-4 box-border border-white text-slate-500"
+                }`}
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                  event.preventDefault();
+                  setTab("wanted");
+                }}
+              >
+                <PersonAddOutlined />
+                <p className="h-4 ml-2 text-sm font-bold">募集中</p>
+              </button>
+            </nav>
+          )}
+          {user.userType === "business" && (
+            <div className="mt-8">
+              {tab === "album" ? (
+                <div>
+                  {posts.map((post: Post) => {
+                    return (
+                      <PostComponent
+                        key={post.id}
+                        avatarURL={post.avatarURL}
+                        caption={post.caption}
+                        displayName={post.displayName}
+                        id={post.id}
+                        imageURL={post.imageURL}
+                        timestamp={post.timestamp}
+                        tags={post.tags}
+                        uid={post.uid}
+                        username={post.username}
+                        detail={false}
+                      />
+                    );
+                  })}
                 </div>
-                {loginUser && (
-                  <div>
-                    {loginUser.uid === user.uid ? (
-                      <Link to="/setting/advertise">
-                        <button className="flex absolute justify-center items-center w-36 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold">
-                          募集広告の編集
-                        </button>
-                      </Link>
-                    ) : (
-                      <Link
-                        to={`/messages/${loginUser.uid}-${user.uid}`}
-                        state={{ receiverUID: advertise!.uid }}
-                      >
-                        <button className="flex absolute justify-center items-center w-8 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
-                          <MailOutlined />
-                        </button>
-                      </Link>
+              ) : advertise.wanted ? (
+                <div>
+                  <div className="relative bg-slate-300">
+                    <img
+                      className="w-screen h-44 object-cover  brightness-75"
+                      src={
+                        advertise.imageURL
+                          ? advertise.imageURL
+                          : `${process.env.PUBLIC_URL}/noPhoto.png`
+                      }
+                      alt="イメージ画像"
+                    />
+                    <div className="absolute flex items-center inset-y-1/2 left-4 ">
+                      <img
+                        className="w-12 h-12 mr-2 border-2 border-white object-cover rounded-full"
+                        id="avatar"
+                        src={
+                          user.avatarURL
+                            ? user.avatarURL
+                            : `${process.env.PUBLIC_URL}/noAvatar.png`
+                        }
+                        alt="アバター画像"
+                      />
+                      <p className="text-xl text-slate-100 font-semibold">
+                        {advertise!.displayName}
+                      </p>
+                    </div>
+                    {loginUser && (
+                      <div>
+                        {loginUser.uid === user.uid ? (
+                          <Link to="/setting/advertise">
+                            <button
+                              className="flex absolute justify-center items-center w-36 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 
+                          bg-white hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold"
+                            >
+                              募集広告の編集
+                            </button>
+                          </Link>
+                        ) : (
+                          <Link
+                            to={`/messages/${loginUser.uid}-${user.uid}`}
+                            state={{ receiverUID: advertise!.uid }}
+                          >
+                            <button className="flex absolute justify-center items-center w-8 h-8 right-2 bottom-2 rounded-full border border-emerald-500 text-emerald-500 bg-white hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                              <MailOutlined />
+                            </button>
+                          </Link>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-              <div className="p-4">
-                <div className="mb-4">
-                  <p>{advertise!.message}</p>
+                  <div className="p-4">
+                    <div className="mb-4">
+                      <p>{advertise!.message}</p>
+                    </div>
+                    <div className="mb-4">
+                      <p className="text-sm text-slate-500">勤務内容</p>
+                      <p className="ml-2">{advertise!.jobDescription}</p>
+                    </div>
+                    <div className="mb-4">
+                      <p className="text-sm text-slate-500">勤務地</p>
+                      <p className="ml-2">{advertise!.location}</p>
+                    </div>
+                    <div className="mb-4">
+                      <p className="text-sm text-slate-500">給与</p>
+                      <p className="ml-2">
+                        <label className="text-sm mr-2">月額</label>
+                        {advertise!.minimumWage.toLocaleString()}円 ~{" "}
+                        {advertise!.maximumWage.toLocaleString()}円
+                      </p>
+                    </div>
+                    <div className="mb-4">
+                      <p className="text-sm text-slate-500">勤務時間</p>
+                      <p className="ml-2">
+                        {openingHour.substring(openingHour.length - 2)}:
+                        {openingMinutes.substring(openingMinutes.length - 2)} ~
+                        {closingHour.substring(closingHour.length - 2)}:
+                        {closingMinutes.substring(closingMinutes.length - 2)}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="mb-4">
-                  <p className="text-sm text-slate-500">勤務内容</p>
-                  <p className="ml-2">{advertise!.jobDescription}</p>
-                </div>
-                <div className="mb-4">
-                  <p className="text-sm text-slate-500">勤務地</p>
-                  <p className="ml-2">{advertise!.location}</p>
-                </div>
-                <div className="mb-4">
-                  <p className="text-sm text-slate-500">給与</p>
-                  <p className="ml-2">
-                    <label className="text-sm mr-2">月額</label>
-                    {advertise!.minimumWage.toLocaleString()}円 ~{" "}
-                    {advertise!.maximumWage.toLocaleString()}円
+              ) : (
+                <div className="flex flex-col relative items-center p-4">
+                  <p className="w-full text-center text-red-500">
+                    現在、募集はおこなわれていません。
                   </p>
+                  {loginUser.uid === user.uid && (
+                    <Link to="/setting/advertise">
+                      <button
+                        className={`flex justify-center items-center w-36 h-8 ${
+                          advertise.wanted
+                            ? "absolute right-2 bottom-2"
+                            : "mt-4"
+                        } rounded-full border border-emerald-500 text-emerald-500 bg-white hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold`}
+                      >
+                        募集広告の編集
+                      </button>
+                    </Link>
+                  )}
                 </div>
-                <div className="mb-4">
-                  <p className="text-sm text-slate-500">勤務時間</p>
-                  <p className="ml-2">
-                    {openingHour.substring(openingHour.length - 2)}:
-                    {openingMinutes.substring(openingMinutes.length - 2)} ~
-                    {closingHour.substring(closingHour.length - 2)}:
-                    {closingMinutes.substring(closingMinutes.length - 2)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col relative items-center p-4">
-              <p className="w-full text-center text-red-500">
-                現在、募集はおこなわれていません。
-              </p>
-              {loginUser.uid === user.uid && (
-                <Link to="/setting/advertise">
-                  <button
-                    className={`flex justify-center items-center w-36 h-8 ${
-                      advertise.wanted ? "absolute right-2 bottom-2" : "mt-4"
-                    } rounded-full border border-emerald-500 text-emerald-500 bg-slate-100 hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold`}
-                  >
-                    募集広告の編集
-                  </button>
-                </Link>
               )}
             </div>
           )}
         </div>
-      )}
-      <Outlet />
+
+        <Outlet />
+      </div>
     </div>
   );
 });
