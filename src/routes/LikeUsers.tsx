@@ -18,22 +18,20 @@ const LikeUsers: React.VFC = memo(() => {
   const likeUsers: LikeUser[] = useLikeUsers(postId);
 
   return (
-    <div className="min-h-screen h-full bg-slate-100">
-      <div className="fixed top-0 w-screen bg-slate-100 z-10">
-        <div className="flex relative h-12 justify-center items-center">
-          <button
-            className="absolute left-2"
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              navigate(-1);
-            }}
-          >
-            <ArrowBackRounded fontSize="small" />
-          </button>
-          <p className="flex w-36 mx-auto font-bold">いいねしたユーザー</p>
-        </div>
+    <div className="md:flex md:justify-center w-screen bg-slate-100">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 top-0 items-center bg-white z-50">
+        <button
+          className="absolute left-2"
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            navigate(-1);
+          }}
+        >
+          <ArrowBackRounded fontSize="small" />
+        </button>
+        <p className="w-36 mx-auto font-bold">いいねしたユーザー</p>
       </div>
-      <div className="h-full pt-16 min-w-screen bg-slate-100">
+      <div className="sm:w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-16 bg-white">
         {likeUsers.map((likeUser: LikeUser) => {
           return (
             <div className="flex flex-col mb-4" key={likeUser.uid}>
