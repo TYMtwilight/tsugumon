@@ -10,6 +10,7 @@ import {
 import { useProfile } from "../hooks/useProfile";
 import { usePosts } from "../hooks/usePosts";
 import PostComponent from "../components/PostComponent";
+import TabBar from "../components/TabBar";
 import { addFollower } from "../functions/AddFollower";
 import { AdvertiseData } from "../interfaces/AdvertiseData";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
@@ -81,6 +82,7 @@ const Profile: React.VFC = memo(() => {
 
   return (
     <div className="w-screen bg-slate-100">
+      <TabBar invisibleAtSmall={true} />
       <div className="flex justify-center">
         <div
           className="fixed w-screen md:w-1/2 lg:w-1/3 h-12 top-0 items-center bg-white z-50"

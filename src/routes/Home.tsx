@@ -29,7 +29,7 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
   if (loginUser.userType) {
     return (
       <div className="md:flex md:justify-center w-screen">
-        <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 top-0 justify-center items-center bg-white z-50">
+        <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 top-0 justify-center items-center bg-white z-30">
           <button
             className="absolute left-2 align-middle text-xs"
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
