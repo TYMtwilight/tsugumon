@@ -42,8 +42,10 @@ interface FollowUser {
 
 const Profile: React.VFC = memo(() => {
   const params: Readonly<Params<string>> = useParams();
-  const username: string = params.username!;
   const navigate: NavigateFunction = useNavigate();
+  const username: string = params.username!;
+  const [scroll, setScroll] = useState<number>(0);
+  const [tab, setTab] = useState<"album" | "wanted">("album");
   const {
     user,
     option,
@@ -58,8 +60,6 @@ const Profile: React.VFC = memo(() => {
   const closingHour: string = `0${advertise.closingHour}`;
   const closingMinutes: string = `0${advertise.closingMinutes}`;
   const posts: Post[] = usePosts(username);
-  const [scroll, setScroll] = useState<number>(0);
-  const [tab, setTab] = useState<"album" | "wanted">("album");
   let isMounted: boolean = true;
 
   useEffect(() => {

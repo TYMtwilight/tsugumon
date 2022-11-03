@@ -40,7 +40,7 @@ ReactDOM.render(
           <Route path="/setting/business" element={<SettingBusiness />} />
           <Route path="/setting/normal" element={<SettingNormal />} />
           <Route path="/setting/advertise" element={<SettingAdvertise />} />
-          <Route path="/:username" element={<Profile />} />
+          <Route path="/:username/*" element={<Profile />} />
           <Route path="/:username/:docId" element={<Post />} />
           <Route path="/:username/:docId/likeUsers" element={<LikeUsers />} />
           <Route path="/:username/:docId/comments" element={<Comments />} />
