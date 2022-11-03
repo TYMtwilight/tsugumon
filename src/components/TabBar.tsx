@@ -13,10 +13,9 @@ const TabBar = (props: { invisibleAtSmall: boolean }) => {
   if (loginUser.uid) {
     return (
       <nav
-        className={`flex fixed sm:flex-row md:flex-col justify-around ${
-          props.invisibleAtSmall ? "w-0 h-0" : "w-screen"
-        }
-        sm:h-16 md:h-screen bottom-0 pt-2 md:w-24 bg-white border-t`}
+        className={`flex fixed sm:flex-row md:flex-col justify-around w-screen md:w-24 sm:h-16 md:h-screen bottom-0 pt-2 bg-white border-t z-30
+        ${props.invisibleAtSmall && "invisible md:visible"}
+        `}
       >
         <button>
           <NavLink
