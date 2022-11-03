@@ -44,6 +44,7 @@ export const useProfile: (username: string) => {
   isFollowing: boolean;
   loginUser: LoginUser;
 } = (username: string) => {
+  console.log(username);
   const [user, setUser] = useState<User>({
     avatarURL: "",
     backgroundURL: "",
@@ -149,7 +150,7 @@ export const useProfile: (username: string) => {
       unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [username]);
   return {
     user: user,
     option: option,
