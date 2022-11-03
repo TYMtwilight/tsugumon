@@ -95,8 +95,7 @@ const Profile: React.VFC = memo(() => {
               scroll < 120 && "bg-white/75 rounded-full"
             }
             `}
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
+            onClick={() => {
               navigate("/home");
             }}
           >
@@ -132,7 +131,7 @@ const Profile: React.VFC = memo(() => {
                 to={`/messages/${loginUser.uid}-${user.uid}`}
                 state={{ receiverUID: user.uid }}
               >
-                <button className="flex justify-center items-center w-8 h-8 mt-2 rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-white hover:bg-emerald-500">
+                <button className="flex absolute justify-center items-center w-8 h-8 top-2 left-20 rounded-full border border-emerald-500 text-emerald-500 bg-white hover:border-none hover:text-white hover:bg-emerald-500">
                   <MailOutlined />
                 </button>
               </Link>
@@ -145,15 +144,14 @@ const Profile: React.VFC = memo(() => {
                     : "/setting/normal"
                 }
               >
-                <button className="flex absolute justify-center items-center w-24 h-8 font-bold rounded-full right-4 top-2 border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500">
+                <button className="flex absolute justify-center items-center w-24 h-8 font-bold rounded-full right-4 top-2 border border-emerald-500 text-emerald-500 hover:border-none hover:text-white hover:bg-emerald-500">
                   編集する
                 </button>
               </Link>
             ) : user.userType === "business" ? (
               <button
-                className="text-sm w-28 p-2 h-8 font-bold rounded-full border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500"
-                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                  event.preventDefault();
+                className="flex absolute justify-center items-center w-28 h-8 top-2 right-2 font-bold rounded-full border border-emerald-500 text-emerald-500 bg-white hover:border-none hover:text-white hover:bg-emerald-500 text-sm"
+                onClick={() => {
                   const following: FollowUser = {
                     avatarURL: user.avatarURL,
                     displayName: user.displayName,
@@ -267,8 +265,7 @@ const Profile: React.VFC = memo(() => {
                     ? "border-b-4 box-border border-emerald-500 text-emerald-500 "
                     : "border-b-4 box-border border-white text-slate-500"
                 }`}
-                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                  event.preventDefault();
+                onClick={() => {
                   setTab("album");
                 }}
               >
@@ -281,8 +278,7 @@ const Profile: React.VFC = memo(() => {
                     ? "border-b-4 box-border border-emerald-500 text-emerald-500"
                     : "border-b-4 box-border border-white text-slate-500"
                 }`}
-                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                  event.preventDefault();
+                onClick={() => {
                   setTab("wanted");
                 }}
               >
