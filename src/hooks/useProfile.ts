@@ -44,7 +44,6 @@ export const useProfile: (username: string) => {
   isFollowing: boolean;
   loginUser: LoginUser;
 } = (username: string) => {
-  console.log(username);
   const [user, setUser] = useState<User>({
     avatarURL: "",
     backgroundURL: "",
