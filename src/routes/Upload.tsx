@@ -72,12 +72,12 @@ const Upload: React.FC = memo(() => {
   }, [progress]);
 
   return (
-    <div className="md:flex md:justify-center w-screen h-screen bg-slate-100">
+    <div className="md:flex md:justify-center w-screen h-screen bg-slate-400">
       <div className="relative sm:w-screen md:w-1/2 lg:w-1/3 h-full bg-white">
         {loginUser.uid === "" && <Navigate to="/login" replace={true} />}
         <div className="flex relative w-full h-12 justify-center items-center bg-white z-50">
           <button
-            className="ml-2 align-middle"
+            className="absolute left-2 align-middle"
             id="cancel"
             type="button"
             onClick={() => {

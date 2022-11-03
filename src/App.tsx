@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { Navigate, NavLink, Outlet, Route, Routes } from "react-router-dom";
-import { selectUser, login, logout } from "./features/userSlice";
+import { selectUser, login, logout, LoginUser } from "./features/userSlice";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
 import {
@@ -18,7 +18,7 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import NotificationsRounded from "@mui/icons-material/NotificationsRounded";
 
 const App: React.FC = () => {
-  const loginUser = useAppSelector(selectUser);
+  const loginUser: LoginUser = useAppSelector(selectUser)!;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -62,13 +62,13 @@ const App: React.FC = () => {
     };
   }, [dispatch]);
 
-  if (loginUser.uid) {
+  if (loginUser.uid !== "") {
     return (
       <div className="w-screen min-h-screen h-full bg-slate-100">
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
-        <div className="fixed bottom-0 z-50">
+        <div className="fixed bottom-0 z-30">
           <nav className="flex sm:flex-row md:flex-col justify-around w-screen sm:h-16 pt-2 md:w-24 md:h-screen bg-white border-t">
             <button>
               <NavLink
