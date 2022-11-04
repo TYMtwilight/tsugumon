@@ -17,6 +17,7 @@ import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
 import MailOutlined from "@mui/icons-material/MailOutlined";
 import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
 import PersonAddOutlined from "@mui/icons-material/PersonAddOutlined";
+import PersonOutline from "@mui/icons-material/PersonOutline";
 import { useAdvertise } from "../hooks/useAdvertise";
 
 interface Post {
@@ -116,16 +117,19 @@ const Profile: React.VFC = memo(() => {
             />
           </div>
           <div className="relative">
-            <img
-              className="w-20 h-20 ml-4 -mt-8 border-4 border-white object-cover rounded-full"
-              id="avatar"
-              src={
-                user.avatarURL
-                  ? user.avatarURL
-                  : `${process.env.PUBLIC_URL}/noAvatar.png`
-              }
-              alt="アバター画像"
-            />
+            {user.avatarURL ? (
+              <img
+                className="-mt-8 ml-4 w-20 h-20 border-4 border-white rounded-full object-cover brightness-75"
+                src={user.avatarURL}
+                alt="アバター画像"
+              />
+            ) : (
+              <div className="flex w-20 h-20 justify-center items-center -mt-8 ml-4 border-4 border-white bg-slate-500 text-white rounded-full">
+                {" "}
+                <PersonOutline fontSize="large" />
+              </div>
+            )}
+
             {loginUser && loginUser.uid !== user.uid && (
               <Link
                 to={`/messages/${loginUser.uid}-${user.uid}`}
@@ -403,7 +407,7 @@ const Profile: React.VFC = memo(() => {
                           advertise.wanted
                             ? "absolute right-2 bottom-2"
                             : "mt-4"
-                        } rounded-full border border-emerald-500 text-emerald-500 bg-white hover:border-none hover:text-slate-100 hover:bg-emerald-500 font-bold`}
+                        } rounded-full border border-emerald-500 text-emerald-500 bg-white hover:border-none hover:text-white hover:bg-emerald-500 active:text-white active:bg-emerald-500 font-bold`}
                       >
                         募集広告の編集
                       </button>
