@@ -119,7 +119,7 @@ const Profile: React.VFC = memo(() => {
           <div className="relative">
             {user.avatarURL ? (
               <img
-                className="-mt-8 ml-4 w-20 h-20 border-4 border-white rounded-full object-cover brightness-75"
+                className="-mt-8 ml-4 w-20 h-20 border-4 border-white rounded-full object-cover"
                 src={user.avatarURL}
                 alt="アバター画像"
               />
@@ -262,12 +262,10 @@ const Profile: React.VFC = memo(() => {
             )}
           </div>
           {user.userType === "business" && (
-            <nav className="flex h-12">
+            <nav className="flex relative h-12">
               <button
-                className={`flex items-center justify-center w-1/2 ${
-                  tab === "album"
-                    ? "border-b-4 box-border border-emerald-500 text-emerald-500 "
-                    : "border-b-4 box-border border-white text-slate-500"
+                className={`flex items-center justify-center w-1/2 border-b-4 box-border border-white ${
+                  tab === "album" ? "text-emerald-500 " : "text-slate-500"
                 }`}
                 onClick={() => {
                   setTab("album");
@@ -277,10 +275,8 @@ const Profile: React.VFC = memo(() => {
                 <p className="h-4 ml-2 text-sm font-bold">過去の投稿</p>
               </button>
               <button
-                className={`flex items-center justify-center w-1/2 ${
-                  tab === "wanted"
-                    ? "border-b-4 box-border border-emerald-500 text-emerald-500"
-                    : "border-b-4 box-border border-white text-slate-500"
+                className={`flex items-center justify-center w-1/2 border-b-4 box-border border-white ${
+                  tab === "wanted" ? "text-emerald-500 " : "text-slate-500"
                 }`}
                 onClick={() => {
                   setTab("wanted");
@@ -289,6 +285,11 @@ const Profile: React.VFC = memo(() => {
                 <PersonAddOutlined />
                 <p className="h-4 ml-2 text-sm font-bold">募集中</p>
               </button>
+              <div
+                className={`absolute w-1/2 h-1 bottom-0 bg-emerald-500 z-10 duration-[300ms] ${
+                  tab === "album" ? "left-0" : "left-1/2"
+                }`}
+              />
             </nav>
           )}
           {user.userType === "business" && (
