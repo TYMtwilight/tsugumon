@@ -202,11 +202,9 @@ const SettingBusiness = () => {
         });
       })
       .then(() => {
-        // getDoc(optionRef).then((userSnap: DocumentSnapshot<DocumentData>) => {
         setTimeout(() => {
           navigate(`/@${username.input}`);
         }, 300);
-        // });
       });
   };
   useEffect(() => {
