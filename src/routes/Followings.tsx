@@ -26,39 +26,40 @@ const Followings: React.VFC = () => {
   const followings = useFollowings(username);
 
   return (
-    <div className="min-h-screen h-full bg-slate-100">
-      <div className="flex h-12 fixed justify-center items-center top-0 w-screen bg-slate-100 z-10 ">
-        <div className="flex relative h-12 justify-center items-center">
-          <button
-            className="absolute left-2"
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              navigate(-1);
-            }}
-          >
-            <ArrowBackRounded fontSize="small" />
-          </button>
-        </div>
+    <div className="md:flex md:justify-center w-screen bg-slate-100">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 top-0 items-center bg-white z-50">
+        <button
+          className="absolute left-2"
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            navigate(-1);
+          }}
+        >
+          <ArrowBackRounded fontSize="small" />
+        </button>
         <p className="flex w-20 mx-auto font-bold">フォロー中</p>
       </div>
-      <div className="h-16 min-w-screen bg-slate-100" />
-      {followings.map((following: Following) => {
-        return (
-          <div className="flex flex-col mb-4" key={following.username}>
-            <Link to={`/${following.username}`}>
-              <div className="flex flex-row px-4 items-center">
-                <img
-                  className="block w-12 h-12 rounded-full object-cover"
-                  src={following.avatarURL}
-                  alt={following.username}
-                />
-                <p className="px-4 leading-4">{following.displayName}</p>
-              </div>
-              <p className="p-4">{following.introduction}</p>
-            </Link>
-          </div>
-        );
-      })}
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-16 bg-white">
+        {followings.map((following: Following) => {
+          return (
+            <div className="flex relative mb-4" key={following.username}>
+              <Link to={`/${following.username}`}>
+                <div className="flex flex-row px-4 items-center">
+                  <img
+                    className="block w-12 h-12 rounded-full object-cover"
+                    src={following.avatarURL}
+                    alt={following.username}
+                  />
+                  <p className="px-4 leading-4">{following.displayName}</p>
+                </div>
+                <p className="h-full max-h-36 p-4 overflow-hidden text-sm" id="caption">
+                  {following.introduction}
+                </p>
+              </Link>
+            </div>
+          );
+        })}
+      </div>
       <Outlet />
     </div>
   );

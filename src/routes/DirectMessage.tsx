@@ -143,10 +143,7 @@ const DirectMessage = () => {
                 {message.senderUID === loginUser.uid ? (
                   <div className="flex flex-row-reverse mx-4 my-2">
                     <div className="flex flex-col">
-                      <p
-                        className="max-w-xs h-full 
-                         p-4 bg-emerald-500 text-white rounded-t-3xl rounded-l-3xl"
-                      >
+                      <p className="max-w-xs h-full p-4 bg-emerald-500 text-white rounded-t-3xl rounded-l-3xl">
                         {message.message}
                       </p>
                       <div className="flex flex-row-reverse">
