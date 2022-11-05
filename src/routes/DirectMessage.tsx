@@ -97,8 +97,8 @@ const DirectMessage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full min-h-screen h-full bg-slate-100 ">
-      <div className="flex fixed justtify-center items-center top-0 w-screen h-12 z-10 bg-slate-100">
+    <div className="md:flex min-h-screen h-full md:justify-center bg-slate-100 ">
+      <div className="flex fixed flex-col w-screen md:w-1/2 lg:w-1/3 h-12 top-0 justify-center items-center z-10 bg-white">
         <button
           className="absolute left-2"
           onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -110,7 +110,7 @@ const DirectMessage = () => {
         </button>
         <p className="w-20 mx-auto font-bold">メッセージ</p>
       </div>
-      <div className="mt-16 mb-32">
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-full min-h-screen pt-16 pb-32 bg-white">
         {messages.map((message: Message) => {
           const currentTime: number = new Date().getTime();
           if (message.timestamp) {
@@ -141,11 +141,11 @@ const DirectMessage = () => {
                   </div>
                 )}
                 {message.senderUID === loginUser.uid ? (
-                  <div className="flex flex-row-reverse m-4">
+                  <div className="flex flex-row-reverse mx-4 my-2">
                     <div className="flex flex-col">
                       <p
                         className="max-w-xs h-full 
-                         p-4 bg-emerald-500 text-slate-100 rounded-t-3xl rounded-l-3xl"
+                         p-4 bg-emerald-500 text-white rounded-t-3xl rounded-l-3xl"
                       >
                         {message.message}
                       </p>
@@ -176,7 +176,7 @@ const DirectMessage = () => {
                     <div className="flex flex-col">
                       <p
                         className="max-w-xs h-full 
-                         p-4  ml-16 bg-emerald-500 text-slate-100 rounded-t-3xl rounded-r-3xl"
+                         p-4  ml-16 bg-emerald-500 text-white rounded-t-3xl rounded-r-3xl"
                       >
                         {message.message}
                       </p>
@@ -200,14 +200,14 @@ const DirectMessage = () => {
         })}
         <div ref={divElement} />
       </div>
-      <div className="fixed flex w-screen items-end bottom-0 bg-slate-100">
+      <div className="fixed flex w-screen md:w-1/2 lg:w-1/3 items-end bottom-0 bg-white">
         <textarea
           onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
             event.preventDefault();
             setNewMessage(event.target.value);
           }}
           value={newMessage}
-          className="w-10/12 h-24 m-4 p-2 resize-none rounded-lg outline-none"
+          className="w-10/12 h-24 m-4 p-2 resize-none rounded-lg bg-slate-100 outline-none"
           placeholder="メッセージを入力してください。"
         />
         <button

@@ -28,7 +28,7 @@ const SelectUserType = () => {
     <div className="md:flex md:justify-center w-screen ">
       <div className="flex fixed sm:w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center bg-white top-0">
         <button
-          className="absolute left-2 align-middle"
+          className="absolute left-2 align-middle text-xs"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             signOut(auth)
@@ -41,7 +41,7 @@ const SelectUserType = () => {
               });
           }}
         >
-          <ArrowBackRounded />
+          ログアウト
         </button>
         <p className="w-screen text-center font-bold">
           ユーザータイプを選択
