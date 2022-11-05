@@ -31,10 +31,10 @@ const LikeUsers: React.VFC = memo(() => {
         </button>
         <p className="w-36 mx-auto font-bold">いいねしたユーザー</p>
       </div>
-      <div className="sm:w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-16 bg-white">
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-16 bg-white">
         {likeUsers.map((likeUser: LikeUser) => {
           return (
-            <div className="flex flex-col mb-4" key={likeUser.uid}>
+            <div className="flex relative flex-col mb-4" key={likeUser.uid}>
               <Link to={`/${likeUser.username}`}>
                 <div className="flex flex-col mb-4">
                   <div className="flex flex-row px-4 items-center">
@@ -45,7 +45,12 @@ const LikeUsers: React.VFC = memo(() => {
                     />
                     <p className="px-4 leading-4">{likeUser.displayName}</p>
                   </div>
-                  <p className="pt-2 px-4">{likeUser.introduction}</p>
+                  <p
+                    className="h-full max-h-36 p-4 overflow-hidden text-sm"
+                    id="caption"
+                  >
+                    {likeUser.introduction}
+                  </p>
                 </div>
               </Link>
             </div>

@@ -189,7 +189,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
         <div className={props.detail ? "h-full px-4 mb-4" : "h-24 px-4 mb-4"}>
           {props.detail ? (
             <Link to={`/${props.username}/${props.id}`}>
-              <p className=" text-ellipsis" id="caption">
+              <p className="h-full" id="caption">
                 {props.caption}
               </p>
             </Link>

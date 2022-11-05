@@ -26,27 +26,24 @@ const Followers: React.VFC = () => {
   const followers: Follower[] = useFollowers(username);
 
   return (
-    <div className="min-h-screen h-full bg-slate-100">
-      <div className="fixed top-0 w-screen bg-slate-100 z-10 ">
-        <div className="flex relative h-12 justify-center items-center">
-          <button
-            className="absolute left-2"
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              navigate(-1);
-            }}
-          >
-            <ArrowBackRounded fontSize="small" />
-          </button>
-          <p className="flex w-20 mx-auto font-bold">フォロワー</p>
-        </div>
+    <div className="md:flex md:justify-center w-screen bg-slate-100">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 top-0 items-center bg-white z-50">
+        <button
+          className="absolute left-2"
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            navigate(-1);
+          }}
+        >
+          <ArrowBackRounded fontSize="small" />
+        </button>
+        <p className="flex w-20 mx-auto font-bold">フォロワー</p>
       </div>
-      <div className="h-full pt-16 min-w-screen bg-slate-100" />
-      {followers.map((follower: Follower) => {
-        return (
-          <div className="flex flex-col mb-4" key={follower.username}>
-            <Link to={`/${follower.username}`}>
-              <div className="flex flex-row mb-4">
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-16 bg-white">
+        {followers.map((follower: Follower) => {
+          return (
+            <div className="flex relative mb-4" key={follower.username}>
+              <Link to={`/${follower.username}`}>
                 <div className="flex flex-row px-4 items-center">
                   <img
                     className="block w-12 h-12 rounded-full object-cover"
@@ -55,12 +52,14 @@ const Followers: React.VFC = () => {
                   />
                   <p className="px-4 leading-4">{follower.displayName}</p>
                 </div>
-                <p className="pt-2 px-4">{follower.introduction}</p>
-              </div>
-            </Link>
-          </div>
-        );
-      })}
+                <p className="h-full max-h-36 p-4 overflow-hidden text-sm" id="caption">
+                  {follower.introduction}
+                </p>
+              </Link>
+            </div>
+          );
+        })}
+      </div>
       <Outlet />
     </div>
   );
