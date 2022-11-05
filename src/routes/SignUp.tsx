@@ -128,6 +128,7 @@ const SignUp: React.VFC = () => {
           skill2: "",
           skill3: "",
           typeOfWork: "",
+          uid:user.uid,
           userType: null,
           username: `@${username.input}`,
         });
@@ -140,7 +141,7 @@ const SignUp: React.VFC = () => {
           })
         );
         dispatch(toggleIsNewUser(true));
-        navigate("/", { replace: true });
+        navigate("/home", { replace: true });
       })
       .catch((error: any) => {
         if (error.message === "Firebase: Error (auth/email-already-in-use).") {

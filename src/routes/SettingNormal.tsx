@@ -5,17 +5,12 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import { auth, db, storage } from "../firebase";
 import { updateProfile } from "firebase/auth";
 import {
-  collection,
   doc,
   DocumentData,
   DocumentReference,
   DocumentSnapshot,
   getDoc,
-  getDocs,
-  query,
-  QuerySnapshot,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import {
   deleteObject,
@@ -82,13 +77,7 @@ const SettingNormal = () => {
 
   const optionRef: DocumentReference<DocumentData> = doc(
     db,
-    "option",
-    `${loginUser.uid}`
-  );
-
-  const postsQuery = query(
-    collection(db, "posts"),
-    where("uid", "==", loginUser.uid)
+    `option/${loginUser.uid}`
   );
 
   const avatarRef: StorageReference = ref(storage, `avatars/${loginUser.uid}`);
@@ -98,6 +87,9 @@ const SettingNormal = () => {
   );
 
   const getUser = async () => {
+    if (isMounted === false) {
+      return;
+    }
     setAvatarImage(loginUser.avatarURL);
     setBackgroundImage(loginUser.backgroundURL);
     setDisplayName(loginUser.displayName);
@@ -126,6 +118,9 @@ const SettingNormal = () => {
   };
 
   const getDates: () => void = () => {
+    if (isMounted === false) {
+      return;
+    }
     const year = Number(birthdayYear.current!.value);
     const isLeapYear: boolean =
       (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -150,14 +145,15 @@ const SettingNormal = () => {
     for (let i = 1; i <= datesOfMonth; i++) {
       dateArray.push(i);
     }
-    setDates(dateArray);
+    if (isMounted === true) {
+      setDates(dateArray);
+    }
   };
 
   const onChangeImageHandler: (
     event: React.ChangeEvent<HTMLInputElement>,
     imageFor: "avatar" | "background"
   ) => void = (event, imageFor) => {
-    event.preventDefault();
     const file: File = event.target.files![0];
     if (["image/png", "image/jpeg"].includes(file.type) === true) {
       const reader: FileReader = new FileReader();
@@ -180,7 +176,11 @@ const SettingNormal = () => {
     }
     event.target.value = "";
   };
+
   const handleSubmit = async () => {
+    if (isMounted === false) {
+      return;
+    }
     let avatarURL: string = "";
     if (avatarImage !== loginUser.avatarURL) {
       if (avatarImage) {
@@ -204,7 +204,6 @@ const SettingNormal = () => {
     } else {
       backgroundURL = loginUser.backgroundURL;
     }
-
     const birthdate: Date = new Date(
       parseInt(birthdayYear.current!.value),
       // NOTE >> プルダウンでは1月スタートになっているため、
@@ -213,7 +212,6 @@ const SettingNormal = () => {
       parseInt(birthdayMonth.current!.value) - 1,
       parseInt(birthday.current!.value)
     );
-
     dispatch(
       setUserProfile({
         avatarURL: avatarURL,
@@ -230,37 +228,20 @@ const SettingNormal = () => {
       uid: `${loginUser.uid}`,
       username: `@${username.input}`,
     });
-    updateDoc(usernameRef,{
-      uid: `${loginUser.uid}`,
+    updateDoc(usernameRef, {
       username: `@${username.input}`,
-    })
+    });
     updateDoc(optionRef, {
       address: address.current!.value,
       birthdate: birthdate,
-      uid: `@${loginUser.uid}`
     });
     updateProfile(auth.currentUser!, {
       displayName: displayName,
       photoURL: avatarURL,
     });
-    getDocs(postsQuery)
-      .then((posts: QuerySnapshot<DocumentData>) => {
-        posts.forEach((post) => {
-          const postRef = doc(db, "posts", post.id);
-          updateDoc(postRef, {
-            username: `@${username.input}`,
-            displayName: displayName,
-            avatarURL: avatarURL,
-          });
-        });
-      })
-      .then(() => {
-        getDoc(optionRef).then((userSnap: DocumentSnapshot<DocumentData>) => {
-          setTimeout(() => {
-            navigate(`/${userSnap.data()!.username}`);
-          }, 300);
-        });
-      });
+    setTimeout(() => {
+      navigate(`/@${username.input}`);
+    }, 100);
   };
 
   useEffect(() => {
@@ -276,232 +257,224 @@ const SettingNormal = () => {
   }, [isFetched]);
 
   return (
-    <div className="pb-12 bg-slate-100">
-      <div className="flex fixed justify-center items-center top-0 w-screen h-12 z-10 bg-slate-100">
-        <button
-          className="absolute left-2"
-          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            event.preventDefault();
-            navigate(-1);
-          }}
-        >
-          <ArrowBackRounded />
-        </button>
-        <p className="w-40 mx-auto font-bold">プロフィールの編集</p>
-      </div>
-      <div className="mt-12">
-        <div className="flex relative justify-center items-center w-screen h-44">
-          <img
-            className="w-screen h-44 object-cover brightness-75"
-            src={
-              backgroundImage
-                ? backgroundImage
-                : `${process.env.PUBLIC_URL}/noPhoto.png`
-            }
-            alt="背景画像"
-          />
-          <input
-            id="backgroundInput"
-            type="file"
-            accept="image/*"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              event.preventDefault();
-              onChangeImageHandler(event, "background");
-            }}
-            hidden
-          />
-          <label
-            className="flex absolute left-4 text-slate-100 hover:cursor-pointer"
-            htmlFor="backgroundInput"
-          >
-            <PhotoLibraryOutlined fontSize="large" />
-            <p className="ml-4 leading-8">背景を選択</p>
-          </label>
+    <div className="md:flex md:justify-center w-screen h-full min-h-screen bg-slate-400">
+      <div className="w-screen md:w-1/2 lg:w-1/3 h-full bg-white">
+        <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center top-0 z-10 bg-white">
           <button
-            className="absolute right-4 bottom-4 p-2 rounded-full border border-slate-100 text-slate-100"
-            onClick={(
-              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-            ) => {
-              event.preventDefault();
-              setBackgroundImage("");
+            className="absolute left-2"
+            onClick={() => {
+              navigate(-1);
             }}
-            disabled={!backgroundImage}
           >
-            <CloseRounded />
+            <ArrowBackRounded />
           </button>
+          <p className="w-40 mx-auto font-bold">プロフィールの編集</p>
         </div>
-        <div className="relative">
-          <input
-            id="avatarInput"
-            type="file"
-            accept="image/*"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              event.preventDefault();
-              onChangeImageHandler(event, "avatar");
-            }}
-            hidden
-          />
-          {avatarImage ? (
+        <div className="mt-12">
+          <div className="flex relative justify-center items-center h-44 cursor-pointer">
             <img
-              className="-mt-8 ml-4 w-20 h-20 border-4 border-slate-100 rounded-full object-cover brightness-75"
-              src={avatarImage}
-              alt="アバター画像"
+              className="w-full h-44 object-cover brightness-75"
+              src={
+                backgroundImage
+                  ? backgroundImage
+                  : `${process.env.PUBLIC_URL}/noPhoto.png`
+              }
+              alt="背景画像"
             />
-          ) : (
-            <div className="-mt-8 ml-4 w-20 h-20 border-4 border-slate-100 bg-slate-500 rounded-full" />
-          )}
-          <label
-            className="absolute flex justify-center items-center w-20 h-20 border-4 top-0 left-4 border-slate-100 rounded-full text-slate-100 hover:cursor-pointer"
-            htmlFor="avatarInput"
-          >
-            <div className="box rounded-full">
-              <PersonOutline fontSize="large" />
+            <input
+              id="backgroundInput"
+              type="file"
+              accept="image/*"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                onChangeImageHandler(event, "background");
+              }}
+              hidden
+            />
+            <label
+              className="flex absolute left-4 text-white hover:cursor-pointer"
+              htmlFor="backgroundInput"
+            >
+              <PhotoLibraryOutlined fontSize="large" />
+              <p className="ml-4 leading-8">背景を選択</p>
+            </label>
+            <button
+              className="absolute right-4 bottom-4 p-2 rounded-full border border-white text-white active:border-none active:bg-white active:text-slate-500 cursor-pointer duration-[100ms]"
+              onClick={() => {
+                setBackgroundImage("");
+              }}
+              disabled={!backgroundImage}
+            >
+              <CloseRounded />
+            </button>
+          </div>
+          <div className="relative">
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/*"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                onChangeImageHandler(event, "avatar");
+              }}
+              hidden
+            />
+            {avatarImage ? (
+              <img
+                className="-mt-8 ml-4 w-20 h-20 border-4 border-white rounded-full object-cover brightness-75"
+                src={avatarImage}
+                alt="アバター画像"
+              />
+            ) : (
+              <div className="-mt-8 ml-4 w-20 h-20 border-4 border-white bg-slate-500 rounded-full" />
+            )}
+            <label
+              className="absolute flex justify-center items-center w-20 h-20 border-4 top-0 left-4 border-white rounded-full text-white cursor-pointer"
+              htmlFor="avatarInput"
+            >
+              <div className="box rounded-full">
+                <PersonOutline fontSize="large" />
+              </div>
+            </label>
+            <button
+              className="absolute bottom-0 left-24 p-1 border border-slate-500 rounded-full text-slate-500 active:border-none active:bg-slate-500 active:text-white cursor-pointer duration-[100ms]"
+              onClick={() => {
+                setAvatarImage("");
+              }}
+              disabled={!avatarImage}
+            >
+              <CloseRounded />
+            </button>
+          </div>
+          <div className="p-4">
+            <div className="mb-4">
+              <p className="text-sm text-slate-500">ユーザー名</p>
+              <input
+                className="h-8 w-full p-4 bg-slate-200 rounded-md"
+                type="text"
+                value={username.input}
+                onChange={async (
+                  event: React.ChangeEvent<HTMLInputElement>
+                ) => {
+                  setUsername(await checkUsername(event.target.value));
+                }}
+              />
+              <p className="text-sm text-slate-500">
+                {username.uniqueCheck === false &&
+                  "既に使用されているユーザー名です。"}
+              </p>
+              <p className="text-sm text-slate-500">
+                {username.patternCheck === false &&
+                  "入力できない文字が含まれいます。"}
+              </p>
             </div>
-          </label>
+            <div className="mb-4">
+              <p className="text-sm text-slate-500">氏名</p>
+              <input
+                className="h-8 w-full p-4 bg-slate-200 rounded-md"
+                type="text"
+                value={displayName}
+                onChange={async (
+                  event: React.ChangeEvent<HTMLInputElement>
+                ) => {
+                  setDisplayName(event.target.value);
+                }}
+                onBlur={async () => {
+                  setIsUnique(
+                    await checkIsUnique(displayName, loginUser.displayName)
+                  );
+                }}
+              />
+            </div>
+            <p className="text-sm text-slate-500">
+              {isUnique === false && "その氏名は既に使用されています。"}
+            </p>
+            <div className="mb-4">
+              <p className="text-sm text-slate-500">紹介文</p>
+              <textarea
+                className="w-full h-32 p-2 border-none bg-slate-200 rounded-md resize-none"
+                ref={introduction}
+                defaultValue={loginUser.introduction}
+              />
+            </div>
+            <div className="mb-4">
+              <p className="text-sm text-slate-500">資格・技能</p>
+              <input
+                id="skill1"
+                className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
+                type="text"
+                ref={skill1}
+              />
+              <input
+                className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
+                type="text"
+                ref={skill2}
+              />
+              <input
+                id="skill3"
+                className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
+                type="text"
+                ref={skill3}
+              />
+            </div>
+            <div className="mb-4">
+              <p className="text-sm text-slate-500">生年月日</p>
+              <div className="flex items-center h-8 w-full p-4 bg-slate-200 rounded-md">
+                <select
+                  className="bg-white"
+                  ref={birthdayYear}
+                  onChange={() => {
+                    getDates();
+                  }}
+                >
+                  {years.map((year: number) => {
+                    return <option key={year}>{year}</option>;
+                  })}
+                </select>
+                <label>年</label>
+                <select
+                  className="bg-white"
+                  ref={birthdayMonth}
+                  onChange={() => {
+                    getDates();
+                  }}
+                >
+                  {months.map((month: number) => {
+                    return <option key={month}>{month}</option>;
+                  })}
+                </select>
+                <label>月</label>
+                <select className="bg-white" ref={birthday}>
+                  {dates.map((date: number) => {
+                    return <option key={date}>{date}</option>;
+                  })}
+                </select>
+                <label>日</label>
+              </div>
+            </div>
+            <div className="mb-4">
+              <p className="text-sm text-slate-500">住所</p>
+              <input
+                className="h-8 w-full p-4 bg-slate-200 rounded-md "
+                ref={address}
+              />
+            </div>
+          </div>
           <button
-            className="absolute bottom-0 left-24 p-1 border border-slate-500 rounded-full text-slate-500"
-            onClick={(
-              event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-            ) => {
-              event.preventDefault();
-              setAvatarImage("");
+            className="block w-24 h-8 mx-auto mb-4 border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-white 
+            active:bg-emerald-500 active:text-white
+            disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300 cursor-pointer duration-[200ms]"
+            onClick={() => {
+              handleSubmit();
             }}
-            disabled={!avatarImage}
+            disabled={
+              !isUnique ||
+              !username.patternCheck ||
+              !username.uniqueCheck ||
+              username.input === ""
+            }
           >
-            <CloseRounded />
+            登録する
           </button>
         </div>
-        <div className="p-4">
-          <div className="mb-4">
-            <p className="text-sm text-slate-500">ユーザー名</p>
-            <input
-              className="h-8 w-full p-4 bg-slate-200 rounded-md"
-              type="text"
-              value={username.input}
-              onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                event.preventDefault();
-                setUsername(await checkUsername(event.target.value));
-              }}
-            />
-            <p className="text-sm text-slate-500">
-              {username.uniqueCheck === false &&
-                "既に使用されているユーザー名です。"}
-            </p>
-            <p className="text-sm text-slate-500">
-              {username.patternCheck === false &&
-                "入力できない文字が含まれいます。"}
-            </p>
-          </div>
-          <div className="mb-4">
-            <p className="text-sm text-slate-500">氏名</p>
-            <input
-              className="h-8 w-full p-4 bg-slate-200 rounded-md"
-              type="text"
-              value={displayName}
-              onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                setDisplayName(event.target.value);
-              }}
-              onBlur={async (
-                event: React.FocusEvent<HTMLInputElement, Element>
-              ) => {
-                event.preventDefault();
-                setIsUnique(
-                  await checkIsUnique(displayName, loginUser.displayName)
-                );
-              }}
-            />
-          </div>
-          <p className="text-sm text-slate-500">
-            {isUnique === false && "その氏名は既に使用されています。"}
-          </p>
-          <div className="mb-4">
-            <p className="text-sm text-slate-500">紹介文</p>
-            <textarea
-              className="w-full h-32 p-2 border-none bg-slate-200 rounded-md resize-none"
-              ref={introduction}
-              defaultValue={loginUser.introduction}
-            />
-          </div>
-          <div className="mb-4">
-            <p className="text-sm text-slate-500">資格・技能</p>
-            <input
-              id="skill1"
-              className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
-              type="text"
-              ref={skill1}
-            />
-            <input
-              className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
-              type="text"
-              ref={skill2}
-            />
-            <input
-              id="skill3"
-              className="h-8 w-full p-4 mb-2 bg-slate-200 rounded-md"
-              type="text"
-              ref={skill3}
-            />
-          </div>
-          <div className="mb-4">
-            <p className="text-sm text-slate-500">生年月日</p>
-            <div className="flex items-center h-8 w-full p-4 bg-slate-200 rounded-md">
-              <select
-                className="bg-slate-100"
-                ref={birthdayYear}
-                onChange={(event) => {
-                  event.preventDefault();
-                  getDates();
-                }}
-              >
-                {years.map((year: number) => {
-                  return <option key={year}>{year}</option>;
-                })}
-              </select>
-              <label>年</label>
-              <select
-                className="bg-slate-100"
-                ref={birthdayMonth}
-                onChange={(event) => {
-                  event.preventDefault();
-                  getDates();
-                }}
-              >
-                {months.map((month: number) => {
-                  return <option key={month}>{month}</option>;
-                })}
-              </select>
-              <label>月</label>
-              <select className="bg-slate-100" ref={birthday}>
-                {dates.map((date: number) => {
-                  return <option key={date}>{date}</option>;
-                })}
-              </select>
-              <label>日</label>
-            </div>
-          </div>
-          <div className="mb-4">
-            <p className="text-sm text-slate-500">住所</p>
-            <input
-              className="h-8 w-full p-4 bg-slate-200 rounded-md "
-              ref={address}
-            />
-          </div>
-        </div>
-        <button
-          className="block w-24 h-8 m-auto border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
-          onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            event.preventDefault();
-            handleSubmit();
-          }}
-          disabled={
-            !isUnique ||
-            !username.patternCheck ||
-            !username.uniqueCheck ||
-            username.input === ""
-          }
-        >
-          登録する
-        </button>
       </div>
     </div>
   );

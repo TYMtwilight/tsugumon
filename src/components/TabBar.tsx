@@ -81,8 +81,12 @@ const TabBar = (props: { invisibleAtSmall: boolean }) => {
             to={`/${loginUser.username}`}
           >
             <img
-              className="block w-8 h-8 mx-auto rounded-full"
-              src={loginUser.avatarURL}
+              className="block w-8 h-8 mx-auto rounded-full object-cover"
+              src={
+                loginUser.avatarURL !== ""
+                  ? loginUser.avatarURL
+                  : `${process.env.PUBLIC_URL}/noAvatar.png`
+              }
               alt={`${loginUser.username}のアバター`}
             />
             <p className="text-xs">自分</p>
