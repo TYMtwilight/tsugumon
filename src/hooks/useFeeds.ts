@@ -7,6 +7,7 @@ import {
   onSnapshot,
   QuerySnapshot,
   DocumentData,
+  orderBy,
   QueryDocumentSnapshot,
   query,
   Query,
@@ -33,7 +34,8 @@ export const useFeeds: () => Post[] = () => {
 
   const unsubscribe: () => Promise<void> = async () => {
     const feedsQuery: Query<DocumentData> = query(
-      collection(db, `users/${loginUser.uid}/feeds`)
+      collection(db, `users/${loginUser.uid}/feeds`),
+      orderBy("timestamp", "desc")
     );
     onSnapshot(feedsQuery, (feedsSnap: QuerySnapshot<DocumentData>) => {
       const newFeeds: Post[] = feedsSnap.docs.map(
