@@ -85,22 +85,20 @@ const PostDetail: React.VFC = memo(() => {
   }, []);
 
   return (
-    <div className="relative min-h-screen h-full bg-slate-100">
-      <div className="flex h-12 fixed justify-center items-center top-0 w-screen bg-slate-100 z-10">
-        <div className="flex relative  h-12 justify-center items-center">
-          <button
-            className="absolute left-2"
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              navigate(-1);
-            }}
-          >
-            <ArrowBackIosNewRounded fontSize="small" />
-          </button>
-        </div>
+    <div className="flex justify-center w-screen min-h-screen bg-slate-100">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center top-0 bg-white z-10">
+        <button
+          className="absolute left-2 text-slate-500"
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            navigate(-1);
+          }}
+        >
+          <ArrowBackIosNewRounded fontSize="small" />
+        </button>
         <p className="w-16 mx-auto font-bold">投稿画像</p>
       </div>
-      <div className="absolute top-12">
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-max min-h-screen mt-12 bg-white">
         {post.id && (
           <PostComponent
             avatarURL={post.avatarURL}
@@ -116,18 +114,18 @@ const PostDetail: React.VFC = memo(() => {
           />
         )}
         {advertise.wanted && (
-          <div className="mt-12">
+          <div>
             <div className="flex h-12 w-28 justify-center items-center text-slate-100 bg-gradient-to-r from-cyan-500 to-emerald-500 font-bold rounded-t-2xl">
               <p className="w-24 indent-4">募 集 中</p>
             </div>
             <div className="relative bg-slate-300">
               <img
-                className="object-cover w-screen h-44 brightness-75"
+                className="w-screen h-44 object-cover brightness-75"
                 src={advertise!.imageURL}
                 alt="イメージ画像"
               />
               <Link to={`/${username}`}>
-                <div className="absolute flex items-center inset-y-1/2 left-4 ">
+                <div className="flex absolute items-center inset-y-1/2 left-4 ">
                   <img
                     className="w-12 h-12 mr-2 border-2 border-slate-100 object-cover rounded-full"
                     id="avatar"

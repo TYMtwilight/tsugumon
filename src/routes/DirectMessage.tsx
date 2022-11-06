@@ -132,7 +132,7 @@ const DirectMessage = () => {
             return (
               <div key={message.messageId}>
                 {message.timestamp && moreThanOneDayAgo && (
-                  <div className="flex justify-center">
+                  <div className="flex justify-center mt-4">
                     <p>
                       {`${message.timestamp.getFullYear()}年${
                         message.timestamp.getMonth() + 1
@@ -165,7 +165,7 @@ const DirectMessage = () => {
                   <div className="flex relative flex-row m-4">
                     <Link to={`/${partner.username}`}>
                       <img
-                        className="block absolute w-12 h-12 bottom-0 rounded-full"
+                        className="block absolute w-12 h-12 bottom-0 rounded-full object-cover"
                         src={partner.avatarURL}
                         alt="ユーザーのアバター画像"
                       />
