@@ -61,6 +61,7 @@ const UserAuthentication = () => {
               }}
               placeholder="例) tsugumon@example.com"
               autoFocus
+              autoComplete="email"
               required
             />
           </div>
@@ -79,6 +80,7 @@ const UserAuthentication = () => {
                     event.preventDefault();
                     setPassword(checkPassword(event));
                   }}
+                  autoComplete="off"
                   required
                 />
                 <button

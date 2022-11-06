@@ -5,6 +5,7 @@ import {
   onSnapshot,
   QuerySnapshot,
   DocumentData,
+  orderBy,
   QueryDocumentSnapshot,
   query,
   Query,
@@ -32,7 +33,7 @@ export const usePosts: (username: string) => Post[] = (username) => {
     }
     const postsQuery: Query<DocumentData> = query(
       collection(db, "posts"),
-      where("username", "==", username)
+      where("username", "==", username),orderBy("timestamp","desc")
     );
 
     onSnapshot(
