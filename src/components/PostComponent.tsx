@@ -196,7 +196,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
           ) : (
             <div className="relative">
               <p className="h-36 overflow-hidden" id="caption">
-                {props.caption}...
+                {props.caption}
               </p>
               <div className="absolute w-full h-8 bottom-0 bg-gradient-to-b from-white/0 to-white/100 z-20" />
             </div>

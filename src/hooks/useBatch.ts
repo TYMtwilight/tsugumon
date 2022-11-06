@@ -15,7 +15,6 @@ import {
   writeBatch,
   serverTimestamp,
   WriteBatch,
-  FieldValue,
   DocumentData,
   collection,
   CollectionReference,
@@ -25,17 +24,7 @@ import {
 } from "firebase/firestore";
 import { getRandomString } from "../functions/GetRandomString";
 import { splitBySpace } from "../functions/SplitBySpace";
-
-interface Post {
-  uid: string;
-  username: string;
-  displayName: string;
-  avatarURL: string;
-  imageURL: string;
-  caption: string;
-  tags: string[];
-  timestamp: FieldValue;
-}
+import { Post } from "../interfaces/Post";
 
 export const useBatch: (
   upload: boolean,
@@ -43,18 +32,18 @@ export const useBatch: (
   caption: string,
   tagString: string
 ) => "wait" | "run" | "done" = (upload, postImage, caption, tagString) => {
+  let isMounted: boolean = true;
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
   const loginUser: LoginUser = useAppSelector(selectUser);
   const batch: WriteBatch = writeBatch(db);
-  console.log(tagString);
   const tags = splitBySpace(tagString);
 
   const setBatch: (downloadURL: string) => Promise<void> = async (
     downloadURL
   ) => {
+    // NOTE >> 投稿データをpostコレクションに保存します
     const postId: string = getRandomString();
     const postRef: DocumentReference<DocumentData> = doc(db, `posts/${postId}`);
-    // TODO >> フォローしているユーザーのUIDを参照するコードを作成する
     const postData: Post = {
       uid: loginUser.uid,
       username: loginUser.username,
@@ -65,7 +54,11 @@ export const useBatch: (
       tags: tags,
       timestamp: serverTimestamp(),
     };
+    if (isMounted === false) {
+      return;
+    }
     batch.set(postRef, postData);
+    // NOTE >> 投稿データをフォロワーのfeedコレクションに保存します
     const followersRef: CollectionReference<DocumentData> = collection(
       db,
       `users/${loginUser.uid}/followers`
@@ -78,7 +71,6 @@ export const useBatch: (
         return followerSnap.id;
       }
     );
-
     followersUidArray.forEach((followerUid: string) => {
       const feedRef: DocumentReference<DocumentData> = doc(
         db,
@@ -117,6 +109,10 @@ export const useBatch: (
         });
     } else {
       setProgress("wait");
+    }
+    return()=>{
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      isMounted = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upload]);
