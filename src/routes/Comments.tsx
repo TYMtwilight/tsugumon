@@ -58,8 +58,8 @@ const Comments: React.VFC = () => {
   };
 
   return (
-    <div className="w-screen min-h-screen bg-slate-100">
-      <div className="flex items-center fixed w-screen h-12 top-0 bg-slate-100">
+    <div className="flex justify-center w-screen h-max min-h-screen bg-slate-100">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 justify-center items-center h-12 top-0 bg-white">
         <button
           className="absolute left-2 text-slate-500"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,20 +69,20 @@ const Comments: React.VFC = () => {
         >
           <ArrowBackRounded />
         </button>
-        <p className="w-16 mx-auto font-bold">コメント</p>
+        <p className="w-16 font-bold">コメント</p>
       </div>
-      <div className="h-max mt-12">
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-max min-h-screen mt-12 bg-white">
         {comments.map((comment: Comment) => {
           return (
             <div className="p-4 mb-4" key={comment.id}>
-              <div>
+              <div className="flex items-center mb-4">
                 <Link
                   id="link"
                   className="flex flex-row items-center"
                   to={`/${comment.username}/`}
                 >
                   <img
-                    className="block w-12 h-12 rounded-full"
+                    className="block w-8 h-8 rounded-full"
                     src={comment.avatarURL}
                     alt="アバター画像"
                   />
@@ -92,8 +92,8 @@ const Comments: React.VFC = () => {
                 </label>
               </div>
               <p className="w-full h-max my-2">{comment.comment}</p>
-              <div className="relative">
-                <p className="absolute right-4 text-sm text-slate-500">
+              <div className="flex w-full h-4 justify-end">
+                <p className="text-sm mr-4 text-slate-500">
                   {comment.timestamp &&
                     `${comment.timestamp.getFullYear()}年${
                       comment.timestamp.getMonth() + 1
@@ -104,33 +104,31 @@ const Comments: React.VFC = () => {
           );
         })}
       </div>
-      <div className="relative">
-        <div className="fixed w-screen bottom-0 z-20 p-4 border-t border-slate-300 bg-slate-100">
-          <div>
-            <p className="h-8 text-sm">返信先：{postUsername}さん</p>
-          </div>
-          <div>
-            <textarea
-              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-                event.preventDefault();
-                setComment(event.target.value);
-              }}
-              className="w-full h-24 mb-4 p-2 resize-none rounded-lg"
-              value={comment}
-            />
-          </div>
-          <div className="flex justify-end">
-            <button
-              className="block w-32 h-8 border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-slate-100 disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
-              disabled={!comment}
-              onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                event.preventDefault();
-                uploadComment();
-              }}
-            >
-              コメントする
-            </button>
-          </div>
+      <div className="flex fixed flex-col w-screen md:w-1/2 lg:w-1/3 justify-center p-4 bottom-0 bg-white border-t border-slate-300 ">
+        <div>
+          <p className="h-8 text-sm">返信先：{postUsername}さん</p>
+        </div>
+        <div>
+          <textarea
+            onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+              event.preventDefault();
+              setComment(event.target.value);
+            }}
+            className="w-full h-24 mb-4 p-2 resize-none bg-slate-100 rounded-lg outline-none"
+            value={comment}
+          />
+        </div>
+        <div className="flex justify-end">
+          <button
+            className="block w-32 h-8 border rounded-full font-bold border-emerald-500 text-emerald-500 hover:border-none hover:bg-emerald-500 hover:text-white disabled:border-slate-400 disabled:text-slate-400 disabled:bg-slate-300"
+            disabled={!comment}
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              uploadComment();
+            }}
+          >
+            コメントする
+          </button>
         </div>
       </div>
     </div>
