@@ -43,6 +43,7 @@ const UserAuthentication = () => {
     <div className="md:flex lg:flex md:justify-center lg:justify-center h-full sm:min-h-screen bg-slate-100">
       <div className="sm:w-screen md:w-1/2 lg:w-1/3 min-h-screen bg-white">
         <header className="flex w-full h-44 justify-center items-center mb-4 bg-hero bg-cover bg-bottom brightness-125">
+          <img src={`${process.env.PUBLIC_URL}/tsugumon_icon.png`} className="w-12 h-8 -ml-4 mr-2 object-cover" alt="アイコン画像"/>
           <h1 className="font-kiwi text-2xl text-slate-50">つぐもん</h1>
         </header>
         <form className="p-4">
