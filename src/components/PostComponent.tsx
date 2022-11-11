@@ -129,12 +129,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
               <img id="image" src={props.imageURL} alt="投稿画像" />
             ) : (
               <Link to={`/${props.username}/${props.id}`}>
-                <img
-                  className="object-cover w-screen h-96 "
-                  id="image"
-                  src={props.imageURL}
-                  alt="投稿画像"
-                />
+                <img id="image" src={props.imageURL} alt="投稿画像" />
               </Link>
             )}
           </div>
