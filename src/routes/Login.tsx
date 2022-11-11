@@ -1,12 +1,25 @@
 import React, { useState } from "react";
+import { useAppDispatch } from "../app/hooks";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { login } from "../features/userSlice";
+import { auth, db } from "../firebase";
+import {
+  signInWithEmailAndPassword,
+  User,
+  UserCredential,
+} from "firebase/auth";
+import {
+  doc,
+  DocumentData,
+  DocumentReference,
+  DocumentSnapshot,
+  getDoc,
+} from "firebase/firestore";
 import { checkPassword } from "../functions/CheckPassword";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { blueGrey } from "@mui/material/colors";
 
-const UserAuthentication = () => {
+const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<{
     lengthCheck: boolean;
@@ -18,32 +31,92 @@ const UserAuthentication = () => {
     input: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const login: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => Promise<void> = async (event) => {
-    event.preventDefault();
+  const signIn: () => Promise<void> = async () => {
     if (email && password) {
-      signInWithEmailAndPassword(auth, email, password.input).then(() => {
-        navigate("/", { replace: true });
-      });
+      signInWithEmailAndPassword(auth, email, password.input)
+        .then(async (credential: UserCredential) => {
+          const authUser: User = credential.user;
+          const userRef: DocumentReference<DocumentData> = doc(
+            db,
+            "users",
+            authUser.uid
+          );
+          const userSnap: DocumentSnapshot<DocumentData> = await getDoc(
+            userRef
+          );
+          if (userSnap.exists()) {
+            dispatch(
+              login({
+                avatarURL: authUser.photoURL ? authUser.photoURL : "",
+                backgroundURL: userSnap.data()!.backgroundURL,
+                displayName: authUser.displayName ? authUser.displayName : "",
+                introduction: userSnap.data()!.introduction,
+                uid: authUser.uid,
+                userType: userSnap.data()!.userType,
+                username: userSnap.data()!.username,
+              })
+            );
+          }
+        })
+        .then(() => {
+          navigate("/", { replace: true });
+        })
+        .catch((error: any) => {
+          const errorMessage: string = error.message;
+          if (process.env.NODE_ENV === "development") {
+            console.log(errorMessage);
+          }
+        });
     }
   };
 
   const demoLogin: () => void = () => {
-    signInWithEmailAndPassword(auth, "tsugumon@gmail.com", "tsugumon").then(
-      () => {
+    signInWithEmailAndPassword(auth, "tsugumon@gmail.com", "tsugumon")
+      .then(async (credential: UserCredential) => {
+        const authUser: User = credential.user;
+        const userRef: DocumentReference<DocumentData> = doc(
+          db,
+          "users",
+          authUser.uid
+        );
+        const userSnap: DocumentSnapshot<DocumentData> = await getDoc(userRef);
+        if (userSnap.exists()) {
+          dispatch(
+            login({
+              avatarURL: authUser.photoURL ? authUser.photoURL : "",
+              backgroundURL: userSnap.data()!.backgroundURL,
+              displayName: authUser.displayName ? authUser.displayName : "",
+              introduction: userSnap.data()!.introduction,
+              uid: authUser.uid,
+              userType: userSnap.data()!.userType,
+              username: userSnap.data()!.username,
+            })
+          );
+        }
+      })
+      .then(() => {
         navigate("/", { replace: true });
-      }
-    );
+      })
+      .catch((error: any) => {
+        const errorMessage: string = error.message;
+        if (process.env.NODE_ENV === "development") {
+          console.log(errorMessage);
+        }
+      });
   };
 
   return (
     <div className="md:flex lg:flex md:justify-center lg:justify-center h-full sm:min-h-screen bg-slate-100">
       <div className="sm:w-screen md:w-1/2 lg:w-1/3 min-h-screen bg-white">
         <header className="flex w-full h-44 justify-center items-center mb-4 bg-hero bg-cover bg-bottom brightness-125">
-          <img src={`${process.env.PUBLIC_URL}/tsugumon_icon.png`} className="w-12 h-8 -ml-4 mr-2 object-cover" alt="アイコン画像"/>
+          <img
+            src={`${process.env.PUBLIC_URL}/tsugumon_icon.png`}
+            className="w-12 h-8 -ml-4 mr-2 object-cover"
+            alt="アイコン画像"
+          />
           <h1 className="font-kiwi text-2xl text-slate-50">つぐもん</h1>
         </header>
         <form className="p-4">
@@ -112,10 +185,9 @@ const UserAuthentication = () => {
               <button
                 className="w-24 h-8 font-bold rounded-md border border-emerald-500 text-emerald-500 hover:border-none hover:text-slate-100 hover:bg-emerald-500 disabled:border-none disabled:text-slate-100 disabled:bg-slate-300"
                 data-testid="loginButton"
-                onClick={(
-                  event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-                ) => {
-                  login(event);
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                  event.preventDefault();
+                  signIn();
                 }}
                 disabled={!email || !password.input || !password.lengthCheck}
               >
@@ -148,4 +220,4 @@ const UserAuthentication = () => {
     </div>
   );
 };
-export default UserAuthentication;
+export default Login;
