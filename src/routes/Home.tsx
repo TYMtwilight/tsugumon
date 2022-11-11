@@ -49,7 +49,7 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
           </button>
           <p className="w-screen text-center font-bold">ホーム</p>
         </div>
-        <div className="w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full pt-12 bg-white">
+        <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 min-h-screen h-max pt-12 bg-white">
           {feeds.map((feed: Post) => {
             return (
               <PostComponent
