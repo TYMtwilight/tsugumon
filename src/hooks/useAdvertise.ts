@@ -64,7 +64,7 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
-  }, []);
+  }, [username]);
 
   return advertise;
 };

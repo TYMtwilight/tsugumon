@@ -5,7 +5,6 @@ import { selectUser, logout, updateUserType } from "../features/userSlice";
 import { auth, db } from "../firebase";
 import { signOut } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
-import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
 
 const SelectUserType = () => {
   const [userType, setUserType] = useState<"business" | "normal">("business");

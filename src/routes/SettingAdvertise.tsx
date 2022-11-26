@@ -127,9 +127,6 @@ const SettingAdvertise = () => {
     });
   };
   useEffect(() => {
-    if (isMounted === false) {
-      return;
-    }
     getAdvertise();
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -28,17 +28,21 @@ export const usePosts: (username: string) => Post[] = (username) => {
   const [posts, setPosts] = useState<Post[]>([]);
   let isMounted: boolean = true;
   const unsubscribe: () => void = async () => {
-    if (isMounted === false) {
-      return;
-    }
     const postsQuery: Query<DocumentData> = query(
       collection(db, "posts"),
-      where("username", "==", username),orderBy("timestamp","desc")
+      where("username", "==", username),
+      orderBy("timestamp", "desc")
     );
 
     onSnapshot(
       postsQuery,
       (snapshots: QuerySnapshot<DocumentData>) => {
+        if (isMounted === false) {
+          if (process.env.NODE_ENV === "development") {
+            console.log("onSnapshotをリセットしました");
+          }
+          return;
+        }
         const unChangedPosts: Post[] = posts;
         const changedPosts: Post[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
@@ -60,10 +64,11 @@ export const usePosts: (username: string) => Post[] = (username) => {
             return changedPost;
           }
         );
-        if (isMounted === false) {
-          return;
-        }
-        setPosts(unChangedPosts.concat(changedPosts));
+        setPosts(
+          unChangedPosts.concat(changedPosts).filter((post) => {
+            return post.username === username;
+          })
+        );
       },
       (error) => {
         console.error(error);
@@ -79,6 +84,6 @@ export const usePosts: (username: string) => Post[] = (username) => {
       unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [username]);
   return posts;
 };

@@ -9,16 +9,18 @@ import {
 } from "react-router-dom";
 import { useProfile } from "../hooks/useProfile";
 import { usePosts } from "../hooks/usePosts";
+import { useAdvertise } from "../hooks/useAdvertise";
 import PostComponent from "../components/PostComponent";
 import TabBar from "../components/TabBar";
 import { addFollower } from "../functions/AddFollower";
 import { AdvertiseData } from "../interfaces/AdvertiseData";
-import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
-import MailOutlined from "@mui/icons-material/MailOutlined";
-import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
-import PersonAddOutlined from "@mui/icons-material/PersonAddOutlined";
-import PersonOutline from "@mui/icons-material/PersonOutline";
-import { useAdvertise } from "../hooks/useAdvertise";
+import {
+  ArrowBackIosNewRounded,
+  MailOutlined,
+  PhotoLibraryOutlined,
+  PersonAddOutlined,
+  PersonOutline,
+} from "@mui/icons-material";
 
 interface Post {
   avatarURL: string;
@@ -56,11 +58,11 @@ const Profile: React.VFC = memo(() => {
     loginUser,
   } = useProfile(username)!;
   const advertise: AdvertiseData = useAdvertise(username)!;
+  const posts: Post[] = usePosts(username)!;
   const openingHour: string = `0${advertise.openingHour}`;
   const openingMinutes: string = `0${advertise.openingMinutes}`;
   const closingHour: string = `0${advertise.closingHour}`;
   const closingMinutes: string = `0${advertise.closingMinutes}`;
-  const posts: Post[] = usePosts(username);
   let isMounted: boolean = true;
 
   useEffect(() => {
@@ -100,7 +102,7 @@ const Profile: React.VFC = memo(() => {
               navigate("/home");
             }}
           >
-            <ArrowBackRounded fontSize="small" />
+            <ArrowBackIosNewRounded fontSize="small" />
           </button>
         </div>
         <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 min-h-screen h-full bg-white">
