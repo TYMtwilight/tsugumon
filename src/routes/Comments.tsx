@@ -71,7 +71,7 @@ const Comments: React.VFC = () => {
         </button>
         <p className="w-16 font-bold">コメント</p>
       </div>
-      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-max min-h-screen mt-12 bg-white">
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-max min-h-screen mt-12 mb-40 bg-white">
         {comments.map((comment: Comment) => {
           return (
             <div className="p-4 mb-4" key={comment.id}>
