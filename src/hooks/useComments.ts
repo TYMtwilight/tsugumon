@@ -25,6 +25,12 @@ export const useComments: (postId: string) => Comment[] = (postId) => {
   const [comments, setComments] = useState<Comment[]>([]);
   let isMounted: boolean = postId !== undefined;
   const unsubscribe: () => void = async () => {
+    if (isMounted !== true) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("onSnapshotの処理をリセットしました");
+      }
+      return;
+    }
     const commentsQuery: Query<DocumentData> = query(
       collection(db, `posts/${postId}/comments`),
       orderBy("timestamp", "desc")
@@ -32,9 +38,6 @@ export const useComments: (postId: string) => Comment[] = (postId) => {
     onSnapshot(
       commentsQuery,
       (snapshots: QuerySnapshot<DocumentData>) => {
-        if (isMounted === false) {
-          return;
-        }
         const uploadedComments: Comment[] = snapshots.docs.map(
           (snapshot: QueryDocumentSnapshot<DocumentData>) => {
             const value: DocumentData = snapshot.data();

@@ -23,7 +23,10 @@ export const useLikeUsers: (postId: string) => User[] = (postId: string) => {
   const [likeUsers, setLikeUsers] = useState<User[]>([]);
   let isMounted: boolean = postId !== undefined;
   const unsubscribe: () => void = async () => {
-    if (isMounted === false) {
+    if (isMounted !== true) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("onSnapshotの処理をリセットしました");
+      }
       return;
     }
     const likeUsersRef: CollectionReference<DocumentData> = collection(
