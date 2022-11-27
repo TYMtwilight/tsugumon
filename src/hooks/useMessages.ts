@@ -25,7 +25,10 @@ export const useMessages: (roomId: string) => Message[] = (roomId) => {
     onSnapshot(
       messagesQuery,
       (messagesSnap: QuerySnapshot<DocumentData>) => {
-        if (isMounted === false) {
+        if (isMounted !== true) {
+          if (process.env.NODE_ENV === "development") {
+            console.log("onSnapshotの処理をリセットしました");
+          }
           return;
         }
         const uploadedMessages: Message[] = messagesSnap.docs.map(

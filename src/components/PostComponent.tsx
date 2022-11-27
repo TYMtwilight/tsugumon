@@ -45,14 +45,17 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   const second: number = 1000;
 
   const unsubscribe: () => void = () => {
+    if (isMounted !== true) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("onSnapshotの処理をリセットしました");
+      }
+      return;
+    }
     const likeUsersRef: CollectionReference<DocumentData> = collection(
       db,
       `posts/${props.id}/likeUsers`
     );
     onSnapshot(likeUsersRef, (likeUsersSnap: QuerySnapshot<DocumentData>) => {
-      if (isMounted === false) {
-        return;
-      }
       setLikeCounts(likeUsersSnap.size);
       setLike(
         likeUsersSnap.docs.find(
@@ -67,9 +70,6 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
       `posts/${props.id}/comments`
     );
     onSnapshot(commentsRef, (commentsSnap: QuerySnapshot<DocumentData>) => {
-      if (isMounted === false) {
-        return;
-      }
       setCommentCounts(commentsSnap.size);
       setComment(
         commentsSnap.docs.find(
@@ -82,9 +82,6 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
   };
 
   useEffect(() => {
-    if (isMounted === false) {
-      return;
-    }
     unsubscribe();
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -12,9 +12,11 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { resizeImage } from "../functions/ResizeImage";
-import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
-import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
-import CloseRounded from "@mui/icons-material/CloseRounded";
+import {
+  ArrowBackIosNewRounded,
+  PhotoLibraryOutlined,
+  CloseRounded,
+} from "@mui/icons-material";
 
 const SettingAdvertise = () => {
   const [isFetched, setIsFetched] = useState<boolean>(false);
@@ -144,7 +146,7 @@ const SettingAdvertise = () => {
               navigate(-1);
             }}
           >
-            <ArrowBackRounded />
+            <ArrowBackIosNewRounded />
           </button>
           <p className="w-28 mx-auto font-bold">募集広告の編集</p>
         </div>

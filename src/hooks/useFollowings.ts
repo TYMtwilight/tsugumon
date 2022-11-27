@@ -29,6 +29,12 @@ export const useFollowings: (username: string) => Following[] = (username) => {
     where("username", "==", username)
   );
   const unsubscribe = async () => {
+    if (isMounted !== true) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("onSnapshotの処理をリセットしました");
+      }
+      return;
+    }
     const uid: string = (await getDocs(userQuery)).docs[0].id;
     const followingsRef: CollectionReference = collection(
       db,
@@ -37,22 +43,20 @@ export const useFollowings: (username: string) => Following[] = (username) => {
     const followingsSnap: QuerySnapshot<DocumentData> = await getDocs(
       followingsRef
     );
-    if (isMounted === true) {
-      setFollowers(
-        followingsSnap.docs.map(
-          (followingSnap: QueryDocumentSnapshot<DocumentData>) => {
-            return {
-              avatarURL: followingSnap.data().avatarURL,
-              displayName: followingSnap.data().displayName,
-              introduction: followingSnap.data().introduction,
-              uid: followingSnap.id,
-              userType: followingSnap.data().userType,
-              username: followingSnap.data().username,
-            };
-          }
-        )
-      );
-    }
+    setFollowers(
+      followingsSnap.docs.map(
+        (followingSnap: QueryDocumentSnapshot<DocumentData>) => {
+          return {
+            avatarURL: followingSnap.data().avatarURL,
+            displayName: followingSnap.data().displayName,
+            introduction: followingSnap.data().introduction,
+            uid: followingSnap.id,
+            userType: followingSnap.data().userType,
+            username: followingSnap.data().username,
+          };
+        }
+      )
+    );
   };
   useEffect(() => {
     unsubscribe();

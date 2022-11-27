@@ -14,27 +14,8 @@ import {
   QuerySnapshot,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
-
-interface User {
-  avatarURL: string;
-  backgroundURL: string;
-  cropsTags: string[];
-  displayName: string;
-  introduction: string;
-  uid: string;
-  userType: "business" | "normal" | null;
-  username: string;
-}
-
-interface Option {
-  address: string;
-  birthdate: Date | null;
-  owner: string;
-  skill1: string;
-  skill2: string;
-  skill3: string;
-  typeOfWork: string;
-}
+import { User } from "../interfaces/User";
+import { Option } from "../interfaces/Option";
 
 export const useProfile: (username: string) => {
   user: User;

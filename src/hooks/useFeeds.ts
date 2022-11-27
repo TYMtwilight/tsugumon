@@ -27,16 +27,21 @@ interface Post {
 }
 
 export const useFeeds: () => Post[] = () => {
-  let isMounted: boolean = true;
   const loginUser: LoginUser = useAppSelector(selectUser);
+  let isMounted: boolean = true;
   const [feeds, setFeeds] = useState<Post[]>([]);
   const previousFeeds: Post[] = [];
-
+  const feedsQuery: Query<DocumentData> = query(
+    collection(db, `users/${loginUser.uid}/feeds`),
+    orderBy("timestamp", "desc")
+  );
   const unsubscribe: () => Promise<void> = async () => {
-    const feedsQuery: Query<DocumentData> = query(
-      collection(db, `users/${loginUser.uid}/feeds`),
-      orderBy("timestamp", "desc")
-    );
+    if (isMounted !== true) {
+      if (process.env.NODE_ENV === "development") {
+        console.log("onSnapshotの処理をリセットしました");
+      }
+      return;
+    }
     onSnapshot(feedsQuery, (feedsSnap: QuerySnapshot<DocumentData>) => {
       const newFeeds: Post[] = feedsSnap.docs.map(
         (feedSnap: QueryDocumentSnapshot<DocumentData>) => {
@@ -64,13 +69,11 @@ export const useFeeds: () => Post[] = () => {
           }
         }
       );
-      if (isMounted) {
-        setFeeds(
-          previousFeeds.concat(newFeeds).sort((first: Post, second: Post) => {
-            return second.timestamp.getTime() - first.timestamp.getTime();
-          })
-        );
-      }
+      setFeeds(
+        previousFeeds.concat(newFeeds).sort((first: Post, second: Post) => {
+          return second.timestamp.getTime() - first.timestamp.getTime();
+        })
+      );
     });
   };
 
