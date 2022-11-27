@@ -15,11 +15,12 @@ export interface UserProfile {
   avatarURL: string;
   backgroundURL: string;
   displayName: string;
+  introduction: string;
   username: string;
 }
 export interface UserLogin {
   avatarURL: string;
-  backgroundURL:string;
+  backgroundURL: string;
   displayName: string;
   introduction: string;
   uid: string;
@@ -31,7 +32,7 @@ const initialState: LoginUser = {
   avatarURL: "",
   backgroundURL: "",
   displayName: "",
-  introduction:"",
+  introduction: "",
   isNewUser: false,
   uid: "",
   userType: null,
@@ -55,7 +56,7 @@ export const userSlice = createSlice({
       state.avatarURL = "";
       state.backgroundURL = "";
       state.displayName = "";
-      state.introduction ="";
+      state.introduction = "";
       state.uid = "";
       state.username = "";
       state.userType = null;
@@ -64,6 +65,7 @@ export const userSlice = createSlice({
       state.avatarURL = action.payload.avatarURL;
       state.backgroundURL = action.payload.backgroundURL;
       state.displayName = action.payload.displayName;
+      state.introduction = action.payload.introduction;
       state.username = action.payload.username;
     },
     updateUserType: (

@@ -137,6 +137,7 @@ const SignUp: React.VFC = () => {
             avatarURL: url,
             backgroundURL: "",
             displayName: displayName,
+            introduction: "",
             username: `@${username.input}`,
           })
         );

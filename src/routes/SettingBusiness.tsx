@@ -167,6 +167,7 @@ const SettingBusiness = () => {
         avatarURL: avatarURL,
         backgroundURL: backgroundURL,
         displayName: displayName,
+        introduction: introduction.current!.value,
         username: `@${username.input}`,
       })
     );

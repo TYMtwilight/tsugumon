@@ -22,10 +22,12 @@ import {
 import { resizeImage } from "../functions/ResizeImage";
 import { checkUsername } from "../functions/CheckUsername";
 import { checkIsUnique } from "../functions/useCheckIsUnique";
-import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
-import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
-import PersonOutline from "@mui/icons-material/PersonOutline";
-import CloseRounded from "@mui/icons-material/CloseRounded";
+import {
+  ArrowBackIosNewRounded,
+  PhotoLibraryOutlined,
+  PersonOutline,
+  CloseRounded,
+} from "@mui/icons-material";
 
 const SettingNormal = () => {
   const [isFetched, setIsFetched] = useState<boolean>(false);
@@ -51,35 +53,29 @@ const SettingNormal = () => {
   const skill1 = useRef<HTMLInputElement>(null);
   const skill2 = useRef<HTMLInputElement>(null);
   const skill3 = useRef<HTMLInputElement>(null);
-
   const navigate: NavigateFunction = useNavigate();
   const loginUser: LoginUser = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   let isMounted: boolean = true;
-
   let years: number[] = [];
   const thisYear: number = new Date().getFullYear();
   for (let i = thisYear; i >= thisYear - 100; i--) {
     years.push(i);
   }
   const months: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
   const loginUserRef: DocumentReference<DocumentData> = doc(
     db,
     "users",
     `${loginUser.uid}`
   );
-
   const usernameRef: DocumentReference<DocumentData> = doc(
     db,
     `usernames/${loginUser.uid}`
   );
-
   const optionRef: DocumentReference<DocumentData> = doc(
     db,
     `option/${loginUser.uid}`
   );
-
   const avatarRef: StorageReference = ref(storage, `avatars/${loginUser.uid}`);
   const backgroundRef: StorageReference = ref(
     storage,
@@ -217,6 +213,7 @@ const SettingNormal = () => {
         avatarURL: avatarURL,
         backgroundURL: backgroundURL,
         displayName: displayName,
+        introduction: introduction.current!.value,
         username: `@${username.input}`,
       })
     );
@@ -266,7 +263,7 @@ const SettingNormal = () => {
               navigate(-1);
             }}
           >
-            <ArrowBackRounded />
+            <ArrowBackIosNewRounded />
           </button>
           <p className="w-40 mx-auto font-bold">プロフィールの編集</p>
         </div>
