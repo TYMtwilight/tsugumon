@@ -43,7 +43,7 @@ export const useProfile: (username: string) => {
   followersCount: number;
   isFollowing: boolean;
   loginUser: LoginUser;
-} = (username: string) => {
+} = (username) => {
   const [user, setUser] = useState<User>({
     avatarURL: "",
     backgroundURL: "",
@@ -122,21 +122,29 @@ export const useProfile: (username: string) => {
       `users/${userSnap.docs[0].id}/followers`
     );
     onSnapshot(followingsRef, (followingsSnap: QuerySnapshot<DocumentData>) => {
-      if (isMounted === true) {
-        setFollowingsCount(followingsSnap.size);
+      if (isMounted === false) {
+        if (process.env.NODE_ENV === "development") {
+          console.log("onSnapshotをリセットしました");
+        }
+        return;
       }
+      setFollowingsCount(followingsSnap.size);
     });
     onSnapshot(followersRef, (followersSnap: QuerySnapshot<DocumentData>) => {
-      if (isMounted === true) {
-        setFollowersCount(followersSnap.size);
-        setIsFollowing(
-          followersSnap.docs.find(
-            (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
-              return followerSnap.id === loginUser.uid;
-            }
-          ) !== undefined
-        );
+      if (isMounted === false) {
+        if (process.env.NODE_ENV === "development") {
+          console.log("onSnapshotをリセットしました");
+        }
+        return;
       }
+      setFollowersCount(followersSnap.size);
+      setIsFollowing(
+        followersSnap.docs.find(
+          (followerSnap: QueryDocumentSnapshot<DocumentData>) => {
+            return followerSnap.id === loginUser.uid;
+          }
+        ) !== undefined
+      );
     });
   };
 
