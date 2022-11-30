@@ -20,7 +20,7 @@ export const useAdvertise: (username: string) => AdvertiseData = (username) => {
     imageURL: "",
     jobDescription: "",
     location: "",
-    maximumWage: 0,
+    maximumWage: "",
     message: "",
     minimumWage: "",
     openingHour: 0,
