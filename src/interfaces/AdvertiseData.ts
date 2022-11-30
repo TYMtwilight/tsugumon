@@ -5,7 +5,7 @@ export interface AdvertiseData {
   imageURL: string;
   jobDescription: string;
   location: string;
-  maximumWage: number;
+  maximumWage: string;
   message: string;
   minimumWage: string;
   openingHour: number;

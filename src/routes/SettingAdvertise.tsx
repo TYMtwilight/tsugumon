@@ -235,16 +235,16 @@ const SettingAdvertise = () => {
             <div className="mb-4">
               <p className="text-sm text-slate-500">給与</p>
               <input
-                type="number"
+                type="string"
                 ref={minimumWage}
-                className="w-20 h-8 p-2 bg-slate-200 rounded-md"
+                className="w-24 h-8 p-2 bg-slate-200 rounded-md"
               />
               <label className="ml-2">円</label>
               <label className="mx-2">〜</label>
               <input
-                type="number"
+                type="string"
                 ref={maximumWage}
-                className="w-20 h-8 p-2 bg-slate-200 rounded-md"
+                className="w-24 h-8 p-2 bg-slate-200 rounded-md"
               />
               <label className="ml-2">円</label>
             </div>
