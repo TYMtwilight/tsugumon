@@ -26,10 +26,12 @@ import {
 } from "firebase/storage";
 import { resizeImage } from "../functions/ResizeImage";
 import { checkUsername } from "../functions/CheckUsername";
-import ArrowBackRounded from "@mui/icons-material/ArrowBackIosNewRounded";
-import PhotoLibraryOutlined from "@mui/icons-material/PhotoLibraryOutlined";
-import PersonOutline from "@mui/icons-material/PersonOutline";
-import CloseRounded from "@mui/icons-material/CloseRounded";
+import {
+  ArrowBackIosNewRounded,
+  PhotoLibraryOutlined,
+  PersonOutline,
+  CloseRounded,
+} from "@mui/icons-material";
 
 const SettingBusiness = () => {
   const [isFetched, setIsFetched] = useState<boolean>(false);
@@ -95,12 +97,15 @@ const SettingBusiness = () => {
       input: loginUser.username.slice(1),
     });
     introduction.current!.value = loginUser.introduction;
-    getDoc(optionRef).then((optionSnap: DocumentSnapshot<DocumentData>) => {
-      address.current!.value = optionSnap.data()!.address;
-      owner.current!.value = optionSnap.data()!.owner;
-      typeOfWork.current!.value = optionSnap.data()!.typeOfWork;
-      setIsFetched(true);
-    });
+    getDoc(optionRef)
+      .then((optionSnap: DocumentSnapshot<DocumentData>) => {
+        owner.current!.value = optionSnap.data()!.owner;
+        typeOfWork.current!.value = optionSnap.data()!.typeOfWork;
+        address.current!.value = optionSnap.data()!.address;
+      })
+      .then(() => {
+        setIsFetched(true);
+      });
   };
 
   const onChangeImageHandler: (
@@ -190,7 +195,7 @@ const SettingBusiness = () => {
     updateProfile(auth.currentUser!, {
       displayName: displayName,
       photoURL: avatarURL,
-    });
+    })
     getDocs(postsQuery)
       .then((posts: QuerySnapshot<DocumentData>) => {
         posts.forEach((post) => {
@@ -229,7 +234,7 @@ const SettingBusiness = () => {
               navigate(-1);
             }}
           >
-            <ArrowBackRounded />
+            <ArrowBackIosNewRounded />
           </button>
           <p className="w-40 mx-auto font-bold">プロフィールの編集</p>
         </div>
