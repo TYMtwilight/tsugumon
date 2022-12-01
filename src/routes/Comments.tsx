@@ -59,7 +59,7 @@ const Comments: React.VFC = () => {
 
   return (
     <div className="flex justify-center w-screen h-max min-h-screen bg-slate-100">
-      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 justify-center items-center h-12 top-0 bg-white">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center top-0 bg-white overflow-scroll z-20">
         <button
           className="absolute left-2 text-slate-500"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -71,7 +71,8 @@ const Comments: React.VFC = () => {
         </button>
         <p className="w-16 font-bold">コメント</p>
       </div>
-      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-max min-h-screen mt-12 mb-40 bg-white">
+      <div className="fixed flex flex-col w-screen md:w-1/2 lg:w-1/3 min-h-screen bg-white"></div>
+      <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-3/4 mt-12 mb-52 bg-white z-10">
         {comments.map((comment: Comment) => {
           return (
             <div className="p-4 mb-4" key={comment.id}>
@@ -104,7 +105,7 @@ const Comments: React.VFC = () => {
           );
         })}
       </div>
-      <div className="flex fixed flex-col w-screen md:w-1/2 lg:w-1/3 justify-center p-4 bottom-0 bg-white border-t border-slate-300 ">
+      <div className="flex fixed flex-col w-screen md:w-1/2 lg:w-1/3 h-48 justify-center p-4 bottom-0 bg-white border-t border-slate-300 z-20">
         <div>
           <p className="h-8 text-sm">返信先：{postUsername}さん</p>
         </div>
