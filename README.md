@@ -18,4 +18,5 @@
 
 ## つぐもん を使ってみる
 
-![Uploading スクリーンショット 2022-12-02 12.53.07.png…]()
+<img width="1440" alt="スクリーンショット 2022-12-02 12 53 07" src="https://user-images.githubusercontent.com/98272835/205211530-367e69c2-d3d6-4409-ad40-283e7237b65e.png">
+
