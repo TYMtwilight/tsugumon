@@ -15,12 +15,13 @@
 
 <img width="800" alt="スクリーンショット 2022-12-02 12 45 27" src="https://user-images.githubusercontent.com/98272835/205210490-5c5ab68c-0bbc-4990-b85b-02a38bfb2152.png">  
 
-
 　　
 # つぐもん を使ってみる
 
-こちらからどうぞ　→ <a href="https://tsugumon.vercel.app/"><img width="208" alt="つぐもん" src="https://user-images.githubusercontent.com/98272835/205307124-4b3e351b-612e-4582-965e-8693e69ac310.png"></a>
+<a href="https://tsugumon.vercel.app/"><img width="160" alt="つぐもん" src="https://user-images.githubusercontent.com/98272835/205316892-e21b7423-37f3-47d7-b921-8be18abe67b9.png"></a> 👈 クリックすると「つぐもん」のログイン画面へ移動します。
 
 
-  <img width="800" alt="スクリーンショット 2022-12-02 12 53 07" src="https://user-images.githubusercontent.com/98272835/205211530-367e69c2-d3d6-4409-ad40-283e7237b65e.png">
+  <img width="800" alt="ログイン画面" src="https://user-images.githubusercontent.com/98272835/205211530-367e69c2-d3d6-4409-ad40-283e7237b65e.png">
+
+<img width="200" alt="QRコード" src="https://user-images.githubusercontent.com/98272835/205318202-1425d266-3f0e-4a28-936b-7b9351996f36.png"> 👈 スマートフォンでもぜひお試しください。
 
