@@ -11,9 +11,16 @@
 
 スマートフォンとPCの両方で使用されることを想定し、レスポンシブデザインにしました。
 
-**PCでの表示**
+**PCでの表示**　　
 
-<img width="800" alt="スクリーンショット 2022-12-02 12 45 27" src="https://user-images.githubusercontent.com/98272835/205210490-5c5ab68c-0bbc-4990-b85b-02a38bfb2152.png">  
+![mobile (1)](https://user-images.githubusercontent.com/98272835/205331712-c92cd7eb-5e75-4834-85b6-b6da66673e13.gif)
+
+
+
+
+
+
+
 
 　　
 # つぐもん を使ってみる
