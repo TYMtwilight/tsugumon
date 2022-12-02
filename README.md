@@ -9,11 +9,20 @@
 
 <img width="1440" alt="スクリーンショット 2022-12-02 4 14 52" src="https://user-images.githubusercontent.com/98272835/205140047-efc140e0-f659-49f7-b96c-1194a625e464.png">
 
-スマートフォンとPCの両方で使用されることを想定し、レスポンシブデザインにしました。
+PCとスマートフォンの両方で使用されることを想定し、レスポンシブデザインにしました。
 
 **PCでの表示**　　
 
-![mobile (1)](https://user-images.githubusercontent.com/98272835/205331712-c92cd7eb-5e75-4834-85b6-b6da66673e13.gif)
+<img width="800" alt="PCでの表示" src="https://user-images.githubusercontent.com/98272835/205339801-23bee4e5-c1b1-4735-87fe-97bd40081f65.png">  
+
+  
+  
+**スマートフォンでの表示**
+
+<img width="320" alt="スマートフォンでの表示" src="https://user-images.githubusercontent.com/98272835/205340608-d3a764cc-2d90-4194-a39e-0023b0b06e6d.png">
+
+  
+
 
 
 
