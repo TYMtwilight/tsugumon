@@ -9,3 +9,10 @@
 
 
 <img width="1440" alt="スクリーンショット 2022-12-02 4 14 52" src="https://user-images.githubusercontent.com/98272835/205140047-efc140e0-f659-49f7-b96c-1194a625e464.png">
+
+スマートフォンとPCの両方で使用されることを想定し、レスポンシブデザインにしました。
+
+**PCでの表示**
+
+<img width="1440" alt="スクリーンショット 2022-12-02 12 45 27" src="https://user-images.githubusercontent.com/98272835/205210490-5c5ab68c-0bbc-4990-b85b-02a38bfb2152.png">
+
