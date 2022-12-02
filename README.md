@@ -1,5 +1,4 @@
 # 求人支援アプリ つぐもん
--------------------
 地元と移住者をつなぐ求人支援アプリケーションです。  
 
 
@@ -14,9 +13,11 @@
 
 **PCでの表示**
 
-<img width="1440" alt="スクリーンショット 2022-12-02 12 45 27" src="https://user-images.githubusercontent.com/98272835/205210490-5c5ab68c-0bbc-4990-b85b-02a38bfb2152.png">
+<img width="1440" alt="スクリーンショット 2022-12-02 12 45 27" src="https://user-images.githubusercontent.com/98272835/205210490-5c5ab68c-0bbc-4990-b85b-02a38bfb2152.png">  
 
-## つぐもん を使ってみる
 
-<img width="1440" alt="スクリーンショット 2022-12-02 12 53 07" src="https://user-images.githubusercontent.com/98272835/205211530-367e69c2-d3d6-4409-ad40-283e7237b65e.png">
+　　
+# つぐもん を使ってみる
+こちらからどうぞ　👉　
+<img width="600" alt="スクリーンショット 2022-12-02 12 53 07" src="https://user-images.githubusercontent.com/98272835/205211530-367e69c2-d3d6-4409-ad40-283e7237b65e.png">
 
