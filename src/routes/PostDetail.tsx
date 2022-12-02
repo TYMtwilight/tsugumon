@@ -168,8 +168,8 @@ const PostDetail: React.VFC = memo(() => {
                 <p className="text-sm text-slate-500">給与</p>
                 <p className="ml-2">
                   <label className="text-sm mr-2">月額</label>
-                  {advertise!.minimumWage.toLocaleString()}円 ~{" "}
-                  {advertise!.maximumWage.toLocaleString()}円
+                  {Number(advertise!.minimumWage).toLocaleString()}円 ~{" "}
+                  {Number(advertise!.maximumWage).toLocaleString()}円
                 </p>
               </div>
               <div className="mb-4">
