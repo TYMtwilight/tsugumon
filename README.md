@@ -52,6 +52,22 @@ PCとスマートフォンの両方で使用されることを想定し、レス
 # データ構成図
 ![Entity Relationship Diagram (2)](https://user-images.githubusercontent.com/98272835/205436063-3d1e2c5e-758e-4a5b-8225-8e951504ef9d.png)
 
+　　
+　　
+# 機能一覧
+## 1. フィード機能
+<img width="800" alt="スクリーンショット 2022-11-23 13 05 14" src="https://user-images.githubusercontent.com/98272835/205436334-3714cb40-60a2-4540-a4fd-763c29abc13c.png">
+  
+  
+## 2. 検索機能
+<img width="800" alt="スクリーンショット 2022-11-23 13 08 19" src="https://user-images.githubusercontent.com/98272835/205436386-12eefcaa-7566-43ab-98d4-87402fe48e61.png">
+  
+
+## 3. 投稿機能
+<img width="800" alt="スクリーンショット 2022-11-23 13 18 58" src="https://user-images.githubusercontent.com/98272835/205436423-6b05eca2-1584-4263-b732-2ab62a5cac2c.png">
+
+
+
 
 
 
