@@ -19,7 +19,7 @@ PCとスマートフォンの両方で使用されることを想定し、レス
   
 **スマートフォンでの表示**
 
-<img width="320" alt="スマートフォンでの表示" src="https://user-images.githubusercontent.com/98272835/205340608-d3a764cc-2d90-4194-a39e-0023b0b06e6d.png"  
+<img width="320" alt="スマートフォンでの表示" src="https://user-images.githubusercontent.com/98272835/205340608-d3a764cc-2d90-4194-a39e-0023b0b06e6d.png">  
 　　
 　　
 # つぐもん を使ってみる
