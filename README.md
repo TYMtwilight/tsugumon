@@ -55,6 +55,7 @@ PCとスマートフォンの両方で使用されることを想定し、レス
   - Storage
 <br>
 <br>
+
 # システム構成図
 <img width="800" alt="スクリーンショット 2022-12-03 12 01 48" src="https://user-images.githubusercontent.com/98272835/205419403-7d49e86f-438e-43ae-b2bf-bea1bc4f16e2.png">
 <br>
@@ -131,6 +132,54 @@ PCとスマートフォンの両方で使用されることを想定し、レス
 <br>
 <br>
 <img width="800" alt="スクリーンショット 2022-11-23 15 29 49" src="https://user-images.githubusercontent.com/98272835/205446328-26dbe2bd-ab87-4ca9-9de5-df79e576c9a7.png">
+<br>
+<br>
+### 8. 投稿詳細表示機能
+投稿画像をクリックすると、その投稿の詳細を確認できるようにしています。
+<br>
+また、投稿データ以外に、企業ユーザーの募集の広告も表示するようにしています。
+<br>
+<br>
+<img width="1440" alt="スクリーンショット 2022-12-04 0 01 26" src="https://user-images.githubusercontent.com/98272835/205447439-fae0846b-da3f-4cba-9905-74689e5981a2.png">
+<br>
+<br>
+### 9. コメント・いいね機能
+ハートのボタンが「いいね」ボタン、吹きだしのボタンが「コメント」ボタンです。
+<br>
+「いいね」ボタンをクリックすると、いいね数が増減します。
+<br>
+「コメント」ボタンをクリックすると、コメント画面に遷移します。
+<br>
+数字の箇所をクリックすると、それぞれのユーザーの一覧が表示されます。
+<br>
+<br>
+<img width="800" alt="スクリーンショット 2022-12-04 0 13 10" src="https://user-images.githubusercontent.com/98272835/205447996-cb5945ca-7bd4-4b5b-adfa-877a31297ede.png">
+<br>
+<br>
+<img width="800" alt="スクリーンショット 2022-12-04 0 13 48" src="https://user-images.githubusercontent.com/98272835/205448024-faa5f2c2-c5e7-435f-8425-daa3a6c268bc.png">
+<br>
+<br>
+<img width="800" alt="スクリーンショット 2022-12-04 0 14 07" src="https://user-images.githubusercontent.com/98272835/205448048-0ed3f757-35d7-45f0-bd93-45cbf30aca4b.png">
+<br>
+<br>
+### 10. ログイン機能
+入力されたメールアドレスとパスワードをもとに、ユーザーのログインを管理します。
+<br>
+入力規則を満たさない場合、フォームの下にアラートを表示するようにしました。
+<br>
+<br>
+<img width="800" alt="スクリーンショット 2022-11-24 22 08 42" src="https://user-images.githubusercontent.com/98272835/205448288-74171775-2504-4918-b725-29a584b7c30b.png">
+<br>
+<br>
+### 11. 新規ユーザー登録機能
+新規ユーザーを登録する機能です。
+<br>
+入力されたユーザー名が既存のものと重複していた場合、警告を表示するようにしました。
+<br>
+<br>
+<img width="800" alt="スクリーンショット 2022-12-04 0 22 22" src="https://user-images.githubusercontent.com/98272835/205448508-77bb58d5-e50a-4c1e-b58d-2422d124da86.png">
+
+
 
 
 
