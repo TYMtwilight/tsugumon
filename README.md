@@ -42,7 +42,9 @@ PCとスマートフォンの両方で使用されることを想定し、レス
   - Authentication
   - Firestore Database
   - Storage　　
-　　
+  
+  
+  
 # システム構成図
 <img width="800" alt="スクリーンショット 2022-12-03 12 01 48" src="https://user-images.githubusercontent.com/98272835/205419403-7d49e86f-438e-43ae-b2bf-bea1bc4f16e2.png">
 
