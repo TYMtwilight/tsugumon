@@ -46,7 +46,13 @@ PCとスマートフォンの両方で使用されることを想定し、レス
   
   
 # システム構成図
-<img width="800" alt="スクリーンショット 2022-12-03 12 01 48" src="https://user-images.githubusercontent.com/98272835/205419403-7d49e86f-438e-43ae-b2bf-bea1bc4f16e2.png">
+<img width="800" alt="スクリーンショット 2022-12-03 12 01 48" src="https://user-images.githubusercontent.com/98272835/205419403-7d49e86f-438e-43ae-b2bf-bea1bc4f16e2.png">  
+  
+  
+# データ構成図
+![Entity Relationship Diagram (2)](https://user-images.githubusercontent.com/98272835/205436063-3d1e2c5e-758e-4a5b-8225-8e951504ef9d.png)
+
+
 
 
 
