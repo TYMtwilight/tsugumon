@@ -17,19 +17,8 @@ PCとスマートフォンの両方で使用されることを想定し、レス
 
 **スマートフォンでの表示**  
 
-<img width="320" alt="スマートフォンでの表示" src="https://user-images.githubusercontent.com/98272835/205340608-d3a764cc-2d90-4194-a39e-0023b0b06e6d.png">  
+<img width="240" alt="スマートフォンでの表示" src="https://user-images.githubusercontent.com/98272835/205340608-d3a764cc-2d90-4194-a39e-0023b0b06e6d.png">  
   
-  
-# つぐもん を使ってみる
-
-<a href="https://tsugumon.vercel.app/"><img width="160" alt="つぐもん" src="https://user-images.githubusercontent.com/98272835/205316892-e21b7423-37f3-47d7-b921-8be18abe67b9.png"></a> 👈 クリックすると「つぐもん」のログイン画面へ移動します。
-
-
-  <img width="800" alt="ログイン画面" src="https://user-images.githubusercontent.com/98272835/205211530-367e69c2-d3d6-4409-ad40-283e7237b65e.png">
-
-<img width="200" alt="QRコード" src="https://user-images.githubusercontent.com/98272835/205318202-1425d266-3f0e-4a28-936b-7b9351996f36.png"> 👈 スマートフォンでもぜひお試しください。  
-　　
-　　
 # なぜこのアプリを作ろうと思ったのか
 地方への移住にあたって最大の課題は「不安感」です。  
 中でも「仕事」の不安では、働き手が足らない地元と、働き先が見つからない移住者のミスマッチが発生しています。  
@@ -37,7 +26,13 @@ PCとスマートフォンの両方で使用されることを想定し、レス
 では、地元産業の業務内容をもっと見える化すれば、地元と移住者、双方の仕事の不安を解決できるのでは？  
 求人支援アプリ つぐもん は、そんな思いつきから作られた、地元と移住者をつなぐアプリケーションです。  
   
+# つぐもん を使ってみる
 
+<a href="https://tsugumon.vercel.app/"><img width="160" alt="つぐもん" src="https://user-images.githubusercontent.com/98272835/205316892-e21b7423-37f3-47d7-b921-8be18abe67b9.png"></a> 👈 クリックすると「つぐもん」のログイン画面へ移動します。
+
+  <img width="800" alt="ログイン画面" src="https://user-images.githubusercontent.com/98272835/205211530-367e69c2-d3d6-4409-ad40-283e7237b65e.png">
+
+<img width="200" alt="QRコード" src="https://user-images.githubusercontent.com/98272835/205318202-1425d266-3f0e-4a28-936b-7b9351996f36.png"> 👈 スマートフォンでもぜひお試しください。  
 
 # 使用技術
 - React.js 17.0.2
@@ -51,26 +46,29 @@ PCとスマートフォンの両方で使用されることを想定し、レス
   - Storage　　
   
   
-  
 # システム構成図
 <img width="800" alt="スクリーンショット 2022-12-03 12 01 48" src="https://user-images.githubusercontent.com/98272835/205419403-7d49e86f-438e-43ae-b2bf-bea1bc4f16e2.png">  
   
   
 # データ構成図
-![Entity Relationship Diagram (2)](https://user-images.githubusercontent.com/98272835/205436063-3d1e2c5e-758e-4a5b-8225-8e951504ef9d.png)
-
+![Entity Relationship Diagram (2)](https://user-images.githubusercontent.com/98272835/205436063-3d1e2c5e-758e-4a5b-8225-8e951504ef9d.png)  
+  
 　　
 　　
 # 機能一覧
-## 1. フィード機能
+### 1. フィード機能  
+フォロー中のユーザーの投稿を、リアルタイムでホーム画面に表示します。  
+投稿のタイミングでリアルタイムに情報を更新する際、FirestoreがRead Heavyにならないよう気をつけました。  
 <img width="800" alt="スクリーンショット 2022-11-23 13 05 14" src="https://user-images.githubusercontent.com/98272835/205436334-3714cb40-60a2-4540-a4fd-763c29abc13c.png">
   
-  
-## 2. 検索機能
+### 2. 検索機能  
+投稿に付けられたタグをキーワードに検索をおこないます。  
+入力された半角スペースや全角スペース、改行などの文字を、キーワードの区切り文字として処理するよう、気をつけました。
 <img width="800" alt="スクリーンショット 2022-11-23 13 08 19" src="https://user-images.githubusercontent.com/98272835/205436386-12eefcaa-7566-43ab-98d4-87402fe48e61.png">
   
 
 ## 3. 投稿機能
+画像を投稿する機能です。「キャプション」欄には画像の説明文を、「タグ」欄には検索のキーワードを入力します。　　
 <img width="800" alt="スクリーンショット 2022-11-23 13 18 58" src="https://user-images.githubusercontent.com/98272835/205436423-6b05eca2-1584-4263-b732-2ab62a5cac2c.png">
 
 
