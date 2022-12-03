@@ -20,8 +20,8 @@ PCとスマートフォンの両方で使用されることを想定し、レス
 **スマートフォンでの表示**
 
 <img width="320" alt="スマートフォンでの表示" src="https://user-images.githubusercontent.com/98272835/205340608-d3a764cc-2d90-4194-a39e-0023b0b06e6d.png">  
-　　
-　　
+  
+  
 # つぐもん を使ってみる
 
 <a href="https://tsugumon.vercel.app/"><img width="160" alt="つぐもん" src="https://user-images.githubusercontent.com/98272835/205316892-e21b7423-37f3-47d7-b921-8be18abe67b9.png"></a> 👈 クリックすると「つぐもん」のログイン画面へ移動します。
