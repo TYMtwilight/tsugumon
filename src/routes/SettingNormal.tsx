@@ -200,7 +200,6 @@ const SettingNormal = () => {
     } else {
       backgroundURL = loginUser.backgroundURL;
     }
-    console.log(birthdayYear.current!.value);
     const birthdate: Date = new Date(
       parseInt(birthdayYear.current!.value),
       // NOTE >> プルダウンでは1月スタートになっているため、
