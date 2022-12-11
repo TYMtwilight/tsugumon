@@ -61,11 +61,11 @@ const PostDetail: React.VFC = memo(() => {
   let isMounted: boolean = true;
 
   const getPost: () => void = () => {
+    if (isMounted !== true) {
+      return;
+    }
     const postRef = doc(db, `posts/${postId}`);
     getDoc(postRef).then((postSnap: DocumentSnapshot<DocumentData>) => {
-      if (isMounted !== true) {
-        return;
-      }
       setPost({
         avatarURL: postSnap.data()!.avatarURL,
         caption: postSnap.data()!.caption,
@@ -107,7 +107,7 @@ const PostDetail: React.VFC = memo(() => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
-  }, [progress]);
+  }, [progress,isMounted]);
 
   return (
     <div className="flex justify-center w-screen h-screen bg-slate-100 overflow-scroll">
