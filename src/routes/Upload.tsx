@@ -66,7 +66,7 @@ const Upload: React.FC = memo(() => {
         setTimeout(() => {
           setUpload(false);
           navigate(-1);
-        }, 2000);
+        },1000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress]);

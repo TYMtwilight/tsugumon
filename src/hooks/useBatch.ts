@@ -38,21 +38,23 @@ export const useBatch: (
   const batch: WriteBatch = writeBatch(db);
   const tags = splitBySpace(tagString);
 
-  const setBatch: (downloadURL: string) => Promise<void> = async (
-    downloadURL
-  ) => {
+  const setBatch: (
+    downloadURL: string,
+    imageLocation: string
+  ) => Promise<void> = async (downloadURL, imageLocation) => {
     // NOTE >> 投稿データをpostコレクションに保存します
     const postId: string = getRandomString();
     const postRef: DocumentReference<DocumentData> = doc(db, `posts/${postId}`);
     const postData: Post = {
-      uid: loginUser.uid,
-      username: loginUser.username,
-      displayName: loginUser.displayName,
       avatarURL: loginUser.avatarURL,
-      imageURL: downloadURL,
       caption: caption,
+      displayName: loginUser.displayName,
+      imageLocation: imageLocation,
+      imageURL: downloadURL,
       tags: tags,
       timestamp: serverTimestamp(),
+      uid: loginUser.uid,
+      username: loginUser.username,
     };
     if (isMounted === false) {
       return;
@@ -84,10 +86,8 @@ export const useBatch: (
     if (upload) {
       setProgress("run");
       const filename: string = getRandomString();
-      const imageRef: StorageReference = ref(
-        storage,
-        `posts/${loginUser.uid}/${filename}`
-      );
+      const imageLocation: string = `posts/${loginUser.uid}/${filename}`;
+      const imageRef: StorageReference = ref(storage, imageLocation);
       const uploadPromise: Promise<UploadResult> = uploadString(
         imageRef,
         postImage,
@@ -95,9 +95,9 @@ export const useBatch: (
       );
       uploadPromise
         .then(async () => {
-          await getDownloadURL(imageRef).then(async (downloadURL: string) => {
+          await getDownloadURL(imageRef).then((downloadURL: string) => {
             // TODO >> フォローしているユーザーのFeedドキュメントにpostDataを書き込む処理を実装する
-            setBatch(downloadURL).then(() => {
+            setBatch(downloadURL, imageLocation).then(() => {
               batch.commit().then(() => {
                 setProgress("done");
               });
@@ -110,10 +110,10 @@ export const useBatch: (
     } else {
       setProgress("wait");
     }
-    return()=>{
+    return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
-    }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upload]);
   return progress;

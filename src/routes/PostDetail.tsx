@@ -16,6 +16,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { useAdvertise } from "../hooks/useAdvertise";
+import { useDelete } from "../hooks/useDelete";
 import PostComponent from "../components/PostComponent";
 import { MailOutlined, ArrowBackIosNewRounded } from "@mui/icons-material";
 
@@ -43,9 +44,13 @@ const PostDetail: React.VFC = memo(() => {
     uid: "",
     username: "",
   });
+  const [deletable, setDeletable] = useState<boolean>(false);
+  const [modal, setModal] = useState<boolean>(false);
+  const [execute, setExecute] = useState<boolean>(false);
   const loginUser: LoginUser = useAppSelector(selectUser);
   const params: Readonly<Params<string>> = useParams();
   const postId: string = params.docId!;
+  const progress: "wait" | "run" | "done" = useDelete(execute, postId);
   const username: string = params.username!;
   const advertise = useAdvertise(username);
   const openingHour: string = `0${advertise.openingHour}`;
@@ -69,6 +74,9 @@ const PostDetail: React.VFC = memo(() => {
         uid: postSnap.data()!.uid,
         username: postSnap.data()!.username,
       });
+      if (postSnap.data()!.imageLocation) {
+        setDeletable(true);
+      }
       return postSnap;
     });
   };
@@ -78,15 +86,35 @@ const PostDetail: React.VFC = memo(() => {
       return;
     }
     getPost();
+    switch (progress) {
+      case "wait":
+        if (process.env.NODE_ENV === "development") {
+          console.log(`${progress}: アップロードの待機中`);
+        }
+        break;
+      case "run":
+        if (process.env.NODE_ENV === "development") {
+          console.log(`${progress}: アップロードの実行中`);
+        }
+        break;
+      case "done":
+        if (process.env.NODE_ENV === "development") {
+          console.log(`${progress}: アップロード完了`);
+        }
+        setTimeout(() => {
+          setExecute(false);
+          navigate(-1);
+        }, 1000);
+    }
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
-  }, []);
+  }, [progress]);
 
   return (
     <div className="flex justify-center w-screen min-h-screen bg-slate-100">
-      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center top-0 bg-white z-10">
+      <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center top-0 bg-white z-30">
         <button
           className="absolute left-2 text-slate-500"
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -100,18 +128,22 @@ const PostDetail: React.VFC = memo(() => {
       </div>
       <div className="flex flex-col w-screen md:w-1/2 lg:w-1/3 h-max min-h-screen mt-12 bg-white">
         {post.id && (
-          <PostComponent
-            avatarURL={post.avatarURL}
-            caption={post.caption}
-            displayName={post.displayName}
-            id={post.id}
-            imageURL={post.imageURL}
-            timestamp={post.timestamp}
-            tags={post.tags}
-            uid={post.uid}
-            username={post.username}
-            detail={true}
-          />
+          <div className="z-20">
+            <PostComponent
+              avatarURL={post.avatarURL}
+              caption={post.caption}
+              displayName={post.displayName}
+              id={post.id}
+              imageURL={post.imageURL}
+              timestamp={post.timestamp}
+              tags={post.tags}
+              uid={post.uid}
+              username={post.username}
+              detail={true}
+              deletable={deletable}
+              setModal={setModal}
+            />
+          </div>
         )}
         {advertise.wanted && (
           <div>
@@ -185,6 +217,31 @@ const PostDetail: React.VFC = memo(() => {
           </div>
         )}
       </div>
+      {modal === true && (
+        <div className="flex flex-col z-50">
+          <div className="flex flex-col fixed w-screen h-screen top-0 left-0   bg-slate-900/90">
+            <p className="my-16 text-center text-white font-bold">
+              この投稿を削除しますか？
+            </p>
+            <button
+              className="w-36 mx-auto h-8 mb-8 border rounded-full font-bold border-red-500 text-red-500"
+              onClick={() => {
+                setExecute(true);
+              }}
+            >
+              削除する
+            </button>
+            <button
+              className="block w-36 h-8 mb-8 mx-auto border rounded-full font-bold border-slate-100 text-slate-100"
+              onClick={() => {
+                setModal(false);
+              }}
+            >
+              キャンセルする
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 });
