@@ -3,8 +3,11 @@ import { Link, Outlet } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { LoginUser, selectUser } from "../features/userSlice";
 import { addLikes } from "../functions/AddLikes";
-import FavoriteRounded from "@mui/icons-material/FavoriteRounded";
-import ChatBubbleRounded from "@mui/icons-material/ChatBubbleRounded";
+import {
+  FavoriteRounded,
+  ChatBubbleRounded,
+  DeleteRounded,
+} from "@mui/icons-material";
 import { db } from "../firebase";
 import {
   collection,
@@ -26,6 +29,8 @@ interface PostSummary {
   timestamp: Date | null;
   uid: string;
   username: string;
+  deletable?: boolean;
+  setModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PostComponent: React.VFC<PostSummary> = memo((props) => {
@@ -121,14 +126,36 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
             : `${Math.floor(beforeTime / second)}秒前`}
         </p>
         <div>
-          <div className="w-auto h-auto">
+          <div className="relative w-auto h-auto">
             {props.detail ? (
-              <img id="image" src={props.imageURL} alt="投稿画像" />
+              <img
+                id="image"
+                className="w-full"
+                src={props.imageURL}
+                alt="投稿画像"
+              />
             ) : (
               <Link to={`/${props.username}/${props.id}`}>
-                <img id="image" src={props.imageURL} alt="投稿画像" />
+                <img
+                  id="image"
+                  className="w-full"
+                  src={props.imageURL}
+                  alt="投稿画像"
+                />
               </Link>
             )}
+            {loginUser.uid === props.uid &&
+              props.detail &&
+              props.deletable === true && (
+                <div
+                  className="absolute bottom-0 right-0 p-2 rounded-tl-xl text-white bg-red-500 cursor-pointer"
+                  onClick={() => {
+                    props.setModal!(true);
+                  }}
+                >
+                  <DeleteRounded fontSize="large" />
+                </div>
+              )}
           </div>
           <div className="flex ml-4 mt-2">
             <div
@@ -190,7 +217,7 @@ const PostComponent: React.VFC<PostSummary> = memo((props) => {
               <p className="h-36 overflow-hidden" id="caption">
                 {props.caption}
               </p>
-              <div className="absolute w-full h-8 bottom-0 bg-gradient-to-b from-white/0 to-white/100 z-20" />
+              <div className="absolute w-full h-8 bottom-0 bg-gradient-to-b from-white/0 to-white/100 z-10" />
             </div>
           )}
         </div>

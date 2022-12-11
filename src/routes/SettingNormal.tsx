@@ -79,7 +79,7 @@ const SettingNormal = () => {
   const avatarRef: StorageReference = ref(storage, `avatars/${loginUser.uid}`);
   const backgroundRef: StorageReference = ref(
     storage,
-    `backgrounds/${loginUser.backgroundURL}`
+    `backgrounds/${loginUser.uid}`
   );
 
   const getUser = async () => {
@@ -200,6 +200,7 @@ const SettingNormal = () => {
     } else {
       backgroundURL = loginUser.backgroundURL;
     }
+    console.log(birthdayYear.current!.value);
     const birthdate: Date = new Date(
       parseInt(birthdayYear.current!.value),
       // NOTE >> プルダウンでは1月スタートになっているため、
