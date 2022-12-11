@@ -61,6 +61,9 @@ const PostDetail: React.VFC = memo(() => {
   let isMounted: boolean = true;
 
   const getPost: () => void = () => {
+    if (isMounted !== true) {
+      return;
+    }
     const postRef = doc(db, `posts/${postId}`);
     getDoc(postRef).then((postSnap: DocumentSnapshot<DocumentData>) => {
       setPost({
@@ -82,9 +85,6 @@ const PostDetail: React.VFC = memo(() => {
   };
 
   useEffect(() => {
-    if (isMounted !== true) {
-      return;
-    }
     getPost();
     switch (progress) {
       case "wait":
@@ -101,24 +101,20 @@ const PostDetail: React.VFC = memo(() => {
         if (process.env.NODE_ENV === "development") {
           console.log(`${progress}: アップロード完了`);
         }
-        setTimeout(() => {
-          setExecute(false);
-          navigate(-1);
-        }, 1000);
+        setExecute(false);
     }
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isMounted = false;
     };
-  }, [progress]);
+  }, [progress,isMounted]);
 
   return (
     <div className="flex justify-center w-screen h-screen bg-slate-100 overflow-scroll">
       <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center top-0 bg-white z-30">
         <button
           className="absolute left-2 text-slate-500"
-          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-            event.preventDefault();
+          onClick={() => {
             navigate(-1);
           }}
         >
