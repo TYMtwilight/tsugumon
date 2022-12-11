@@ -6,8 +6,6 @@ import { selectUser, logout, toggleIsNewUser } from "../features/userSlice";
 import PostComponent from "../components/PostComponent";
 import SelectUserType from "../components/SelectUserType";
 import { useFeeds } from "../hooks/useFeeds";
-import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
 
 interface Post {
   avatarURL: string;
@@ -25,7 +23,8 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
   const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
   const loginUser = useAppSelector(selectUser);
-  const feeds: Post[] = useFeeds();
+  const feeds: Post[] = useFeeds(loginUser.uid);
+
   if (loginUser.userType) {
     return (
       <div className="md:flex md:justify-center w-screen">
@@ -34,15 +33,9 @@ const Feed: React.MemoExoticComponent<() => JSX.Element> = memo(() => {
             className="absolute left-2 align-middle text-xs"
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              signOut(auth)
-                .then(() => {
-                  dispatch(logout());
-                  dispatch(toggleIsNewUser(false));
-                  navigate("/login");
-                })
-                .catch((error: any) => {
-                  console.log(`エラーが発生しました\n${error.message}`);
-                });
+              dispatch(logout());
+              dispatch(toggleIsNewUser(false));
+              navigate("/login");
             }}
           >
             ログアウト
