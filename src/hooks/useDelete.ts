@@ -31,7 +31,6 @@ export const useDelete: (
     if (isMounted === false) {
       return;
     }
-    console.log(`posts/${postId}`);
     getDoc(postRef)
       .then((postSnap: DocumentSnapshot) => {
         deleteDoc(postRef);
