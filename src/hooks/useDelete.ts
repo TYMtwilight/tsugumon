@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, NavigateFunction } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectUser, LoginUser } from "../features/userSlice";
 import { db, storage } from "../firebase";
@@ -22,19 +23,21 @@ export const useDelete: (
   postId: string
 ) => "wait" | "run" | "done" = (execute, postId) => {
   let isMounted: boolean = true;
+  const navigate: NavigateFunction = useNavigate();
   const [progress, setProgress] = useState<"wait" | "run" | "done">("wait");
   const loginUser: LoginUser = useAppSelector(selectUser);
 
   const setDelete: () => Promise<void> = async () => {
     let imageLocation: string = "";
     const postRef: DocumentReference<DocumentData> = doc(db, `posts/${postId}`);
+    navigate(-1);
     if (isMounted === false) {
       return;
     }
     getDoc(postRef)
       .then((postSnap: DocumentSnapshot) => {
-        deleteDoc(postRef);
         imageLocation = postSnap.data()!.imageLocation;
+        deleteDoc(postRef);
       })
       .then(async () => {
         const followersRef: CollectionReference<DocumentData> = collection(
