@@ -113,7 +113,7 @@ const PostDetail: React.VFC = memo(() => {
   }, [progress]);
 
   return (
-    <div className="flex justify-center w-screen min-h-screen bg-slate-100">
+    <div className="flex justify-center w-screen h-screen bg-slate-100 overflow-scroll">
       <div className="flex fixed w-screen md:w-1/2 lg:w-1/3 h-12 justify-center items-center top-0 bg-white z-30">
         <button
           className="absolute left-2 text-slate-500"
