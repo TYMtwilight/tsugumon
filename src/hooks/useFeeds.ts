@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useAppSelector } from "../app/hooks";
-import { selectUser, LoginUser } from "../features/userSlice";
 import { db } from "../firebase";
 import {
   collection,
@@ -26,23 +24,22 @@ interface Post {
   tags: string[];
 }
 
-export const useFeeds: () => Post[] = () => {
-  const loginUser: LoginUser = useAppSelector(selectUser);
+export const useFeeds: (uid: string) => Post[] = (uid) => {
   let isMounted: boolean = true;
   const [feeds, setFeeds] = useState<Post[]>([]);
   const previousFeeds: Post[] = [];
   const feedsQuery: Query<DocumentData> = query(
-    collection(db, `users/${loginUser.uid}/feeds`),
+    collection(db, `users/${uid}/feeds`),
     orderBy("timestamp", "desc")
   );
   const unsubscribe: () => Promise<void> = async () => {
-    if (isMounted !== true) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("onSnapshotの処理をリセットしました");
-      }
-      return;
-    }
     onSnapshot(feedsQuery, (feedsSnap: QuerySnapshot<DocumentData>) => {
+      if (isMounted !== true) {
+        if (process.env.NODE_ENV === "development") {
+          console.log("onSnapshotの処理をリセットしました");
+        }
+        return;
+      }
       const newFeeds: Post[] = feedsSnap.docs.map(
         (feedSnap: QueryDocumentSnapshot<DocumentData>) => {
           const newFeed: Post = {
