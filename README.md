@@ -174,10 +174,11 @@
 　投稿の詳細表示画面では、投稿画像の右下に削除ボタンを設けております。<br>
  削除ボタンをクリックすると、その投稿を削除することができます。<br>
 （注）既に登録されているデモデータには、削除ボタンが表示されないようにしています。 <br>
-　また、投稿データ以外に、企業ユーザーの募集の広告も表示するようにしています。
+
 <br>
 <br>
-<img width="1440" alt="スクリーンショット 2022-12-04 0 01 26" src="https://user-images.githubusercontent.com/98272835/205447439-fae0846b-da3f-4cba-9905-74689e5981a2.png">
+<img width="1440" alt="スクリーンショット 2022-12-14 23 44 54" src="https://user-images.githubusercontent.com/98272835/207630420-7eb0bd3c-585c-49d7-b040-2024b5e1c50b.png">
+<img width="1440" alt="スクリーンショット 2022-12-14 23 51 38" src="https://user-images.githubusercontent.com/98272835/207630459-f7eca86e-6b45-4b2d-875a-ecd856191f08.png">
 <br>
 <br>
 ### １0. コメント・いいね機能
