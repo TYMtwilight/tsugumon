@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { selectUser, login, logout, LoginUser } from "./features/userSlice";
 import { auth, db } from "./firebase";
-import { onAuthStateChanged, Unsubscribe, User } from "firebase/auth";
+import { onAuthStateChanged, Unsubscribe, User, signOut } from "firebase/auth";
 import {
   doc,
   DocumentData,
@@ -55,8 +55,11 @@ const App: React.FC = () => {
     );
     return () => {
       unsubscribe();
+      if (loginUser.uid === "") {
+        signOut(auth);
+      }
     };
-  }, [dispatch]);
+  }, [dispatch, loginUser.uid]);
 
   if (loginUser.uid !== "") {
     return (
