@@ -151,7 +151,6 @@ const Login = () => {
                   id="password"
                   data-testid="password"
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    event.preventDefault();
                     setPassword(checkPassword(event));
                   }}
                   autoComplete="off"
@@ -162,7 +161,6 @@ const Login = () => {
                   onClick={(
                     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
                   ) => {
-                    event.preventDefault();
                     setShowPassword(!showPassword);
                   }}
                 >
@@ -176,7 +174,12 @@ const Login = () => {
               <div className="h-8 mt-2">
                 {password.lengthCheck === false && (
                   <p className="text-sm text-red-500 ">
-                    パスワードの入力文字数は8文字以上20文字以下です
+                    パスワードの入力文字数は8文字以上20文字以下です。
+                  </p>
+                )}
+                {password.patternCheck === false && (
+                  <p className="text-sm text-red-500 ">
+                    入力できない文字が含まれています。
                   </p>
                 )}
               </div>
