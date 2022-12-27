@@ -73,6 +73,7 @@
 # 使用技術
 - React.js 17.0.2
 - Redux 7.2.6
+- Redux Persist 6.0.0
 - React Router 6.3.0
 - Tailwind CSS 3.0.16
 - TypeScript 4.1.5
