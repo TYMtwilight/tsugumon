@@ -91,4 +91,4 @@ export const {
 } = userSlice.actions;
 // NOTE >> ストアで取り込むため、userSliceのリデューサーをエクスポートします。
 export default userSlice.reducer;
-export const selectUser = (state: RootState) => state.user;
+export const selectUser = (state: RootState) => state
