@@ -161,6 +161,7 @@ const Login = () => {
                   onClick={(
                     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
                   ) => {
+                    event.preventDefault();
                     setShowPassword(!showPassword);
                   }}
                 >
