@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { useNavigate } from "react-router-dom";
-import { setUserProfile, toggleIsNewUser } from "../features/userSlice";
+import { setUserProfile, toggleIsNewUser, login } from "../features/userSlice";
 import { auth, db, storage } from "../firebase";
 import {
   createUserWithEmailAndPassword,
@@ -51,9 +51,14 @@ const SignUp: React.VFC = () => {
     input: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const closeToast = () => {
+    setShowToast(false);
+  };
+
   const onChangeImageHandler: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void = async (event) => {
@@ -142,10 +147,24 @@ const SignUp: React.VFC = () => {
           })
         );
         dispatch(toggleIsNewUser(true));
+        dispatch(
+          login({
+            avatarURL: url,
+            backgroundURL: "",
+            displayName: displayName,
+            introduction: "",
+            uid: user.uid,
+            username: `@${username.input}`,
+            userType: null,
+          })
+        );
       })
       .then(() => {
-        alert("新規ユーザーが登録されました。");
-        navigate("/login", { replace: true });
+        setShowToast(true);
+        setTimeout(() => {
+          closeToast();
+          navigate("/", { replace: true });
+        }, 2000);
       })
       .catch((error: any) => {
         if (error.message === "Firebase: Error (auth/email-already-in-use).") {
@@ -164,14 +183,13 @@ const SignUp: React.VFC = () => {
             className="absolute left-2"
             onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
-              navigate("/login", { replace: true });
+              navigate("/navigate", { replace: true });
             }}
           >
             <ArrowBackRounded />
           </button>
           <p className="mx-auto font-bold">ユーザー登録</p>
         </div>
-
         <div className="pt-16 p-4">
           <div className="flex w-full justify-center">
             <input
@@ -349,7 +367,22 @@ const SignUp: React.VFC = () => {
             登録する
           </button>
         </div>
-        <div></div>
+
+        <div
+          className={`w-80 h-12 
+                          m-auto p-4 
+                          text-center 
+                          leading-3 
+                          text-white 
+                          bg-emerald-500 
+                          rounded-lg 
+                          font-bold
+                          ${showToast ? "opacity-1" : "opacity-0"}             
+                          duration-300
+                        `}
+        >
+          <p>ユーザー登録が完了しました。</p>
+        </div>
       </div>
     </div>
   );
