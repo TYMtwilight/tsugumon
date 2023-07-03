@@ -73,6 +73,12 @@ const SettingBusiness = () => {
     `${loginUser.uid}`
   );
 
+  const advertiseRef: DocumentReference<DocumentData> = doc(
+    db,
+    "advertises",
+    `${loginUser.uid}`
+  );
+
   const postsQuery = query(
     collection(db, "posts"),
     where("uid", "==", loginUser.uid)
@@ -195,7 +201,12 @@ const SettingBusiness = () => {
     updateProfile(auth.currentUser!, {
       displayName: displayName,
       photoURL: avatarURL,
-    })
+    });
+    updateDoc(advertiseRef, {
+      displayName: displayName,
+      username: `@${username.input}`,
+    });
+
     getDocs(postsQuery)
       .then((posts: QuerySnapshot<DocumentData>) => {
         posts.forEach((post) => {
